@@ -2,6 +2,7 @@
 #include "QDateTime"
 #include "QDebug"
 #include "QStringList"
+#include "QDir"
 
 #include "helper.h"
 #include "config.h"
@@ -94,7 +95,7 @@ void Helper::setSettingValue(const QString &name, const QVariant &value)
     MainSettings::set(name.split(".").join("/"), value);
 }
 
-void Helper::subscribeSetting(const QString &key, const CONNECTOR_CALLBACK &callback)
+void Helper::subscribeSettingUpdate(const QString &key, const MainSettings::ConnectorCallback &callback)
 {
     MainSettings::getInstance()->subscribe(key.split(".").join("/"), callback);
 }
@@ -102,5 +103,41 @@ void Helper::subscribeSetting(const QString &key, const CONNECTOR_CALLBACK &call
 void Helper::unBindSetting(const QString &key)
 {
     MainSettings::getInstance()->unBind(key.split(".").join("/"));
+}
+
+void Helper::moveToCenter(QWidget *mapToWidget, QWidget *currentWidget)
+{
+    currentWidget->move(
+        mapToWidget->x() + mapToWidget->width() / 2 - currentWidget->width() / 2,
+        mapToWidget->y() + mapToWidget->height() / 2 - currentWidget->height() / 2
+    );
+}
+
+QString Helper::replaceHomePathInFullPath(const QString &path, const QString &replace)
+{
+    return QString(path).replace(QDir::home().path(), replace);
+}
+
+void Helper::standardWidgetsHeight(const int &height, QWidget *parent, const QStringList &names, const bool &exclude)
+{
+    foreach (QWidget *widget, parent->findChildren<QWidget *>()) {
+        if (!names.isEmpty()) {
+            if (names.contains(widget->objectName())) {
+                if (exclude) continue;
+            } else {
+                if (!exclude) continue;
+            }
+        }
+
+        widget->setFixedHeight(height);
+    }
+
+    parent->adjustSize();
+}
+
+void Helper::updateParentRecursive(QWidget *currentWidget, const QString &name)
+{
+    auto workArea = Helper::findParentWidgetRecursive(currentWidget, name);
+    workArea->update();
 }
 

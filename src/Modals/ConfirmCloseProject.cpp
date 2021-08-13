@@ -14,6 +14,8 @@ namespace DbNodes::Modals {
         setWindowTitle(projectName);
         setStyleSheet(Helper::getStyleFromFile("subWindow"));
         initUi();
+
+        Helper::moveToCenter(parentWidget(), this);
     }
 
     void ConfirmCloseProject::initUi()
@@ -38,14 +40,20 @@ namespace DbNodes::Modals {
         pbCloseAndSave->setFixedSize(120, 30);
     }
 
-    int ConfirmCloseProject::getProjectCloseType()
+    ConfirmCloseProject::Type ConfirmCloseProject::getProjectCloseType()
     {
         if (clickedButton() == pbCloseWithoutSave) {
-            return PROJECT_CLOSE_WITHOUT_SAVE;
+            return WithoutSave;
         } else if (clickedButton() == pbCloseAndSave) {
-            return PROJECT_CLOSE_AND_SAVE;
+            return CloseAndSave;
         } else {
-            return PROJECT_NOT_CLOSED;
+            return NotClosed;
         }
+    }
+
+    void ConfirmCloseProject::closeEvent(QCloseEvent *closeEvent)
+    {
+        closeEvent->ignore();
+        accept();
     }
 }

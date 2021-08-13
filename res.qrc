@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <RCC>
     <qresource prefix="/content">
         <file alias="startup">content/startup.txt</file>

@@ -5,10 +5,17 @@
 #include "QWidgetList"
 #include "QPointer"
 #include "QPushButton"
+#include "QMouseEvent"
 
-#include "Node.h"
+#include "TableNode.h"
 #include "config.h"
 #include "Relation.h"
+#include "MultipleSelection/Repository.h"
+
+#include "RelationTypesDictionary.h"
+#include "Minimap/MinimapWidget.h"
+
+#include "MinimapPositionsDictionary.h"
 
 namespace DbNodes::Widgets {
 
@@ -17,45 +24,61 @@ namespace DbNodes::Widgets {
         Q_OBJECT
 
         public:
-            explicit WorkArea(QWidget *parent, const QString &projectName);
+            explicit WorkArea(QWidget *parent);
 
-            static const int GET_FK_NODE_ROWS = 2;
-            static const int GET_PK_NODE_ROWS = 1;
+            static const int GET_FK_COLUMNS = 2;
+            static const int GET_PK_COLUMNS = 1;
 
-            void makeRelation(const QString &relationId, NODE_RAW_POINTER &pkNodeRaw, NODE_RAW_POINTER &fkNodeRaw);
-            void setNodeRaw(NODE_RAW_POINTER &nodeRaw);
-            void createNodeFromFile(const QString &id, const QString &name, const QPoint &pos);
-            void scrollToNode(const QString &nodeId);
-            NODE_POINTER findNode(const QString &nodeId);
+            Relations::RelationPtr makeRelation(
+                const QString &relationId,
+                const Dictionaries::RelationTypesDictionary::Type &relationType,
+                Nodes::Table::ColumnPrt &pkColumn,
+                Nodes::Table::ColumnPrt &fkColumn
+            );
+
+            void setColumn(Nodes::Table::ColumnPrt &column);
+            void scrollToTable(const QString &columnId);
+            void scrollToPosition(const QPoint &pos);
+            Nodes::TablePtr findTable(const QString &columnId);
 
             QString getProjectName();
-            QVector<NODE_POINTER> getAllNodes();
-            NODE_RAW_POINTER findNodeRow(int type, const QString &nodeRowId);
+            void setProjectName(const QString &name);
+            QList<Nodes::TablePtr> getAllTables();
+            QList<Abstract::NodePtr> getAllNodes();
+            Nodes::Table::ColumnPrt findColumn(int type, const QString &columnId);
 
-            const QList<RELATION_POINTER> &getAllRelations();
+            Nodes::TablePtr createTable(
+                const QPoint &pos,
+                const QString &id = nullptr,
+                const QString &name = nullptr
+            );
+
+            const QList<Relations::RelationPtr> &getAllRelations();
+
+            void createMinimap();
 
             ~WorkArea() override;
 
         private:
-            QList<RELATION_POINTER> relations;
-            QVector<NODE_RAW_POINTER> pkList, fkList;
-            QVector<NODE_POINTER> nodeList;
+            Utils::MultipleSelection::Repository *selectionRepository;
+
+            Minimap::MinimapWidget *minimap{};
+
+            QList<Relations::RelationPtr> relations;
+            Nodes::Table::ColumnPrtVector pkList, fkList;
+            QList<Abstract::NodePtr> nodeList;
             QString projectName;
 
             void contextMenuEvent(QContextMenuEvent *event) override;
             void paintEvent(QPaintEvent *event) override;
 
-            void cleanNodeList();
-            void createNode(const QPoint &pos);
-            static void cleanNodeRowsList(QVector<NODE_RAW_POINTER> &list);
+            void mousePressEvent(QMouseEvent *event) override;
+            void mouseMoveEvent(QMouseEvent *event) override;
+            void mouseReleaseEvent(QMouseEvent *event) override;
+
+            static void cleanColumnList(Nodes::Table::ColumnPrtVector &list);
 
             bool isAntialiasing;
-
-            #if APP_DEBUG
-
-            void debugRelation();
-
-            #endif
     };
 
 }

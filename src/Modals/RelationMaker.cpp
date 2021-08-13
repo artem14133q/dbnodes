@@ -4,16 +4,17 @@
 #include "QRegExp"
 
 #include "RelationMaker.h"
-#include "RelationMakerErrors.h"
+#include "RelationMakerErrorsDictionary.h"
+#include "RelationTypesDictionary.h"
 #include "Workarea.h"
 #include "../helper.h"
 
 namespace DbNodes::Modals {
 
     RelationMaker::RelationMaker(
-            DbNodes::Widgets::NodeRow *fkNodeRaw,
-            const QVector<NODE_POINTER> &nodeVector
-    ) : Abstract::AbstractModal(fkNodeRaw), fkNodeRawParent(fkNodeRaw), nodeVector(nodeVector)
+            Nodes::Table::Column *fkColumn,
+            const QList<Nodes::TablePtr> &tableVector
+    ) : Abstract::AbstractModal(fkColumn), fkColumnParent(fkColumn), tableVector(tableVector)
     {
         setFixedSize(300, 400);
         // Frameless window
@@ -29,8 +30,8 @@ namespace DbNodes::Modals {
 
         initUI();
 
-        currentFkNodeRowId = fkNodeRaw->getRowId();
-        filterNode();
+        currentFkColumnId = fkColumn->getColumnId();
+        filterTable();
 
         show();
     }
@@ -54,7 +55,7 @@ namespace DbNodes::Modals {
 
         auto *pbDeleteFilter = new QPushButton("X", this);
         pbDeleteFilter->setFixedWidth(15);
-        pbDeleteFilter->setStyleSheet(Helper::getStyleFromFile("nodeRowClose"));
+        pbDeleteFilter->setStyleSheet(Helper::getStyleFromFile("columnClose"));
         pbDeleteFilter->move(search->x() + search->width() + 5, 24);
         pbDeleteFilter->setFixedHeight(24);
 
@@ -63,21 +64,21 @@ namespace DbNodes::Modals {
         tableName->move(10, 80);
         tableName->setFixedWidth(70);
 
-        // Init for select PK NodeRow
-        nodesSelect = new QComboBox(this);
-        nodesSelect->setStyleSheet(comboBoxStyle);
-        nodesSelect->move(80, 80);
-        nodesSelect->setFixedWidth(210);
+        // Init for select PK Column
+        tablesSelect = new QComboBox(this);
+        tablesSelect->setStyleSheet(comboBoxStyle);
+        tablesSelect->move(80, 80);
+        tablesSelect->setFixedWidth(210);
 
-        auto *pkRowsName = new QLabel("Column:", this);
-        pkRowsName->setStyleSheet(Helper::getStyleFromFile("lineEditName"));
-        pkRowsName->move(10, 130);
-        pkRowsName->setFixedWidth(70);
+        auto *pkColumnsName = new QLabel("Column:", this);
+        pkColumnsName->setStyleSheet(Helper::getStyleFromFile("lineEditName"));
+        pkColumnsName->move(10, 130);
+        pkColumnsName->setFixedWidth(70);
 
-        nodeRowsOfNode = new QComboBox(this);
-        nodeRowsOfNode->setStyleSheet(comboBoxStyle);
-        nodeRowsOfNode->move(80, 130);
-        nodeRowsOfNode->setFixedWidth(210);
+        columnsOfTable = new QComboBox(this);
+        columnsOfTable->setStyleSheet(comboBoxStyle);
+        columnsOfTable->move(80, 130);
+        columnsOfTable->setFixedWidth(210);
 
         warningWidget = new QWidget(this);
         warningWidget->setFixedSize(300, 100);
@@ -86,11 +87,11 @@ namespace DbNodes::Modals {
         warningWidget->hide();
 
         auto *warningIcon = new QLabel(warningWidget);
-        warningIcon->setPixmap(QPixmap(Helper::getIconPath("error", false)));
+        warningIcon->setPixmap(QPixmap(Helper::getIconPath("warning", false)));
         warningIcon->move(10, (warningWidget->height() - warningIcon->height()) / 2);
 
         warningText = new QTextBrowser(warningWidget);
-        warningText->setStyleSheet("QTextBrowser{color: #cb2a3c; font: bold; font-size: 18px;}");
+        warningText->setStyleSheet("QTextBrowser{color: #ffbc33; font: bold; font-size: 18px;}");
         warningText->setFixedSize(warningWidget->width() - warningIcon->width() - 10, 60);
         warningText->move(warningIcon->width(),(warningWidget->height() - warningIcon->height()) / 2 + 10);
 
@@ -106,18 +107,18 @@ namespace DbNodes::Modals {
         pbCreate->setFixedWidth(70);
         pbCreate->move(220, 360);
 
-        connect(nodesSelect, SIGNAL(activated(int)), this, SLOT(selectNodeByIndex(const int &)));
-        connect(nodeRowsOfNode, SIGNAL(activated(int)), this, SLOT(selectNodeRow(const int &)));
+        connect(tablesSelect, SIGNAL(activated(int)), this, SLOT(selectTableByIndex(const int &)));
+        connect(columnsOfTable, SIGNAL(activated(int)), this, SLOT(selectColumn(const int &)));
         connect(pbCreate, &QPushButton::clicked, this, &RelationMaker::confirm);
         connect(pbCancel, &QPushButton::clicked, this, &RelationMaker::exit);
-        connect(search, &QLineEdit::textChanged, this, &RelationMaker::filterNode);
+        connect(search, &QLineEdit::textChanged, this, &RelationMaker::filterTable);
         connect(pbDeleteFilter, &QPushButton::clicked, this, &RelationMaker::deleteFilter);
     }
 
     void RelationMaker::exit()
     {
-        nodeList.clear();
-        nodeRowsOfSelectedNode.clear();
+        tableList.clear();
+        columnsOfSelectedTable.clear();
 
         // Enabled MainWindow
         Helper::findParentWidgetRecursive(this, "MainWindow")->setEnabled(true);
@@ -125,34 +126,37 @@ namespace DbNodes::Modals {
         Abstract::AbstractModal::exit();
     }
 
-    void RelationMaker::selectNode(const NODE_POINTER &node)
+    void RelationMaker::selectTable(const Nodes::TablePtr &table)
     {
-        nodeRowsOfSelectedNode.clear();
-        nodeRowsOfNode->clear();
+        columnsOfSelectedTable.clear();
+        columnsOfTable->clear();
 
-        foreach (NODE_RAW_POINTER nodeRow, node->getAllNodeRows().toList()) {
-            if (nodeRow->getRowType() == Widgets::NodeRow::PK) {
-                nodeRowsOfSelectedNode.insert(nodeRow->getRowId(), nodeRow);
-                nodeRowsOfNode->addItem(nodeRow->getRowName(), nodeRow->getRowId());
+        foreach (const Nodes::Table::ColumnPrt column, table->getAllColumns().toList()) {
+            if (column->getColumnType() == Nodes::Table::Column::Type::PrimaryKey) {
+                columnsOfSelectedTable.insert(column->getColumnId(), column);
+                columnsOfTable->addItem(column->getColumnName(), column->getColumnId());
             }
         }
 
-        if (!nodeRowsOfSelectedNode.isEmpty()) {
-            currentPkNodeRowId = nodeRowsOfSelectedNode.value(nodeRowsOfSelectedNode.keys().first())->getRowId();
-            nodeRowsOfNode->setCurrentIndex(nodeRowsOfNode->findData(currentPkNodeRowId));
+        if (!columnsOfSelectedTable.isEmpty()) {
+            currentPkColumnId = columnsOfSelectedTable.value(columnsOfSelectedTable.keys().first())->getColumnId();
+            columnsOfTable->setCurrentIndex(columnsOfTable->findData(currentPkColumnId));
         }
 
-        showWarningIfPkNotFound(nodeRowsOfSelectedNode.isEmpty(), CANNOT_FIND_PK_NODE_ROWS);
+        showWarningIfPkNotFound(
+            columnsOfSelectedTable.isEmpty(),
+            Dictionaries::RelationMakerErrorsDictionary::Type::CannotFindPkColumns
+        );
     }
 
-    void RelationMaker::selectNodeByIndex(const int &index)
+    void RelationMaker::selectTableByIndex(const int &index)
     {
-        selectNode(nodeList.value(nodesSelect->itemData(index).toString()));
+        selectTable(tableList.value(tablesSelect->itemData(index).toString()));
     }
 
-    void RelationMaker::selectNodeRow(const int &index)
+    void RelationMaker::selectColumn(const int &index)
     {
-        currentPkNodeRowId = nodeRowsOfSelectedNode.value(nodeRowsOfNode->itemData(index).toString())->getRowId();
+        currentPkColumnId = columnsOfSelectedTable.value(columnsOfTable->itemData(index).toString())->getColumnId();
     }
 
     void RelationMaker::confirm()
@@ -163,21 +167,24 @@ namespace DbNodes::Modals {
 
         auto *workArea = dynamic_cast<WorkArea*>(Helper::findParentWidgetRecursive(this, "WorkArea"));
 
-        auto pkNodeRaw = workArea->findNodeRow(NodeRow::PK, currentPkNodeRowId);
-        auto fkNodeRaw = workArea->findNodeRow(NodeRow::FK, currentFkNodeRowId);
+        auto pkColumn = workArea->findColumn(Nodes::Table::Column::Type::PrimaryKey, currentPkColumnId);
+        auto fkColumn = workArea->findColumn(Nodes::Table::Column::Type::ForeignKey, currentFkColumnId);
 
-        workArea->makeRelation("relation:" + Helper::getCurrentTimeMS(),pkNodeRaw,fkNodeRaw);
+        workArea->makeRelation(
+            "relation:" + Helper::getCurrentTimeMS(),
+            Dictionaries::RelationTypesDictionary::Type::Path,
+            pkColumn,
+            fkColumn
+        );
 
-        Abstract::AbstractModal::confirm();
+        AbstractModal::confirm();
     }
 
     void RelationMaker::showWarningIfPkNotFound(const bool &enable, const int &errorType)
     {
-        using namespace DbNodes::Dictionaries;
-
         if (enable) {
             warningWidget->show();
-            warningText->setText(RelationMakerErrors::getValue(errorType).toString());
+            warningText->setText(Dictionaries::RelationMakerErrorsDictionary::getValue(errorType).toString());
         } else {
             warningWidget->hide();
         }
@@ -185,34 +192,40 @@ namespace DbNodes::Modals {
         pbCreate->setDisabled(enable);
     }
 
-    void RelationMaker::filterNode(const QString &filter)
+    void RelationMaker::filterTable(const QString &filter)
     {
         QRegExp regFilter("\\w*" + filter + "\\w*");
 
-        nodeList.clear();
-        nodesSelect->clear();
+        tableList.clear();
+        tablesSelect->clear();
 
-        foreach (NODE_POINTER node, nodeVector.toList()) {
-            if (node->getTableId() != fkNodeRawParent->getTableId() && regFilter.indexIn(node->getTableName()) != -1) {
-                nodeList.insert(node->getTableId(), node);
-                nodesSelect->addItem(node->getTableName(), node->getTableId());
+        foreach (const Nodes::TablePtr table, tableVector) {
+            if (table->getTableId() != fkColumnParent->getTableId() && regFilter.indexIn(table->getTableName()) != -1) {
+                tableList.insert(table->getTableId(), table);
+                tablesSelect->addItem(table->getTableName(), table->getTableId());
             }
         }
 
-        if (!nodeList.isEmpty()) {
-            selectNode(nodeList.values().first());
-        } else {
-            showWarningIfPkNotFound(true, CANNOT_FIND_NODES);
+        if (!tableList.isEmpty()) {
+            auto table = tableList.values().first();
 
-            nodeRowsOfSelectedNode.clear();
-            nodeRowsOfNode->clear();
+            selectTable(table);
+            tablesSelect->setCurrentIndex(tablesSelect->findData(table->getTableId()));
+        } else {
+            showWarningIfPkNotFound(
+                true,
+                Dictionaries::RelationMakerErrorsDictionary::Type::CannotFindTables
+            );
+
+            columnsOfSelectedTable.clear();
+            columnsOfTable->clear();
         }
     }
 
     void RelationMaker::deleteFilter()
     {
         search->clear();
-        filterNode();
+        filterTable();
     }
 }
 

@@ -1,13 +1,9 @@
 #include "QMenuBar"
 #include "QDesktopWidget"
-#include "QFileDialog"
-#include "QFile"
-#include "QTextStream"
 #include "QApplication"
-#include "QDebug"
 #include "iostream"
 
-#include "NameNewProject.h"
+#include "NewProject.h"
 #include "Settings.h"
 #include "MainWindow.h"
 #include "Workarea.h"
@@ -24,63 +20,59 @@ namespace DbNodes::Widgets {
         setObjectName("MainWindow");
         setStyleSheet(Helper::getStyleFromFile("main"));
         setWindowIcon(QIcon(Helper::getIconPath("128", false)));
-        // Insert menu bar into MainWindow
+
+        saveManager = new Saving::SaveManager(this);
+        projectListFileResolver = new Saving::ProjectListFileResolver(saveManager, PROJECTS_LIST_FILE_PATH);
+
         setMenuBar(defineMenuBar());
 
-        startupWidget = new StartupWidget(this);
-
-        scrollArea = new QScrollArea(this);
-        scrollArea->setObjectName("ScrollArea");
-        scrollArea->hide();
-        setCentralWidget(scrollArea);
+        openLastOpenedFileIfExists();
 
         showMaximized();
     }
 
     void MainWindow::setTitle(const QString &name, const QString &path)
     {
-        setWindowTitle("[" + path + "] @ " + name + " - DbNodes");
+        setWindowTitle(QString("[%1] @ %2 - DbNodes").arg(path, name));
     }
 
     void MainWindow::createWorkArea(const QString &projectName)
     {
+        scrollArea = new QScrollArea(this);
+        scrollArea->setObjectName("ScrollArea");
+        scrollArea->hide();
+
         // Init new work area widget
-        workArea = new WorkArea(scrollArea, projectName);
-        setTitle(projectName, "~");
+        workArea = new WorkArea(scrollArea);
         scrollArea->setWidget(workArea);
-        scrollArea->show();
 
-        startupWidget->hide();
-
-        saveProject->setEnabled(true);
-        saveAsProject->setEnabled(true);
-        closeProject->setEnabled(true);
-        findNode->setEnabled(true);
+        if (projectName != nullptr) {
+            workArea->setProjectName(projectName);
+        }
     }
 
-    void MainWindow::closeCurrentProject(const int &closeProjectStatus)
+    void MainWindow::closeCurrentProject(const int &closeProjectStatus, const bool &closeApp)
     {
-        if (closeProjectStatus == PROJECT_NOT_CLOSED) return;
+        if (closeProjectStatus == Modals::ConfirmCloseProject::Type::NotClosed) return;
 
-        if (closeProjectStatus == PROJECT_CLOSE_AND_SAVE) {
-            generateSaveFile(filePath.isEmpty() ? SAVE_TYPE_NEW_FILE : SAVE_TYPE_REWRITE_FILE);
+        if (closeProjectStatus == Modals::ConfirmCloseProject::Type::CloseAndSave) {
+            generateSaveFile(
+                filePath.isEmpty()
+                    ? Dictionaries::SaveFileTypesDictionary::Type::NewFile
+                    : Dictionaries::SaveFileTypesDictionary::Type::RewriteFile
+            );
         }
 
-        scrollArea->hide();
-        scrollArea->setWidget(nullptr);
+        enableWorkArea(false);
 
-        delete workArea;
-        workArea = nullptr;
+        if (!closeApp) {
+            setCentralWidget(createStartupWidget());
+        }
 
         setWindowTitle("DbNodes");
-        filePath = "";
+        filePath.clear();
 
-        startupWidget->show();
-
-        saveProject->setEnabled(false);
-        saveAsProject->setEnabled(false);
-        closeProject->setEnabled(false);
-        findNode->setEnabled(false);
+        recentProjectsMenu->updateMenu();
     }
 
     QMenuBar* MainWindow::defineMenuBar()
@@ -92,83 +84,87 @@ namespace DbNodes::Widgets {
         auto *project = menuBar->addMenu("Project");
 
         // Create new project
-        createProject = project->addAction("Create new Project");
+        createProjectAction = project->addAction("Create new Project");
 //        createProject->setIcon(QIcon(":/imgs/new"));
-        createProject->setShortcut(QKeySequence("Ctrl+A"));
+        createProjectAction->setShortcut(QKeySequence("Ctrl+A"));
 
         // Open project from file
-        openProject = project->addAction("Open Project");
+        openProjectAction = project->addAction("Open Project");
 //        openProject->setIcon(QIcon(":/imgs/open"));
-        openProject->setShortcut(QKeySequence("Ctrl+D"));
+        openProjectAction->setShortcut(QKeySequence("Ctrl+D"));
+
+        recentProjectsMenu = new Menus::RecentMenu(projectListFileResolver, project);
+        connect(recentProjectsMenu, &Menus::RecentMenu::openRecentProject, this, &MainWindow::openSaveFile);
+
+        project->addMenu(recentProjectsMenu);
 
         // Close opened project
-        closeProject = project->addAction("Close Project");
-//        closeProject->setIcon(QIcon(":/imgs/close"));
-        closeProject->setDisabled(true);
-        closeProject->setShortcut(QKeySequence("Ctrl+W"));
+        closeProjectAction = project->addAction("Close Project");
+//        closeProjectAction->setIcon(QIcon(":/imgs/close"));
+        closeProjectAction->setDisabled(true);
+        closeProjectAction->setShortcut(QKeySequence("Ctrl+W"));
 
         project->addSeparator();
 
         // Save current project in file
-        saveProject = project->addAction("Save Project");
-//        saveProject->setIcon(QIcon(":/imgs/save"));
-        saveProject->setDisabled(true);
-        saveProject->setShortcut(QKeySequence("Ctrl+S"));
+        saveProjectAction = project->addAction("Save Project");
+//        saveProjectAction->setIcon(QIcon(":/imgs/save"));
+        saveProjectAction->setDisabled(true);
+        saveProjectAction->setShortcut(QKeySequence("Ctrl+S"));
 
         // Save current project in other file
-        saveAsProject = project->addAction("Save as ...");
-//        saveAsProject->setIcon(QIcon(":/imgs/save_as"));
-        saveAsProject->setDisabled(true);
-        saveAsProject->setShortcut(QKeySequence("Ctrl+Shift+S"));
+        saveAsProjectAction = project->addAction("Save as ...");
+//        saveAsProjectAction->setIcon(QIcon(":/imgs/save_as"));
+        saveAsProjectAction->setDisabled(true);
+        saveAsProjectAction->setShortcut(QKeySequence("Ctrl+Shift+S"));
 
         project->addSeparator();
 
-        settings = project->addAction("Settings");
-        settings->setShortcut(QKeySequence("Ctrl+M"));
+        openSettingsAction = project->addAction("Settings");
+        openSettingsAction->setShortcut(QKeySequence("Ctrl+M"));
 
         project->addSeparator();
 
-        // Open project from file
-        exit = project->addAction("Exit");
-//        openProject->setIcon(QIcon(":/imgs/open"));
-        exit->setShortcut(QKeySequence("Ctrl+Q"));
+        // Close app
+        exitAction = project->addAction("Exit");
+//        exitAction->setIcon(QIcon(":/imgs/open"));
+        exitAction->setShortcut(QKeySequence("Ctrl+Q"));
 
         // Define slots
-        connect(createProject, &QAction::triggered, this, &MainWindow::createNewProject);
-        connect(openProject, &QAction::triggered, this, &MainWindow::openSaveFile);
-        connect(exit, &QAction::triggered, this, &MainWindow::close);
+        connect(createProjectAction, &QAction::triggered, this, &MainWindow::createNewProject);
+        connect(exitAction, &QAction::triggered, this, &MainWindow::close);
 
-        connect(closeProject, &QAction::triggered, this, [this] () {
+        connect(openProjectAction, &QAction::triggered, this, [this] {
+            MainWindow::openSaveFile();
+            projectListFileResolver->setLastOpenedPath(filePath);
+        });
+
+        connect(closeProjectAction, &QAction::triggered, this, [this] () {
             closeCurrentProject(MainWindow::openConfirmCloseProjectModal());
         });
 
-        connect(saveProject, &QAction::triggered, this, [this] () {
-            generateSaveFile(SAVE_TYPE_REWRITE_FILE);
+        connect(saveProjectAction, &QAction::triggered, this, [this] () {
+            generateSaveFile(Dictionaries::SaveFileTypesDictionary::Type::RewriteFile);
         });
 
-        connect(saveAsProject, &QAction::triggered, this, [this] () {
-            generateSaveFile(SAVE_TYPE_NEW_FILE);
+        connect(saveAsProjectAction, &QAction::triggered, this, [this] () {
+            generateSaveFile(Dictionaries::SaveFileTypesDictionary::Type::NewFile);
         });
 
-        connect(settings, &QAction::triggered, this, [this] () {
-            auto *window = new Modals::Settings(this);
-
-            window->move(
-                x() + width() / 2 - window->width() / 2,
-                y() + height() / 2 - window->height() / 2
-            );
+        connect(openSettingsAction, &QAction::triggered, this, [this] () {
+            new Modals::Settings(this);
         });
 
         auto *tools = menuBar->addMenu("Tools");
 
-        findNode = tools->addAction("Find ...");
-        findNode->setShortcut(QKeySequence("Ctrl+F"));
-        findNode->setEnabled(false);
+        findTableAction = tools->addAction("Find ...");
+        findTableAction->setShortcut(QKeySequence("Ctrl+F"));
+        findTableAction->setEnabled(false);
 
-        connect(findNode, &QAction::triggered, this, [this] () {
-            auto *window = new Modals::Finder(workArea->getAllNodes(), this);
+        connect(findTableAction, &QAction::triggered, this, [this] () {
+            auto *window = new Modals::Finder(workArea->getAllTables(), this);
 
-            connect(window, &Modals::Finder::selected, workArea, &WorkArea::scrollToNode);
+            connect(window, &Modals::Finder::selected, workArea, &WorkArea::scrollToTable);
         });
 
         // return QMenuBar
@@ -177,219 +173,165 @@ namespace DbNodes::Widgets {
 
     void MainWindow::createNewProject()
     {
-        auto window = new Modals::NameNewProject(this);
-        window->move(x() + width() / 2 - window->width() / 2, y() + height() / 2 - window->height() / 2);
-    }
+        auto window = new Modals::NewProject(this);
 
-    void MainWindow::generateSaveFile(const int &saveType)
-    {
-        QVector<QPointer<Node>> nodes(workArea->getAllNodes());
+        connect(window, &Modals::NewProject::createProjectSignal, this,
+            [this] (const Modals::NewProject::VariantsMap &settings) {
+                if (!closeProjectIfExists()) return;
 
-        if (filePath == "" || saveType == SAVE_TYPE_NEW_FILE)
-            filePath = QFileDialog::getSaveFileName(
-                    nullptr,
-                    tr("Save File"),
-                    "/home/" + qgetenv("USER") + "/new_file.dbn",
-                    tr("DbNodes File (*.dbn)"));
+                createWorkArea(settings.value("name").toString());
 
-        if (filePath.isEmpty()) return;
+                workArea->setFixedSize(
+                    settings.value("width").toInt(),
+                    settings.value("height").toInt()
+                );
 
-        QFile file(filePath);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-            return;
+                enableWorkArea(true);
 
-        QTextStream out(&file);
+                setTitle(workArea->getProjectName(), "#");
 
-        out << "#DBNODESFILE#\n";
-        out << "Options\n";
-        out << "$" << workArea->getProjectName() << "\n";
-        out << "::Nodes" << "\n";
-        QVectorIterator<QPointer<Node>> saveNodesIterator(nodes);
-        while (saveNodesIterator.hasNext()) {
-            QPointer<Node> saveNode(saveNodesIterator.next());
-            QString row = saveNode->getTableId() + "," +
-                          saveNode->getTableName() + "," +
-                          QString::number(saveNode->x()) + "&" +
-                          QString::number(saveNode->y());
-            out << "$" << row << "\n";
-        }
-
-        out << "::NodeRows\n";
-        saveNodesIterator.toFront();
-        while (saveNodesIterator.hasNext()) {
-            QPointer<Node> saveNode(saveNodesIterator.next());
-            QVector<QPointer<NodeRow>> saveNodeRows(saveNode->getAllNodeRows());
-            out << "@" << saveNode->getTableId() << "\n";
-            QVectorIterator<QPointer<NodeRow>> saveNodeRowsIterator(saveNodeRows);
-            while (saveNodeRowsIterator.hasNext()) {
-                QPointer<NodeRow> saveNodeRow(saveNodeRowsIterator.next());
-                QString row = saveNodeRow->getRowId() + "," +
-                              saveNodeRow->getRowName() + "," +
-                              QString::number(saveNodeRow->getRowType()) + "," +
-                              saveNodeRow->getRowDbType() + "," +
-                              QString::number(saveNodeRow->getRowIsNull());
-                out << "$" << row + "\n";
+                filePath = "";
             }
-        }
+        );
 
-        out << "::Relations\n";
-        foreach (const RELATION_POINTER &relation, workArea->getAllRelations()) {
-            out << "@" << relation->getRelationId() << "\n";
-            out << "$" << relation->getPkNodeRaw()->getRowId() << "\n";
-            out << "$" << relation->getFkNodeRaw()->getRowId() << "\n";
-        }
-        out << "#ENDDBNODESFILE#\n";
-    }
-
-    void MainWindow::openSaveFile()
-    {
-        this->filePath = QFileDialog::getOpenFileName(
-                nullptr,
-                tr("Open File"),
-                "/home/" + qgetenv("USER") + "/file.dbn",
-                tr("DbNodes File (*.dbn)"));
-
-        if (filePath == "")
-            return;
-
-        QString fileString("");
-        QFile file(filePath);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            return;
-
-        while (!file.atEnd()) {
-            QByteArray line = file.readLine();
-            fileString += line;
-        }
-
-        QRegExp fileReg("#DBNODESFILE#\n"
-                        "Options\n(\\$\\S+\n){0,}"
-                        "::Nodes\n(\\$\\S+\n){0,}"
-                        "::NodeRows\n(@\\S+\n(\\$\\S+\n){0,}){0,}"
-                        "::Relations\n(@\\S+\n(\\$\\S+\n){0,}){0,}"
-                        "#ENDDBNODESFILE#");
-
-        if (fileReg.indexIn(fileString) == -1)
-            return;
-
-        QString fileData(fileReg.cap(0));
-        QRegExp fileIndicatorReg("#\\S+#");
-        fileData = fileData.replace(fileIndicatorReg, "");
-        fileData = fileData.replace("\n", "");
-        QStringList fileModulesData = fileData.split("::");
-
-        QString optionsModule = fileModulesData.at(0);
-        optionsModule = optionsModule.replace("Options", "");
-        QStringList options = optionsModule.split("$");
-        if (options.length() > 0) {
-            options.removeAt(0);
-
-            createWorkArea(options.at(0));
-            setTitle(options.at(0), filePath);
-        }
-
-        QString nodeModule = fileModulesData.at(1);
-        nodeModule = nodeModule.replace("Nodes", "");
-        QStringList nodeList = nodeModule.split("$");
-        if (nodeList.length() > 0) {
-            nodeList.removeAt(0);
-
-            foreach (QString node, nodeList) {
-                QStringList nodeOptions = node.split(",");
-                const QString& nodeId = nodeOptions.at(0);
-                const QString& nodeName = nodeOptions.at(1);
-                QStringList cords = nodeOptions.at(2).split("&");
-                QPoint pos(cords.at(0).toInt(), cords.at(1).toInt());
-
-                workArea->createNodeFromFile(nodeId, nodeName, pos);
-            }
-        }
-
-        QString nodeRowModule = fileModulesData.at(2);
-        nodeRowModule = nodeRowModule.replace("NodeRows", "");
-        QStringList nodeRowsClusters = nodeRowModule.split("@");
-        if (nodeRowsClusters.length() > 0) {
-            nodeRowsClusters.removeAt(0);
-                foreach (QString nodeRowCluster, nodeRowsClusters) {
-                    QStringList nodeRows = nodeRowCluster.split("$");
-                    if (nodeRows.length() > 0) {
-                        QString nodeId = nodeRows.takeAt(0);
-
-                        foreach (QString nodeRow, nodeRows) {
-                        QStringList nodeRowOptions = nodeRow.split(",");
-                        const QString& nodeRowId = nodeRowOptions.at(0);
-                        const QString& nodeRowName = nodeRowOptions.at(1);
-                        int nodeRowType = nodeRowOptions.at(2).toInt();
-                        const QString& nodeRowDbType = nodeRowOptions.at(3);
-                        bool nodeRowIsNull = nodeRowOptions.at(4).toInt();
-
-                        QVector<QPointer<Node>> nodes = workArea->getAllNodes();
-                            foreach (QPointer<Node> node, nodes) {
-                            if (node->getTableId() == nodeId) {
-                                node->addColumnFromFile(nodeRowId, nodeRowName,
-                                                        nodeRowType, nodeRowDbType,
-                                                        nodeRowIsNull);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        QString relationsModule = fileModulesData.at(3);
-        relationsModule = relationsModule.replace("Relations", "");
-        QStringList relations = relationsModule.split("@");
-        if (relations.length() > 0) {
-            relations.removeAt(0);
-
-            foreach (QString relation, relations) {
-                QStringList nodeRowsItems = relation.split("$");
-                if (nodeRowsItems.length() > 2) {
-                    QString relationId = nodeRowsItems.takeAt(0);
-                    QString pkNodeRowId = nodeRowsItems.takeFirst();
-                    QString fkNodeRowId = nodeRowsItems.takeLast();
-
-                    QPointer<NodeRow> pkNodeRow = workArea->findNodeRow(WorkArea::GET_PK_NODE_ROWS, pkNodeRowId);
-                    QPointer<NodeRow> fkNodeRow = workArea->findNodeRow(WorkArea::GET_FK_NODE_ROWS, fkNodeRowId);
-
-                    workArea->makeRelation(relationId, pkNodeRow, fkNodeRow);
-                }
-            }
-        }
+        Helper::moveToCenter(this, window);
     }
 
     void MainWindow::closeEvent(QCloseEvent *event)
     {
         if (workArea != nullptr) {
+            event->ignore();
+
             int closeType = MainWindow::openConfirmCloseProjectModal();
-            closeCurrentProject(closeType);
+            closeCurrentProject(closeType, true);
 
-            if (closeType != PROJECT_NOT_CLOSED) QApplication::exit();
+            if (closeType != Modals::ConfirmCloseProject::Type::NotClosed) QApplication::exit();
         }
-
-        QMainWindow::closeEvent(event);
     }
 
-    int MainWindow::openConfirmCloseProjectModal()
+    Modals::ConfirmCloseProject::Type MainWindow::openConfirmCloseProjectModal()
     {
-        using namespace DbNodes::Modals;
-
-        ConfirmCloseProject confirmWindow(workArea->getProjectName());
+        Modals::ConfirmCloseProject confirmWindow(workArea->getProjectName(), this);
 
         confirmWindow.exec();
 
         return confirmWindow.getProjectCloseType();
     }
 
-    void MainWindow::paintEvent(QPaintEvent * event)
+    void MainWindow::generateSaveFile(const Dictionaries::SaveFileTypesDictionary::Type &saveType)
     {
-        if (workArea == nullptr) {
-            startupWidget->move(
-            width() / 2 - startupWidget->width() / 2,
-            height() / 2 - startupWidget->height() / 2
-            );
+        if (filePath.isEmpty() || saveType == Dictionaries::SaveFileTypesDictionary::Type::NewFile) {
+            filePath = Saving::SaveManager::createNewFile();
+
+            projectListFileResolver->appendNewProject(workArea->getProjectName(), filePath);
+            projectListFileResolver->setLastOpenedPath(filePath);
         }
 
-        QMainWindow::paintEvent(event);
+        projectListFileResolver->updateProjectName(filePath, workArea->getProjectName());
+
+        setTitle(workArea->getProjectName(), filePath);
+
+        Saving::DbnFileResolver(saveManager, workArea).save(filePath);
+    }
+
+    void MainWindow::openSaveFile(const QString &path)
+    {
+        if (!closeProjectIfExists()) return;
+
+        createWorkArea();
+
+        Saving::DbnFileResolver saveFile(saveManager, workArea);
+
+        if (!saveFile.load(path)) {
+            if (workArea != nullptr) return;
+
+            delete workArea;
+            workArea = nullptr;
+
+            if (centralWidget()->objectName() != "StartupWidget") {
+                setCentralWidget(createStartupWidget());
+            }
+
+            return;
+        }
+
+        enableWorkArea(true);
+
+        filePath = (path == nullptr) ? saveFile.getCurrentFilePath() : path;
+        auto projectTitle = saveFile.getProjectName();
+
+        setTitle(projectTitle, filePath);
+
+        projectListFileResolver->appendNewProject(projectTitle, filePath);
+        projectListFileResolver->setLastOpenedPath(filePath);
+
+        recentProjectsMenu->updateMenu();
+    }
+
+    void MainWindow::enableWorkArea(const bool &enable)
+    {
+        if (enable) {
+            setCentralWidget(scrollArea);
+            scrollArea->show();
+            workArea->createMinimap();
+        } else {
+            delete workArea;
+            delete scrollArea;
+
+            scrollArea = nullptr;
+            workArea = nullptr;
+        }
+
+        saveProjectAction->setEnabled(enable);
+        saveAsProjectAction->setEnabled(enable);
+        closeProjectAction->setEnabled(enable);
+        findTableAction->setEnabled(enable);
+    }
+
+    void MainWindow::createProject(const QString &name)
+    {
+        createWorkArea(name);
+        enableWorkArea(true);
+        setTitle(name, "#");
+    }
+
+    void MainWindow::openLastOpenedFileIfExists()
+    {
+        auto lastFilePath = projectListFileResolver->getLastOpenedPath();
+
+        if (lastFilePath != "" && Saving::SaveManager::fileExists(lastFilePath)) {
+            openSaveFile(lastFilePath);
+        } else {
+            projectListFileResolver->setLastOpenedPath("");
+            setCentralWidget(createStartupWidget());
+        }
+
+        recentProjectsMenu->updateMenu();
+    }
+
+    StartupWidget::MainWidget *MainWindow::createStartupWidget()
+    {
+        auto *widget = new StartupWidget::MainWidget(
+            projectListFileResolver,
+            this
+        );
+
+        connect(widget, &StartupWidget::MainWidget::openProjectSignal, this, &MainWindow::openSaveFile);
+        connect(widget, &StartupWidget::MainWidget::updateMenuSignal, recentProjectsMenu, &Menus::RecentMenu::updateMenu);
+
+        return widget;
+    }
+
+    bool MainWindow::closeProjectIfExists()
+    {
+        if (workArea != nullptr) {
+            int closeType = openConfirmCloseProjectModal();
+
+            if (closeType == Modals::ConfirmCloseProject::Type::NotClosed) return false;
+
+            closeCurrentProject(closeType);
+        }
+
+        return true;
     }
 }

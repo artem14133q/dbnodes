@@ -3,16 +3,23 @@
 
 #include "QMainWindow"
 #include "QScrollArea"
-#include "Workarea.h"
-#include "QCloseEvent"
-#include "ConfirmCloseProject.h"
-#include "StartupWidget.h"
 #include "QSettings"
+#include "QCloseEvent"
+
+#include "Workarea.h"
+#include "ConfirmCloseProject.h"
+#include "SaveManager.h"
+
+#include "Files/DbnFileResolver.h"
+#include "Files/ProjectListFileResolver.h"
+
+#include "StartupWidget/MainWidget.h"
+
+#include "Menus/RecentMenu.h"
+
+#include "SaveFileTypesDictionary.h"
 
 #include "config.h"
-
-#define SAVE_TYPE_NEW_FILE 0
-#define SAVE_TYPE_REWRITE_FILE 1
 
 namespace DbNodes::Widgets {
 
@@ -22,37 +29,51 @@ namespace DbNodes::Widgets {
 
         public:
             explicit MainWindow(QWidget *parent = nullptr);
-            void createWorkArea(const QString &projectName);
+            void createProject(const QString &name);
 
         public slots:
-            void closeCurrentProject(const int &closeProjectStatus);
-            void generateSaveFile(const int &saveType);
-            void openSaveFile();
+            void closeCurrentProject(const int &closeProjectStatus, const bool &closeApp = false);
+            bool closeProjectIfExists();
+            void generateSaveFile(const Dictionaries::SaveFileTypesDictionary::Type &saveType);
             void createNewProject();
+            void openSaveFile(const QString &path = nullptr);
 
         private:
-            QAction* createProject{};
-            QAction* openProject{};
-            QAction* saveProject{};
-            QAction* saveAsProject{};
-            QAction* closeProject{};
-            QAction* settings{};
-            QAction* exit{};
-
-            QAction* findNode{};
-
-            QScrollArea* scrollArea;
-            StartupWidget* startupWidget;
             QString filePath = "";
 
-            WorkArea* workArea{};
+            // For central widget
+            QScrollArea* scrollArea = nullptr;
+            WorkArea* workArea = nullptr;
+
+            // Action for main menu
+            QAction* createProjectAction{};
+            QAction* openProjectAction{};
+            QAction* saveProjectAction{};
+            QAction* saveAsProjectAction{};
+            QAction* closeProjectAction{};
+            QAction* openSettingsAction{};
+            QAction* exitAction{};
+            QAction* findTableAction{};
+
+            Menus::RecentMenu *recentProjectsMenu{};
+
+            // Files
+            Saving::ProjectListFileResolver *projectListFileResolver;
+            Saving::SaveManager *saveManager;
 
             QMenuBar* defineMenuBar();
+
             void setTitle(const QString &name, const QString &path);
-            int openConfirmCloseProjectModal();
+            Modals::ConfirmCloseProject::Type openConfirmCloseProjectModal();
 
             void closeEvent(QCloseEvent * event) override;
-            void paintEvent(QPaintEvent * event) override;
+
+            void enableWorkArea(const bool &enable);
+            void createWorkArea(const QString &projectName = nullptr);
+
+            void openLastOpenedFileIfExists();
+
+            StartupWidget::MainWidget *createStartupWidget();
     };
 
 }

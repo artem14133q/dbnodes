@@ -1,6 +1,7 @@
 //
 // Created by artem on 27.01.2021.
 //
+
 #include "QPushButton"
 #include "QLineEdit"
 
@@ -9,7 +10,7 @@
 
 namespace DbNodes::Modals {
 
-    Finder::Finder(const QVector<NODE_POINTER> &nodeVector, QWidget *parent)
+    Finder::Finder(const QList<Nodes::TablePtr> &nodeVector, QWidget *parent)
         : Abstract::AbstractModal(parent), nodeVector(nodeVector)
     {
         setFixedSize(400, 600);
@@ -22,7 +23,7 @@ namespace DbNodes::Modals {
 
         move(
             parentWidget()->x() + parentWidget()->width() / 2 - width() / 2,
-            parentWidget()->x() + parentWidget()->height() / 2 - height() / 2
+            parentWidget()->y() + parentWidget()->height() / 2 - height() / 2
         );
 
         initUI();
@@ -47,7 +48,7 @@ namespace DbNodes::Modals {
         listWidget->setSpacing(3);
         listWidget->setFocusPolicy(Qt::NoFocus);
         listWidget->setContentsMargins(0, 0, 0, 0);
-        listWidget->setStyleSheet(Helper::getStyleFromFile("nodeList"));
+        listWidget->setStyleSheet(Helper::getStyleFromFile("tableList"));
         listWidget->setFixedSize(width() - 50, height() - 70);
         listWidget->move(25, 60);
 
@@ -75,7 +76,7 @@ namespace DbNodes::Modals {
 
         QRegExp regFilter("\\w*" + filter + "\\w*");
 
-        foreach (NODE_POINTER node, nodeVector.toList()) {
+        foreach (Nodes::TablePtr node, nodeVector) {
             if (regFilter.indexIn(node->getTableName()) != -1) {
                 filteredNodeList.insert(node->getTableId(), node);
 

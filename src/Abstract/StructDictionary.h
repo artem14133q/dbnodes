@@ -6,28 +6,41 @@
 #define DBNODES_STRUCTDICTIONARY_H
 
 #include "QVariant"
+#include "QObject"
 
 namespace DbNodes::Abstract {
 
-    template<typename T1, class T2>
-    struct Dictionary
+    template<class T1, class T2>
+    struct Dictionary: public QObject
     {
-        #define DICT_MAP(key_type) QHash<key_type, QVariant>
+        typedef QHash<T1, QVariant> DictMap;
 
-        static DICT_MAP(T1) getDictionary()
+        static DictMap getDictionary()
         {
-            return T2::initDictionary();
+            return T2::getDictionary();
         }
 
-        static QVariant getValue(const T1 &key)
-        {
-            return getDictionary().value(key);
-        }
+        public:
 
-        static QVariantList getAllValues()
-        {
-            return QVariantList(getDictionary().values());
-        }
+            static QVariant getValue(const T1 &key)
+            {
+                return getDictionary().value(key);
+            }
+
+            static QVariantList getAllValues()
+            {
+                return QVariantList(getDictionary().values());
+            }
+
+            static QList<T1> getAllKeys()
+            {
+                return getDictionary().keys();
+            }
+
+            static bool has(const T1 &key)
+            {
+                return getDictionary().contains(key);
+            }
     };
 }
 

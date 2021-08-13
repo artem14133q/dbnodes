@@ -1,8 +1,0 @@
-QWidget {
-    background-color: #444341;
-    border-radius: 5px;
-}
-
-QWidget#Node:focus {
-    border: 2px solid cyan;
-}

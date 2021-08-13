@@ -1,18 +1,24 @@
 set(LIBRARY_NAME Widgets)
 
 set(RESOURCES
-        DeleteArrowButton.h
-        DeleteArrowButton.cpp
         MainWindow.cpp
         MainWindow.h
-        Node.cpp
-        Node.h
-        Noderow.cpp
-        Noderow.h
         Workarea.cpp
         Workarea.h
-        StartupWidget.cpp
-        StartupWidget.h)
+        StartupWidget/MainWidget.cpp
+        StartupWidget/MainWidget.h
+        StartupWidget/Menu.cpp
+        StartupWidget/Menu.h
+        StartupWidget/Project.cpp
+        StartupWidget/Project.h
+        StartupWidget/Hints.cpp
+        StartupWidget/Hints.h
+        Menus/RecentMenu.cpp
+        Menus/RecentMenu.h
+        Minimap/MinimapWidget.cpp
+        Minimap/MinimapWidget.h
+        Minimap/MovableRect.cpp
+        Minimap/MovableRect.h Minimap/MinimapWorkingArea.cpp Minimap/MinimapWorkingArea.h)
 
 add_library(${LIBRARY_NAME} STATIC ${RESOURCES})
 
@@ -24,7 +30,10 @@ set(PROJECT_DIRECTORIES
         ${SRC}/Abstract
         ${SRC}/Settings
         ${SRC}/Relations
-        ${SRC}/Dictionaries)
+        ${SRC}/Dictionaries
+        ${SRC}/Saving
+        ${SRC}/Utils
+        ${SRC}/Nodes)
 
 # INCLUDE PROJECT LIBS
 set(PROJECT_LIBS
@@ -32,7 +41,10 @@ set(PROJECT_LIBS
         Abstract
         Settings
         Relations
-        Dictionaries)
+        Dictionaries
+        Saving
+        Utils
+        Nodes)
 
 target_include_directories(${LIBRARY_NAME} PUBLIC ${PROJECT_DIRECTORIES})
 target_link_libraries(${LIBRARY_NAME} ${REQUIRED_LIBS_QUALIFIED} ${PROJECT_LIBS})
