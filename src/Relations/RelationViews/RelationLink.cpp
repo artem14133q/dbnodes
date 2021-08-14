@@ -31,7 +31,11 @@ namespace DbNodes::Relations {
     void RelationLink::initUI()
     {
         auto *layout = new QHBoxLayout();
+
+        #if QT_VERSION_MAJOR == 5
         layout->setMargin(0);
+        #endif
+
         layout->setSpacing(0);
         layout->setContentsMargins(2,2,2,2);
 

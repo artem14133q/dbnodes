@@ -8,6 +8,14 @@
 #include "Finder.h"
 #include "../helper.h"
 
+#if QT_VERSION_MAJOR == 6
+    #include "QItemSelectionModel"
+    #include "QRegularExpression"
+    typedef QRegularExpression QRegExp;
+#else
+    #include "QRegExp"
+#endif
+
 namespace DbNodes::Modals {
 
     Finder::Finder(const QList<Nodes::TablePtr> &nodeVector, QWidget *parent)
@@ -40,6 +48,7 @@ namespace DbNodes::Modals {
 
         lineEdit = new QLineEdit(this);
         lineEdit->setStyleSheet(Helper::getStyleFromFile("lineEdit"));
+        lineEdit->installEventFilter(this);
         lineEdit->setFixedWidth(width() - 50);
         lineEdit->move(25, 20);
         lineEdit->setFocus();
@@ -77,13 +86,23 @@ namespace DbNodes::Modals {
         QRegExp regFilter("\\w*" + filter + "\\w*");
 
         foreach (Nodes::TablePtr node, nodeVector) {
-            if (regFilter.indexIn(node->getTableName()) != -1) {
+            #if QT_VERSION_MAJOR == 6
+            auto result = regFilter.match(node->getTableName()).hasMatch();
+            #else
+            auto result = regFilter.indexIn(table->getTableName()) != -1);
+            #endif
+
+            if (result) {
                 filteredNodeList.insert(node->getTableId(), node);
 
                 auto *listItem = new QListWidgetItem(listWidget);
                 listItem->setText(node->getTableName());
                 listItem->setData(Qt::UserRole, node->getTableId());
+
+                #if QT_VERSION_MAJOR == 5
                 listItem->setTextColor(QColor("white"));
+                #endif
+
                 listWidget->setCurrentItem(listItem);
             }
         }
@@ -143,7 +162,12 @@ namespace DbNodes::Modals {
 
         auto *item = listWidget->item(index);
 
+        #if QT_VERSION_MAJOR == 6
+        listWidget->setCurrentItem(item, QItemSelectionModel::Select);
+        #else
         listWidget->setItemSelected(item, true);
+        #endif
+
         listWidget->scrollToItem(item);
     }
 
@@ -152,7 +176,11 @@ namespace DbNodes::Modals {
         auto selectionItems = listWidget->selectedItems();
 
         foreach (auto *item, selectionItems) {
+            #if QT_VERSION_MAJOR == 6
+            listWidget->setCurrentItem(item, QItemSelectionModel::Deselect);
+            #else
             listWidget->setItemSelected(item, false);
+            #endif
         }
     }
 

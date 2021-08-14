@@ -1,7 +1,13 @@
 #include "QLabel"
 #include "QVector"
 #include "QDebug"
-#include "QRegExp"
+
+#if QT_VERSION_MAJOR == 6
+    #include "QRegularExpression"
+    typedef QRegularExpression QRegExp;
+#else
+    #include "QRegExp"
+#endif
 
 #include "RelationMaker.h"
 #include "RelationMakerErrorsDictionary.h"
@@ -200,7 +206,13 @@ namespace DbNodes::Modals {
         tablesSelect->clear();
 
         foreach (const Nodes::TablePtr table, tableVector) {
-            if (table->getTableId() != fkColumnParent->getTableId() && regFilter.indexIn(table->getTableName()) != -1) {
+            #if QT_VERSION_MAJOR == 6
+            auto result = regFilter.match(table->getTableName()).hasMatch();
+            #else
+            auto result = regFilter.indexIn(table->getTableName()) != -1);
+            #endif
+
+            if (table->getTableId() != fkColumnParent->getTableId() && result) {
                 tableList.insert(table->getTableId(), table);
                 tablesSelect->addItem(table->getTableName(), table->getTableId());
             }

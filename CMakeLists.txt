@@ -67,9 +67,8 @@ set(SRC ${PROJECT_SOURCE_DIR}/src)
 # ====================================================================
 # APPEND QT LIBRARIES
 # ====================================================================
-set(QT_VERSION 5)
 set(REQUIRED_LIBS Core Gui Widgets)
-set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets)
+set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
 find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_LIBS} REQUIRED)
 
 # ====================================================================
@@ -84,7 +83,11 @@ endforeach()
 # DEFINE RESOURCE FILES OF YOUR PROJECT
 # =====================================================================
 
-qt5_add_resources(RESOURCES ${RESOURCES_FILE_NAME})
+if (QT_VERSION STREQUAL 6)
+    qt6_add_resources(RESOURCES ${RESOURCES_FILE_NAME})
+else()
+    qt5_add_resources(RESOURCES ${RESOURCES_FILE_NAME})
+endif()
 
 add_executable(${PROJECT_NAME} ${RESOURCES})
 
@@ -108,5 +111,6 @@ file(COPY dbnodes.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
 # ====================================================================
 
 target_link_libraries(${PROJECT_NAME}
-        ${INCLUDE_QT_LIBS}
-        ${INCLUDE_PROJECT_LIBS})
+    ${INCLUDE_QT_LIBS}
+    ${INCLUDE_PROJECT_LIBS}
+)

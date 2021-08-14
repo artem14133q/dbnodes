@@ -17,6 +17,7 @@ namespace DbNodes::Saving {
     {
         protected:
             T *object = nullptr;
+
             SaveManager *saveManager;
 
             QString currentFilePath = "";
