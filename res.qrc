@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <RCC>
     <qresource prefix="/content">
+        <file alias="startup_macos">content/startup_macos.txt</file>
         <file alias="startup">content/startup.txt</file>
     </qresource>
 </RCC>

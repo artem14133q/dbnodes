@@ -25,7 +25,13 @@ namespace DbNodes::Widgets::StartupWidget {
     {
         auto* vb = new QVBoxLayout(this);
 
-        auto content = Helper::getfileContent(":/content/startup").split("\n");
+        #if TARGET_OS_MAC
+        auto file = ":/content/startup_macos";
+        #else
+        auto file = ":/content/startup";
+        #endif
+
+        auto content = Helper::getfileContent(file).split("\n");
 
         foreach (QString line, content) {
             vb->addWidget(new QLabel(line, this));
