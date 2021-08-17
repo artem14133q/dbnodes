@@ -106,7 +106,7 @@ namespace DbNodes::Saving {
         #if QT_VERSION_MAJOR == 6
         auto result = exp.match(folders.last()).hasMatch();
         #else
-        auto result = exp.exactMatch(folders.last())
+        auto result = exp.exactMatch(folders.last());
         #endif
 
         if (result) {
