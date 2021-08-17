@@ -3,7 +3,13 @@
 //
 
 #include "QJsonDocument"
-#include "QRegExp"
+
+#if QT_VERSION_MAJOR == 6
+    #include "QRegularExpression"
+    typedef QRegularExpression QRegExp;
+#else
+    #include "QRegExp"
+#endif
 
 #include "SaveManager.h"
 #include "QString"
@@ -95,7 +101,15 @@ namespace DbNodes::Saving {
     {
         auto folders = path.split("/");
 
-        if (QRegExp("\\w+.\\w+").exactMatch(folders.last())) {
+        QRegExp exp("\\w+.\\w+");
+
+        #if QT_VERSION_MAJOR == 6
+        auto result = exp.match(folders.last()).hasMatch();
+        #else
+        auto result = exp.exactMatch(folders.last())
+        #endif
+
+        if (result) {
             folders.removeLast();
         }
 

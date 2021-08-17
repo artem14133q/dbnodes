@@ -1,5 +1,4 @@
 #include "QMenuBar"
-#include "QDesktopWidget"
 #include "QApplication"
 #include "iostream"
 

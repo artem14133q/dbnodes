@@ -15,7 +15,13 @@ namespace DbNodes::Abstract {
     {
         QPainter p(this);
         QStyleOption opt;
+
+        #if QT_VERSION_MAJOR == 6
+        opt.initFrom(this);
+        #else
         opt.init(this);
+        #endif
+
         style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     }
 
