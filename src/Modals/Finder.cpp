@@ -89,7 +89,7 @@ namespace DbNodes::Modals {
             #if QT_VERSION_MAJOR == 6
             auto result = regFilter.match(node->getTableName()).hasMatch();
             #else
-            auto result = regFilter.indexIn(table->getTableName()) != -1);
+            auto result = regFilter.indexIn(node->getTableName()) != -1;
             #endif
 
             if (result) {
