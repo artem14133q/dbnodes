@@ -3,3 +3,8 @@ QWidget#MinimapWidget{
     border-radius: 3px;
     border: 1px solid #afb1b3;
 }
+
+/* Fix bug for layout spacing */
+* {
+    border: 0;
+}
