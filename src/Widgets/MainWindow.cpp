@@ -18,7 +18,7 @@ namespace DbNodes::Widgets {
         setMinimumSize(800, 600);
         setObjectName("MainWindow");
         setStyleSheet(Helper::getStyleFromFile("main"));
-        setWindowIcon(QIcon(Helper::getIconPath("128", false)));
+//        setWindowIcon(QIcon("dbnodes.icns"));
 
         saveManager = new Saving::SaveManager(this);
         projectListFileResolver = new Saving::ProjectListFileResolver(saveManager, PROJECTS_LIST_FILE_PATH);

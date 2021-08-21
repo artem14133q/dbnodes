@@ -10,8 +10,16 @@
 #define APP_PATH QCoreApplication::applicationDirPath()
 
 #define CONFIG_FILE_PATH APP_PATH + "/dbnodes.ini"
-#define STYLE_FILES_PATH APP_PATH + "/styles"
-#define ICONS_FILES_PATH APP_PATH + "/icons"
+
+#if TARGET_OS_MAC
+#define RESOURCES_PATH APP_PATH + "/../Resources"
+#else
+#define RESOURCES_PATH APP_PATH + "/assets"
+#endif
+
+#define STYLE_FILES_PATH RESOURCES_PATH + "/styles"
+#define ICONS_FILES_PATH RESOURCES_PATH + "/icons"
+
 #define PROJECTS_LIST_FILE_PATH APP_PATH + "/options/projects.json"
 
 // Minimap Size
