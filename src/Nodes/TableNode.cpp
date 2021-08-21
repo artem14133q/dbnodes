@@ -9,7 +9,6 @@
 #include "QApplication"
 
 #include "TableNode.h"
-#include "TableRename.h"
 #include "Table/Column.h"
 #include "Workarea.h"
 #include "RelationTypesDictionary.h"
@@ -30,7 +29,12 @@ namespace DbNodes::Nodes {
     TableNode::TableNode(QWidget *parent)
         : TableNode(parent, "table:" + Helper::getCurrentTimeMS(), "table")
     {
-        openRenameModal();
+        auto tableRenameModal = openRenameModal(Modals::TableRename::Type::create);
+
+        connect(tableRenameModal, &Modals::TableRename::pushExit, this, [this] () {
+            emit deleteNodeSignal();
+            deleteLater();
+        });
     }
 
     void TableNode::initUI()
@@ -88,7 +92,10 @@ namespace DbNodes::Nodes {
         Abstract::AbstractNode::createDefaultActions(contextMenu);
 
         //Define Slots
-        connect(rename, &QAction::triggered, this, &TableNode::openRenameModal);
+        connect(rename, &QAction::triggered, this, [this] {
+            this->openRenameModal(Modals::TableRename::Type::rename);
+        });
+
         connect(addColumn, &QAction::triggered, this, [this] {
             this->addColumn(Table::Column::Type::Default);
         });
@@ -166,21 +173,18 @@ namespace DbNodes::Nodes {
         return tableId;
     }
 
-    void TableNode::openRenameModal()
+    Modals::TableRename* TableNode::openRenameModal(const Modals::TableRename::Type& type)
     {
         using namespace DbNodes::Modals;
 
-        auto* tableRenameModal = new TableRename(tableName, this);
+        auto* tableRenameModal = new TableRename(type, tableName, this);
 
         connect(tableRenameModal, &TableRename::pushConfirm, this, [this] (const QString &name) {
             setTableName(name);
             titleLabel->setText(name);
         });
 
-        connect(tableRenameModal, &TableRename::pushExit, this, [this] () {
-            emit deleteNodeSignal();
-            deleteLater();
-        });
+        return tableRenameModal;
     }
 
     QVBoxLayout *TableNode::getLayoutType(const Nodes::Table::Column::Type &columnType)

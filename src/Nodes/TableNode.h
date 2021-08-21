@@ -12,6 +12,7 @@
 #include "AbstractNode.h"
 #include "Relation.h"
 #include "MultipleSelection/Selectable.h"
+#include "TableRename.h"
 
 namespace DbNodes::Nodes {
 
@@ -61,7 +62,7 @@ namespace DbNodes::Nodes {
             QList<Table::Column *> groupColumns();
 
             void setTableName(const QString &name);
-            void openRenameModal();
+            Modals::TableRename* openRenameModal(const Modals::TableRename::Type& type);
 
         protected slots:
             void addColumn(Nodes::Table::Column::Type columnType, Table::ColumnPrt column = nullptr);
