@@ -13,24 +13,34 @@ namespace DbNodes::Modals {
     {
         Q_OBJECT
 
-        private:
-            QLineEdit *nameLineEdit{};
-            QString tableName;
+    public:
+        enum Type {
+            rename,
+            create,
+        };
 
-        public:
-            explicit TableRename(const QString &name, QWidget* parent = nullptr);
+    private:
+        QLineEdit *nameLineEdit{};
+        QString tableName;
+        Type type;
 
-        protected:
-            void initSettingsUi() override;
-            QVariant getDefaultSetting(const QString &name) override;
+    public:
+         explicit TableRename(const Type& type, const QString& name, QWidget* parent = nullptr);
 
-            void afterInitUi() override;
+    protected:
+        QString getTitle();
 
-            void confirm() override;
+        void initSettingsUi() override;
+        QVariant getDefaultSetting(const QString &name) override;
 
-        public: signals:
-            void pushConfirm(const QString &name);
-            void pushExit();
+        void afterInitUi() override;
+
+        void confirm() override;
+
+    public: signals:
+
+        void pushConfirm(const QString &name);
+        void pushExit();
     };
 
 }

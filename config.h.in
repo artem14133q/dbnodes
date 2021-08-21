@@ -15,7 +15,7 @@
 #define PROJECTS_LIST_FILE_PATH APP_PATH + "/options/projects.json"
 
 // Minimap Size
-const int MINIMAP_MIN_CONTAINER_SIZE = 400;
+const int MINIMAP_MIN_CONTAINER_SIZE = 300;
 const int MINIMAP_MAX_CONTAINER_SIZE = 600;
 
 #define APP_DEBUG @APP_DEBUG@
