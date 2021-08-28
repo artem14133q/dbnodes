@@ -2,7 +2,7 @@
 // Created by artem on 08.03.2021.
 //
 
-#ifndef DBNODES_PROJECTDATAOBJECT_H
+#ifndef DBNODES_PROJECTOBJECT_H
 #define DBNODES_PROJECTOBJECT_H
 
 #include "JsonObject.h"
@@ -26,4 +26,4 @@ namespace DbNodes::Saving::DbnFileStruct {
 }
 
 
-#endif //DBNODES_PROJECTDATAOBJECT_H
+#endif //DBNODES_PROJECTOBJECT_H

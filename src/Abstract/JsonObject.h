@@ -32,26 +32,51 @@
     [[nodiscard]] QList<type> getName() const { return type::convertToVector<type>(json.value(field).toArray()).toList(); } \
     void setName(const QList<type> &value) { json.insert(field, type::convertToQJsonArray<type>(value)); }
 
-#define JSON_OBJECT(type)                                                                                   \
-    explicit type(const QByteArray &data = nullptr): Abstract::JsonObject(data) {}                          \
-    template<typename type>                                                                                 \
-    static QVector<type> convertToVector(const QJsonArray &data)                                            \
-    {QVector<type> vector;                                                                                  \
-        foreach (const QVariant &variant, data) {                                                           \
-            type object;                                                                                    \
-            object.setBaseObject(variant.toJsonObject());                                                   \
-            vector.push_back(object);                                                                       \
-        }                                                                                                   \
-        return vector;                                                                                      \
-    }                                                                                                       \
-    template<typename type>                                                                                 \
-    static QJsonArray convertToQJsonArray(const QList<type> &data)                                          \
-    {QJsonArray array;                                                                                      \
-        foreach (const type &item, data) {                                                                  \
-            array.push_back(item.getBaseObject());                                                          \
-        }                                                                                                   \
-        return array;                                                                                       \
-    }                                                                                                       \
+#if QT_VERSION_MAJOR == 6
+    #define JSON_OBJECT(type)                                                                                   \
+        explicit type(const QByteArray &data = nullptr): Abstract::JsonObject(data) {}                          \
+        template<typename type>                                                                                 \
+        static QVector<type> convertToVector(const QJsonArray &data)                                            \
+        {QVector<type> vector;                                                                                  \
+            foreach (const QJsonValueRef &value, data) {                                                        \
+                type object;                                                                                    \
+                object.setBaseObject(value.toObject());                                                     \
+                vector.push_back(object);                                                                       \
+            }                                                                                                   \
+            return vector;                                                                                      \
+        }                                                                                                       \
+        template<typename type>                                                                                 \
+        static QJsonArray convertToQJsonArray(const QList<type> &data)                                          \
+        {                                                                                                       \
+            QJsonArray array;                                                                                   \
+            foreach (const type &item, data) {                                                                  \
+                array.push_back(item.getBaseObject());                                                          \
+            }                                                                                                   \
+            return array;                                                                                       \
+        }
+#else
+    #define JSON_OBJECT(type)                                                                                   \
+        explicit type(const QByteArray &data = nullptr): Abstract::JsonObject(data) {}                          \
+        template<typename type>                                                                                 \
+        static QVector<type> convertToVector(const QJsonArray &data)                                            \
+        {                                                                                                       \
+            QVector<type> vector;                                                                               \
+            foreach (const QVariant &value, data) {                                                             \
+                type object;                                                                                    \
+                object.setBaseObject(value.toJsonObject());                                                     \
+                vector.push_back(object);                                                                       \
+            }                                                                                                   \
+            return vector;                                                                                      \
+        }                                                                                                       \
+        template<typename type>                                                                                 \
+        static QJsonArray convertToQJsonArray(const QList<type> &data)                                          \
+        {QJsonArray array;                                                                                      \
+            foreach (const type &item, data) {                                                                  \
+                array.push_back(item.getBaseObject());                                                          \
+            }                                                                                                   \
+            return array;                                                                                       \
+        }
+#endif
 
 #define INT_PROPERTY(field, getName, setName) PROPERTY(int, field, getName, setName, toInt)
 #define STRING_PROPERTY(field, getName, setName) PROPERTY(QString, field, getName, setName, toString)

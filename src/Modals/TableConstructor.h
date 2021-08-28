@@ -9,28 +9,27 @@
 
 namespace DbNodes::Modals {
 
-    class TableConstructor: public Abstract::AbstractSettingModal
-    {
-        Q_OBJECT
+    class TableConstructor: public Abstract::AbstractSettingModal {
+    Q_OBJECT
 
-        private:
-            QLineEdit *nameLineEdit{};
-            QString tableName;
+    private:
+        QLineEdit *nameLineEdit{};
+        QString tableName;
 
-        public:
-            explicit TableConstructor(const QString &name, QWidget* parent = nullptr);
+    public:
+        explicit TableConstructor(const QString &name, QWidget* parent = nullptr);
 
-        protected:
-            void initSettingsUi() override;
-            QVariant getDefaultSetting(const QString &name) override;
+    protected:
+        void initSettingsUi() override;
+        QVariant getDefaultSetting(const QString &name) override;
 
-            void afterInitUi() override;
+        void afterInitUi() override;
 
-            void confirm() override;
+        void confirm() override;
 
-        public: signals:
-            void pushConfirm(const QHash<QString, QVariant> &settingsMap);
-            void pushExit();
+    public: signals:
+        void pushConfirm(const QHash<QString, QVariant> &settingsMap);
+        void pushExit();
     };
 
 }

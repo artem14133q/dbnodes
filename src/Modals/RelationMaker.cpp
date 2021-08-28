@@ -1,7 +1,13 @@
 #include "QLabel"
 #include "QVector"
 #include "QDebug"
-#include "QRegExp"
+
+#if QT_VERSION_MAJOR == 6
+    #include "QRegularExpression"
+    typedef QRegularExpression QRegExp;
+#else
+    #include "QRegExp"
+#endif
 
 #include "RelationMaker.h"
 #include "RelationMakerErrorsDictionary.h"
@@ -14,8 +20,7 @@ namespace DbNodes::Modals {
     RelationMaker::RelationMaker(
             Nodes::Table::Column *fkColumn,
             const QList<Nodes::TablePtr> &tableVector
-    ) : Abstract::AbstractModal(fkColumn), fkColumnParent(fkColumn), tableVector(tableVector)
-    {
+    ) : Abstract::AbstractModal(fkColumn), fkColumnParent(fkColumn), tableVector(tableVector) {
         setFixedSize(300, 400);
         // Frameless window
         setWindowFlag(Qt::FramelessWindowHint);
@@ -36,8 +41,7 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void RelationMaker::initUI()
-    {
+    void RelationMaker::initUI() {
         // Styles for ComboBoxes
         QString comboBoxStyle = Helper::getStyleFromFile("relationMakerSelector");
 
@@ -115,8 +119,7 @@ namespace DbNodes::Modals {
         connect(pbDeleteFilter, &QPushButton::clicked, this, &RelationMaker::deleteFilter);
     }
 
-    void RelationMaker::exit()
-    {
+    void RelationMaker::exit() {
         tableList.clear();
         columnsOfSelectedTable.clear();
 
@@ -126,8 +129,7 @@ namespace DbNodes::Modals {
         Abstract::AbstractModal::exit();
     }
 
-    void RelationMaker::selectTable(const Nodes::TablePtr &table)
-    {
+    void RelationMaker::selectTable(const Nodes::TablePtr &table) {
         columnsOfSelectedTable.clear();
         columnsOfTable->clear();
 
@@ -149,18 +151,15 @@ namespace DbNodes::Modals {
         );
     }
 
-    void RelationMaker::selectTableByIndex(const int &index)
-    {
+    void RelationMaker::selectTableByIndex(const int &index) {
         selectTable(tableList.value(tablesSelect->itemData(index).toString()));
     }
 
-    void RelationMaker::selectColumn(const int &index)
-    {
+    void RelationMaker::selectColumn(const int &index) {
         currentPkColumnId = columnsOfSelectedTable.value(columnsOfTable->itemData(index).toString())->getColumnId();
     }
 
-    void RelationMaker::confirm()
-    {
+    void RelationMaker::confirm() {
         if (!pbCreate->isEnabled()) return;
 
         using namespace DbNodes::Widgets;
@@ -180,8 +179,7 @@ namespace DbNodes::Modals {
         AbstractModal::confirm();
     }
 
-    void RelationMaker::showWarningIfPkNotFound(const bool &enable, const int &errorType)
-    {
+    void RelationMaker::showWarningIfPkNotFound(const bool &enable, const int &errorType) {
         if (enable) {
             warningWidget->show();
             warningText->setText(Dictionaries::RelationMakerErrorsDictionary::getValue(errorType).toString());
@@ -192,15 +190,20 @@ namespace DbNodes::Modals {
         pbCreate->setDisabled(enable);
     }
 
-    void RelationMaker::filterTable(const QString &filter)
-    {
+    void RelationMaker::filterTable(const QString &filter) {
         QRegExp regFilter("\\w*" + filter + "\\w*");
 
         tableList.clear();
         tablesSelect->clear();
 
         foreach (const Nodes::TablePtr table, tableVector) {
-            if (table->getTableId() != fkColumnParent->getTableId() && regFilter.indexIn(table->getTableName()) != -1) {
+            #if QT_VERSION_MAJOR == 6
+            auto result = regFilter.match(table->getTableName()).hasMatch();
+            #else
+            auto result = regFilter.indexIn(table->getTableName()) != -1;
+            #endif
+
+            if (table->getTableId() != fkColumnParent->getTableId() && result) {
                 tableList.insert(table->getTableId(), table);
                 tablesSelect->addItem(table->getTableName(), table->getTableId());
             }
@@ -222,8 +225,7 @@ namespace DbNodes::Modals {
         }
     }
 
-    void RelationMaker::deleteFilter()
-    {
+    void RelationMaker::deleteFilter() {
         search->clear();
         filterTable();
     }

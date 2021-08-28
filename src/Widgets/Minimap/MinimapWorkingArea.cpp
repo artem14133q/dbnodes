@@ -37,7 +37,13 @@ namespace DbNodes::Widgets::Minimap
     {
         QPainter painter(this);
         QStyleOption opt;
+
+        #if QT_VERSION_MAJOR == 6
+        opt.initFrom(this);
+        #else
         opt.init(this);
+        #endif
+
         style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
         QPen pen(QPen(tablesColor, 1, Qt::SolidLine, Qt::FlatCap));
