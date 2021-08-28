@@ -8,7 +8,8 @@ set(RESOURCES
         RelationPositionsDictionary.h
         RelationTypesDictionary.h
         OpenFileExceptionsDictionary.h
-        SaveFileTypesDictionary.h MinimapPositionsDictionary.h)
+        SaveFileTypesDictionary.h
+        MinimapPositionsDictionary.h)
 
 add_library(${LIBRARY_NAME} STATIC ${RESOURCES})
 

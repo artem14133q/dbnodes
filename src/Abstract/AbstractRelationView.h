@@ -18,38 +18,37 @@
 
 namespace DbNodes::Abstract {
 
-    class AbstractRelationView: public QWidget
-    {
-        Q_OBJECT
+    class AbstractRelationView: public QWidget {
+    Q_OBJECT
 
-        public:
-            explicit AbstractRelationView(
-                QWidget *parent,
-                Nodes::Table::ColumnPrt pkColumn,
-                Nodes::Table::ColumnPrt fkColumn
-            );
+    public:
+        explicit AbstractRelationView(
+            QWidget *parent,
+            Nodes::Table::ColumnPrt pkColumn,
+            Nodes::Table::ColumnPrt fkColumn
+        );
 
-            virtual void updateRelation(QPainter &painter, QPainterPath &path);
-            virtual Dictionaries::RelationTypesDictionary::Type getCurrentTypeId();
+        virtual void updateRelation(QPainter &painter, QPainterPath &path);
+        virtual Dictionaries::RelationTypesDictionary::Type getCurrentTypeId();
 
-            virtual bool hasRelationPositionType();
+        virtual bool hasRelationPositionType();
 
-            virtual Dictionaries::RelationPositionsDictionary::Type relationPositionType();
+        virtual Dictionaries::RelationPositionsDictionary::Type relationPositionType();
 
-            virtual void setRelationPositionType(
-                const Dictionaries::RelationPositionsDictionary::Type &type
-            );
+        virtual void setRelationPositionType(
+            const Dictionaries::RelationPositionsDictionary::Type &type
+        );
 
-        protected:
-            Nodes::Table::ColumnPrt fkColumn;
-            Nodes::Table::ColumnPrt pkColumn;
+    protected:
+        Nodes::Table::ColumnPrt fkColumn;
+        Nodes::Table::ColumnPrt pkColumn;
 
-            QMenu * createContextMenu();
+        QMenu * createContextMenu();
 
-        public: signals:
-            void clickedDelete();
-            void clickedGoToRelatedTable();
-            void changedRelationType(const Dictionaries::RelationTypesDictionary::Type &type);
+    public: signals:
+        void clickedDelete();
+        void clickedGoToRelatedTable();
+        void changedRelationType(const Dictionaries::RelationTypesDictionary::Type &type);
     };
 
 }

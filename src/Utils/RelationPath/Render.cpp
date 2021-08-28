@@ -6,13 +6,11 @@
 
 namespace DbNodes::Utils::RelationPath {
 
-    Render::Render(QWidget *parent): AbstractUtil(parent)
-    {
+    Render::Render(QWidget *parent): AbstractUtil(parent) {
         parentWidget = parent;
     }
 
-    void Render::drawPath(QPainter &painter, QPainterPath &path, const QPoint &startPoint, const QPoint &endPoint)
-    {
+    void Render::drawPath(QPainter &painter, QPainterPath &path, const QPoint &startPoint, const QPoint &endPoint) {
         int cP12_x = endPoint.x() + (startPoint.x() - endPoint.x()) / 2;
 
         path.moveTo(endPoint.x(), endPoint.y());
@@ -70,8 +68,7 @@ namespace DbNodes::Utils::RelationPath {
         }
     }
 
-    Abstract::PathDirection Render::determinateDirection(const QPoint &startPoint, const QPoint &endPoint)
-    {
+    Abstract::PathDirection Render::determinateDirection(const QPoint &startPoint, const QPoint &endPoint) {
         if (endPoint.x() < startPoint.x()) {
             return Abstract::PathDirection::rightToLeft;
         } else {

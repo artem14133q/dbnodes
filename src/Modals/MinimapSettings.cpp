@@ -8,8 +8,7 @@
 
 namespace DbNodes::Modals {
 
-    MinimapSettings::MinimapSettings(QWidget *parent) : Abstract::AbstractSettingModal(parent)
-    {
+    MinimapSettings::MinimapSettings(QWidget *parent) : Abstract::AbstractSettingModal(parent) {
         setWindowTitle("Minimap settings");
         setFixedWidth(500);
 
@@ -21,15 +20,13 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void MinimapSettings::enableConfirm(const bool &enable)
-    {
+    void MinimapSettings::enableConfirm(const bool &enable) {
         pbOk->setEnabled(enable);
         pbApply->setEnabled(enable);
         AbstractSettingModal::enableConfirm(enable);
     }
 
-    void MinimapSettings::initSettingsUi()
-    {
+    void MinimapSettings::initSettingsUi() {
         createComboBoxSetting(
             "Position",
             "minimap.position",
@@ -62,8 +59,7 @@ namespace DbNodes::Modals {
         pbApply->setDisabled(true);
     }
 
-    void MinimapSettings::accept(const bool &close)
-    {
+    void MinimapSettings::accept(const bool &close) {
         foreach (const QString &key, newSettingsMap.keys()) {
             Helper::setSettingValue(key, newSettingsMap.value(key));
         }

@@ -13,14 +13,13 @@
 
 namespace DbNodes::Saving::DbnFileStruct {
 
-    class ProjectObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(ProjectObject)
+    class ProjectObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(ProjectObject)
 
-            OBJECT_PROPERTY(ProjectParametersObject, "projectParameters", getProjectParameters, setProjectParameters)
-            LIST_PROPERTY(TableObject, "tables", getTables, setTables)
-            LIST_PROPERTY(RelationObject, "relations", getRelations, setRelations)
+        OBJECT_PROPERTY(ProjectParametersObject, "projectParameters", getProjectParameters, setProjectParameters)
+        LIST_PROPERTY(TableObject, "tables", getTables, setTables)
+        LIST_PROPERTY(RelationObject, "relations", getRelations, setRelations)
     };
 
 }

@@ -7,8 +7,7 @@
 
 namespace DbNodes::Relations {
 
-    Abstract::AbstractRelationView *DeleteRelationButtonProvider::create()
-    {
+    Abstract::AbstractRelationView *DeleteRelationButtonProvider::create() {
         auto *relationView = new DeleteRelationButton(
             getRelation()->getPkColumn(),
             getRelation()->getFkColumn(),

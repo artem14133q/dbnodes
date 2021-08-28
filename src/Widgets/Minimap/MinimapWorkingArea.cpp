@@ -19,22 +19,21 @@ namespace DbNodes::Widgets::Minimap
         const float &scaleCoefficient,
         QWidget *parent
     ): QWidget(parent), nodes(nodes), scaleCoefficient(scaleCoefficient), nodeTitle(nodeTitle)
-    {
-        setObjectName("MinimapWorkingArea");
-        setStyleSheet(Helper::getStyleFromFile("minimapWorkingArea"));
+        {
+            setObjectName("MinimapWorkingArea");
+            setStyleSheet(Helper::getStyleFromFile("minimapWorkingArea"));
 
-        movableRect = new MovableRect(scaleCoefficient, this);
-        connect(movableRect, &MovableRect::moveToPositionSignal, this, &MinimapWorkingArea::moveToPosition);
+            movableRect = new MovableRect(scaleCoefficient, this);
+            connect(movableRect, &MovableRect::moveToPositionSignal, this, &MinimapWorkingArea::moveToPosition);
 
-        tablesColor = QColor(0, 109, 0);
-        focusedTablesColor = QColor(0, 183, 235);
-        selectedTablesColor = QColor(243, 97, 39);
+            tablesColor = QColor(0, 109, 0);
+            focusedTablesColor = QColor(0, 183, 235);
+            selectedTablesColor = QColor(243, 97, 39);
 
-        setMouseTracking(true);
-    }
+            setMouseTracking(true);
+        }
 
-    void MinimapWorkingArea::paintEvent(QPaintEvent *event)
-    {
+    void MinimapWorkingArea::paintEvent(QPaintEvent *event) {
         QPainter painter(this);
         QStyleOption opt;
 
@@ -104,13 +103,11 @@ namespace DbNodes::Widgets::Minimap
         }
     }
 
-    void MinimapWorkingArea::moveToPosition(const QPoint &pos)
-    {
+    void MinimapWorkingArea::moveToPosition(const QPoint &pos) {
         emit moveToPositionSignal(pos * scaleCoefficient);
     }
 
-    void MinimapWorkingArea::mousePressEvent(QMouseEvent *event)
-    {
+    void MinimapWorkingArea::mousePressEvent(QMouseEvent *event) {
         if (event->button() == Qt::LeftButton) {
             movableRect->restrictedMove(
                 event->pos().x() - movableRect->width() / 2,
@@ -121,8 +118,7 @@ namespace DbNodes::Widgets::Minimap
         moveToPosition(movableRect->pos());
     }
 
-    void MinimapWorkingArea::mouseMoveEvent(QMouseEvent *event)
-    {
+    void MinimapWorkingArea::mouseMoveEvent(QMouseEvent *event) {
         update();
 
         QWidget::mouseMoveEvent(event);

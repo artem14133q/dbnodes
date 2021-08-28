@@ -10,17 +10,16 @@
 
 namespace DbNodes::Saving::DbnFileStruct {
 
-    class RelationObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(RelationObject)
+    class RelationObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(RelationObject)
 
-            STRING_PROPERTY("id", getId, setId)
-            STRING_PROPERTY("fkColumnId", getFkColumnId, setFkColumnId)
-            STRING_PROPERTY("pkColumnId", getPkColumnId, setPkColumnId)
-            INT_PROPERTY("type", getType, setType)
-            INT_PROPERTY("position", getPosition, setPosition)
-            LIST_PROPERTY(RelationPathPointObject, "pathPoints", getPathPoints, setPathPoints)
+        STRING_PROPERTY("id", getId, setId)
+        STRING_PROPERTY("fkColumnId", getFkColumnId, setFkColumnId)
+        STRING_PROPERTY("pkColumnId", getPkColumnId, setPkColumnId)
+        INT_PROPERTY("type", getType, setType)
+        INT_PROPERTY("position", getPosition, setPosition)
+        LIST_PROPERTY(RelationPathPointObject, "pathPoints", getPathPoints, setPathPoints)
     };
 }
 

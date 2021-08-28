@@ -9,22 +9,21 @@
 
 namespace DbNodes::Dictionaries {
 
-    struct DbTableTypesFkDictionary: public Abstract::Dictionary<int, DbTableTypesFkDictionary>
-    {
-        public:
-            enum Type {
-                Integer,
-                Tinyint,
-                Bigint
-            };
+    struct DbTableTypesFkDictionary: public Abstract::Dictionary<int, DbTableTypesFkDictionary> {
+    public:
+        enum Type {
+            Integer,
+            Tinyint,
+            Bigint
+        };
 
-            static DictMap getDictionary() {
-                return {
-                    { Integer  ,   "integer"   },
-                    { Tinyint  ,   "tinyint"   },
-                    { Bigint   ,   "bigint"    },
-                };
+        static DictMap getDictionary() {
+            return {
+                { Integer  ,   "integer"   },
+                { Tinyint  ,   "tinyint"   },
+                { Bigint   ,   "bigint"    },
             };
+        };
     };
 
 }

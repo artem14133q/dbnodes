@@ -12,32 +12,31 @@
 
 namespace DbNodes::Widgets::StartupWidget {
 
-    class Project: public Abstract::DrawableWidget
-    {
-        Q_OBJECT
+    class Project: public Abstract::DrawableWidget {
+    Q_OBJECT
 
-        private:
-            void initUi();
+    private:
+        void initUi();
 
-            QString projectName, path;
+        QString projectName, path;
 
-            bool deleted;
+        bool deleted;
 
-            QMenu *createToolMenu(QToolButton *button);
+        QMenu *createToolMenu(QToolButton *button);
 
-        public:
-            explicit Project(
-                QString projectName,
-                QString path,
-                const bool &deleted,
-                QWidget *parent = nullptr
-            );
+    public:
+        explicit Project(
+            QString projectName,
+            QString path,
+            const bool &deleted,
+            QWidget *parent = nullptr
+        );
 
-            void mousePressEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
 
-        public: signals:
-            void clicked();
-            void deleteItSignal(const QString &path);
+    public: signals:
+        void clicked();
+        void deleteItSignal(const QString &path);
     };
 
 }

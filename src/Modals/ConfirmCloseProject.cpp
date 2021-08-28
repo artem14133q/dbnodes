@@ -9,8 +9,7 @@
 
 namespace DbNodes::Modals {
 
-    ConfirmCloseProject::ConfirmCloseProject(const QString &projectName, QWidget *parent): QMessageBox(parent)
-    {
+    ConfirmCloseProject::ConfirmCloseProject(const QString &projectName, QWidget *parent): QMessageBox(parent) {
         setWindowTitle(projectName);
         setStyleSheet(Helper::getStyleFromFile("subWindow"));
         initUi();
@@ -18,8 +17,7 @@ namespace DbNodes::Modals {
         Helper::moveToCenter(parentWidget(), this);
     }
 
-    void ConfirmCloseProject::initUi()
-    {
+    void ConfirmCloseProject::initUi() {
         QString buttonStyle = Helper::getStyleFromFile("button");
 
         auto *title = new QLabel("Are you sure you want to close project?", this);
@@ -40,8 +38,7 @@ namespace DbNodes::Modals {
         pbCloseAndSave->setFixedSize(120, 30);
     }
 
-    ConfirmCloseProject::Type ConfirmCloseProject::getProjectCloseType()
-    {
+    ConfirmCloseProject::Type ConfirmCloseProject::getProjectCloseType() {
         if (clickedButton() == pbCloseWithoutSave) {
             return WithoutSave;
         } else if (clickedButton() == pbCloseAndSave) {
@@ -51,8 +48,7 @@ namespace DbNodes::Modals {
         }
     }
 
-    void ConfirmCloseProject::closeEvent(QCloseEvent *closeEvent)
-    {
+    void ConfirmCloseProject::closeEvent(QCloseEvent *closeEvent) {
         closeEvent->ignore();
         accept();
     }

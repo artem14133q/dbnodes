@@ -14,57 +14,56 @@
 
 namespace DbNodes::Relations {
 
-    class DeleteRelationButton : public Abstract::AbstractRelationView
-    {
-        Q_OBJECT
+    class DeleteRelationButton : public Abstract::AbstractRelationView {
+    Q_OBJECT
 
-        private:
-            const int DELTA_X_WHEN_CREATE_POINT = 20;
+    private:
+        const int DELTA_X_WHEN_CREATE_POINT = 20;
 
-            QColor color;
+        QColor color;
 
-            Utils::RelationPath::Render *relationRenderer;
+        Utils::RelationPath::Render *relationRenderer;
 
-            Abstract::PathDirection direction;
+        Abstract::PathDirection direction;
 
-            QList<Path::RelationPathPointPtr> points;
+        QList<Path::RelationPathPointPtr> points;
 
-            void initUI();
+        void initUI();
 
-        public:
-            explicit DeleteRelationButton(
-                const Nodes::Table::ColumnPrt &pkColumn,
-                const Nodes::Table::ColumnPrt &fkColumn,
-                QWidget *parent = nullptr
-            );
+    public:
+        explicit DeleteRelationButton(
+            const Nodes::Table::ColumnPrt &pkColumn,
+            const Nodes::Table::ColumnPrt &fkColumn,
+            QWidget *parent = nullptr
+        );
 
-            void contextMenuEvent(QContextMenuEvent *event) override;
+        void contextMenuEvent(QContextMenuEvent *event) override;
 
-            void updateRelation(QPainter &painter, QPainterPath &path) override;
-            Dictionaries::RelationTypesDictionary::Type getCurrentTypeId() override;
+        void updateRelation(QPainter &painter, QPainterPath &path) override;
+        Dictionaries::RelationTypesDictionary::Type getCurrentTypeId() override;
 
-            QList<Path::RelationPathPointPtr> getPoints();
+        QList<Path::RelationPathPointPtr> getPoints();
 
-            ~DeleteRelationButton() override;
+        ~DeleteRelationButton() override;
 
 
-        protected:
-            void deleteRelation();
+    protected:
+        void deleteRelation();
 
-            void drawRelationPath(
-                QPainter &painter,
-                QPainterPath &path,
-                Abstract::ParamsForDrawing &startParams,
-                Abstract::ParamsForDrawing &endParams,
-                const bool &moveEnable
-            );
+        void drawRelationPath(
+            QPainter &painter,
+            QPainterPath &path,
+            Abstract::ParamsForDrawing &startParams,
+            Abstract::ParamsForDrawing &endParams,
+            const bool &moveEnable
+        );
 
-        public slots:
-            Path::RelationPathPointPtr createPoint(const QPoint &pos = QPoint());
+    public slots:
+        Path::RelationPathPointPtr createPoint(const QPoint &pos = QPoint());
 
-        public: signals:
-            void createPathPointSignal(Path::PathPoint *point);
-            void deletePathPointSignal(Path::PathPoint *point);
+    public: signals:
+        void createPathPointSignal(Path::PathPoint *point);
+        void deletePathPointSignal(Path::PathPoint *point);
     };
 
 

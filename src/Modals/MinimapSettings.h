@@ -10,20 +10,19 @@
 
 namespace DbNodes::Modals {
 
-    class MinimapSettings: public Abstract::AbstractSettingModal
-    {
-        public:
-            explicit MinimapSettings(QWidget *parent = nullptr);
+    class MinimapSettings: public Abstract::AbstractSettingModal {
+    public:
+        explicit MinimapSettings(QWidget *parent = nullptr);
 
-        private:
-            QPushButton *pbOk{};
-            QPushButton *pbApply{};
+    private:
+        QPushButton *pbOk{};
+        QPushButton *pbApply{};
 
-            void enableConfirm(const bool &enable) override;
+        void enableConfirm(const bool &enable) override;
 
-            void accept(const bool &close) override;
+        void accept(const bool &close) override;
 
-            void initSettingsUi() override;
+        void initSettingsUi() override;
     };
 
 }

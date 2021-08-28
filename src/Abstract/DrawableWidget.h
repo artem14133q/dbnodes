@@ -10,13 +10,12 @@
 
 namespace DbNodes::Abstract {
 
-    class DrawableWidget : public QWidget
-    {
-        public:
-            explicit DrawableWidget(QWidget *parent = nullptr);
+    class DrawableWidget : public QWidget {
+    public:
+        explicit DrawableWidget(QWidget *parent = nullptr);
 
-        protected:
-            void paintEvent(QPaintEvent *) override;
+    protected:
+        void paintEvent(QPaintEvent *) override;
     };
 
 }

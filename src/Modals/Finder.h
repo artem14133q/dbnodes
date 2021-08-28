@@ -13,37 +13,36 @@
 
 namespace DbNodes::Modals {
 
-    class Finder : public Abstract::AbstractModal
-    {
-        Q_OBJECT
+    class Finder : public Abstract::AbstractModal {
+    Q_OBJECT
 
-        public:
-            explicit Finder(const QList<Nodes::TablePtr> &nodeVector, QWidget *parent = nullptr);
+    public:
+        explicit Finder(const QList<Nodes::TablePtr> &nodeVector, QWidget *parent = nullptr);
 
-        signals:
-            void selected(const QString &nodeId);
+    signals:
+        void selected(const QString &nodeId);
 
-        protected:
-            void initUI();
-            void exit() override;
-            void confirm() override;
+    protected:
+        void initUI();
+        void exit() override;
+        void confirm() override;
 
-            void selectItemNext();
-            void selectItemPrevious();
-            void selectItemByIndex(const int &index);
-            void unselectItems();
-            int getSelectionItemIndex();
+        void selectItemNext();
+        void selectItemPrevious();
+        void selectItemByIndex(const int &index);
+        void unselectItems();
+        int getSelectionItemIndex();
 
-            bool eventFilter(QObject *obj, QEvent *event) override;
+        bool eventFilter(QObject *obj, QEvent *event) override;
 
-        private:
-            QList<Nodes::TablePtr> nodeVector;
-            QHash<QString, Nodes::TablePtr> filteredNodeList;
+    private:
+        QList<Nodes::TablePtr> nodeVector;
+        QHash<QString, Nodes::TablePtr> filteredNodeList;
 
-            QListWidget *listWidget{};
-            QLineEdit *lineEdit{};
+        QListWidget *listWidget{};
+        QLineEdit *lineEdit{};
 
-            void filterNodes(const QString &filter = "");
+        void filterNodes(const QString &filter = "");
     };
 
 }

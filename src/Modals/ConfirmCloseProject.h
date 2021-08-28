@@ -10,28 +10,27 @@
 
 namespace DbNodes::Modals {
 
-    class ConfirmCloseProject: public QMessageBox
-    {
-        Q_OBJECT
+    class ConfirmCloseProject: public QMessageBox {
+    Q_OBJECT
 
-        public:
-            enum Type {
-                WithoutSave,
-                CloseAndSave,
-                NotClosed
-            };
+    public:
+        enum Type {
+            WithoutSave,
+            CloseAndSave,
+            NotClosed
+        };
 
-            explicit ConfirmCloseProject(const QString &projectName, QWidget *parent = nullptr);
-            Type getProjectCloseType();
+        explicit ConfirmCloseProject(const QString &projectName, QWidget *parent = nullptr);
+        Type getProjectCloseType();
 
-        private:
-            QPushButton *pbCloseWithoutSave{};
-            QPushButton *pbCloseAndSave{};
-            QPushButton *cancel{};
+    private:
+        QPushButton *pbCloseWithoutSave{};
+        QPushButton *pbCloseAndSave{};
+        QPushButton *cancel{};
 
-            void initUi();
+        void initUi();
 
-            void closeEvent(QCloseEvent *closeEvent) override;
+        void closeEvent(QCloseEvent *closeEvent) override;
     };
 
 }

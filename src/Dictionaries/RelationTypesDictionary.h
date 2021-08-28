@@ -9,22 +9,21 @@
 
 namespace DbNodes::Dictionaries {
 
-    class RelationTypesDictionary: public Abstract::Dictionary<int, RelationTypesDictionary>
-    {
-        public:
-            enum Type {
-                Undefined,
-                Path,
-                Link
-            };
+    class RelationTypesDictionary: public Abstract::Dictionary<int, RelationTypesDictionary> {
+    public:
+        enum Type {
+            Undefined,
+            Path,
+            Link
+        };
 
-            static DictMap getDictionary() {
-                return {
-                    { Path          ,   "Relation path" },
-                    { Link          ,   "Relation link" },
-                    { Undefined     ,   "Undefined"     },
-                };
+        static DictMap getDictionary() {
+            return {
+                { Path          ,   "Relation path" },
+                { Link          ,   "Relation link" },
+                { Undefined     ,   "Undefined"     },
             };
+        };
     };
 
 }

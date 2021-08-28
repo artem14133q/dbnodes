@@ -9,9 +9,8 @@
 
 namespace DbNodes::Modals {
 
-    class TableRename: public Abstract::AbstractSettingModal
-    {
-        Q_OBJECT
+    class TableRename: public Abstract::AbstractSettingModal {
+    Q_OBJECT
 
     public:
         enum Type {

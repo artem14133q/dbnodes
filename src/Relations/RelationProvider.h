@@ -13,8 +13,7 @@
 
 namespace DbNodes::Relations {
 
-    class RelationProvider: public QObject
-    {
+    class RelationProvider: public QObject {
         private:
             Relation *relation{};
 

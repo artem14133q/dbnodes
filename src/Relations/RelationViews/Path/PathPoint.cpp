@@ -11,8 +11,7 @@
 
 namespace DbNodes::Relations::Path
 {
-    PathPoint::PathPoint(QWidget *parent) : AbstractNode(parent)
-    {
+    PathPoint::PathPoint(QWidget *parent) : AbstractNode(parent) {
         setFixedSize(20, 20);
         setObjectName("PathPoint");
 
@@ -21,8 +20,7 @@ namespace DbNodes::Relations::Path
         show();
     }
 
-    void PathPoint::initUI()
-    {
+    void PathPoint::initUI() {
         setStyleSheet(Helper::getStyleFromFile("pathPoint"));
 
         auto layout = new QHBoxLayout();
@@ -39,16 +37,14 @@ namespace DbNodes::Relations::Path
         setLayout(layout);
     }
 
-    Abstract::ParamsForDrawing PathPoint::getDrawParams()
-    {
+    Abstract::ParamsForDrawing PathPoint::getDrawParams() {
         return Abstract::ParamsForDrawing(
             {x(), y() + height() / 2},
             width()
         );
     }
 
-    void PathPoint::contextMenuEvent(QContextMenuEvent *event)
-    {
+    void PathPoint::contextMenuEvent(QContextMenuEvent *event) {
         auto *contextMenu = new QMenu();
         contextMenu->setStyleSheet(Helper::getStyleFromFile("tableMenu"));
 

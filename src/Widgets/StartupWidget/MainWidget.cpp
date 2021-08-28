@@ -9,15 +9,15 @@
 
 namespace DbNodes::Widgets::StartupWidget {
 
-    MainWidget::MainWidget(Saving::ProjectListFileResolver *projectsManager, QWidget *parent) : DrawableWidget(parent)
-    {
-        setObjectName("StartupWidget");
+    MainWidget::MainWidget(Saving::ProjectListFileResolver *projectsManager, QWidget *parent)
+    : DrawableWidget(parent)
+        {
+            setObjectName("StartupWidget");
 
-        initUI(projectsManager);
-    }
+            initUI(projectsManager);
+        }
 
-    void MainWidget::initUI(Saving::ProjectListFileResolver *projectsManager)
-    {
+    void MainWidget::initUI(Saving::ProjectListFileResolver *projectsManager) {
         auto *hl = new QHBoxLayout();
 
         auto *startupWidget = new Hints(this);

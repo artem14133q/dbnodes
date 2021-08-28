@@ -14,7 +14,9 @@ set(RESOURCES
         Settings.cpp
         Settings.h
         ExceptionModal.cpp
-        ExceptionModal.h MinimapSettings.cpp MinimapSettings.h)
+        ExceptionModal.h
+        MinimapSettings.cpp
+        MinimapSettings.h)
 
 add_library(${LIBRARY_NAME} STATIC ${RESOURCES})
 

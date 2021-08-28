@@ -9,23 +9,22 @@
 
 namespace DbNodes::Dictionaries {
 
-    class RelationPositionsDictionary: public Abstract::Dictionary<int, RelationPositionsDictionary>
-    {
-        public:
+    class RelationPositionsDictionary: public Abstract::Dictionary<int, RelationPositionsDictionary> {
+    public:
 
-            enum Type {
-                Undefined,
-                Right,
-                Left,
-            };
+        enum Type {
+            Undefined,
+            Right,
+            Left,
+        };
 
-            static DictMap getDictionary() {
-                return {
-                    { Right  ,   "right"     },
-                    { Left   ,   "left"      },
-                    { Undefined, "Undefined" }
-                };
+        static DictMap getDictionary() {
+            return {
+                { Right  ,   "right"     },
+                { Left   ,   "left"      },
+                { Undefined, "Undefined" }
             };
+        };
     };
 
 }

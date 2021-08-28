@@ -20,25 +20,24 @@ namespace DbNodes::Nodes {
 
     TableNode::TableNode(QWidget *parent, QString id, QString name)
         : DbNodes::Abstract::AbstractNode(parent), tableName(std::move(name)), tableId(std::move(id))
-    {
-        setObjectName("TableNode");
-        initUI();
-        show();
-    }
+        {
+            setObjectName("TableNode");
+            initUI();
+            show();
+        }
 
     TableNode::TableNode(QWidget *parent)
         : TableNode(parent, "table:" + Helper::getCurrentTimeMS(), "table")
-    {
-        auto tableRenameModal = openRenameModal(Modals::TableRename::Type::create);
+        {
+            auto tableRenameModal = openRenameModal(Modals::TableRename::Type::create);
 
-        connect(tableRenameModal, &Modals::TableRename::pushExit, this, [this] () {
-            emit deleteNodeSignal();
-            deleteLater();
-        });
-    }
+            connect(tableRenameModal, &Modals::TableRename::pushExit, this, [this] () {
+                emit deleteNodeSignal();
+                deleteLater();
+            });
+        }
 
-    void TableNode::initUI()
-    {
+    void TableNode::initUI() {
         setStyleSheet(Helper::getStyleFromFile("table"));
 
         // Parent layout
@@ -75,8 +74,7 @@ namespace DbNodes::Nodes {
         setLayout(vl);
     }
 
-    void TableNode::contextMenuEvent(QContextMenuEvent *event)
-    {
+    void TableNode::contextMenuEvent(QContextMenuEvent *event) {
         auto *contextMenu = new QMenu();
         contextMenu->setStyleSheet(Helper::getStyleFromFile("tableMenu"));
 
@@ -115,8 +113,7 @@ namespace DbNodes::Nodes {
     }
 
     // Create column of types
-    void TableNode::addColumn(Nodes::Table::Column::Type columnType, Table::ColumnPrt column)
-    {
+    void TableNode::addColumn(Nodes::Table::Column::Type columnType, Table::ColumnPrt column) {
         if (!column) column = new Table::Column(getLayoutType(columnType), this, columnType);
 
         auto *parentWorkArea = dynamic_cast<Widgets::WorkArea*>(parentWidget());
@@ -144,8 +141,7 @@ namespace DbNodes::Nodes {
         addColumn(type, nodeRow);
     }
 
-    Table::ColumnPrtVector TableNode::getAllColumns()
-    {
+    Table::ColumnPrtVector TableNode::getAllColumns() {
         Table::ColumnPrtVector allColumns;
 
         foreach (Nodes::Table::Column *column, groupColumns()) {
@@ -156,25 +152,21 @@ namespace DbNodes::Nodes {
     }
 
     // Named node slot
-    void TableNode::setTableName(const QString &newTableName)
-    {
+    void TableNode::setTableName(const QString &newTableName) {
         tableName = newTableName;
     }
 
     // Get table name
-    QString TableNode::getTableName()
-    {
+    QString TableNode::getTableName() {
         return tableName;
     }
 
     // Get table id
-    QString TableNode::getTableId()
-    {
+    QString TableNode::getTableId() {
         return tableId;
     }
 
-    Modals::TableRename* TableNode::openRenameModal(const Modals::TableRename::Type& type)
-    {
+    Modals::TableRename* TableNode::openRenameModal(const Modals::TableRename::Type& type) {
         using namespace DbNodes::Modals;
 
         auto* tableRenameModal = new TableRename(type, tableName, this);
@@ -187,8 +179,7 @@ namespace DbNodes::Nodes {
         return tableRenameModal;
     }
 
-    QVBoxLayout *TableNode::getLayoutType(const Nodes::Table::Column::Type &columnType)
-    {
+    QVBoxLayout *TableNode::getLayoutType(const Nodes::Table::Column::Type &columnType) {
         if (columnType == Table::Column::Type::PrimaryKey)
             return pkLayout;
         else if (columnType == Table::Column::Type::ForeignKey)
@@ -197,8 +188,7 @@ namespace DbNodes::Nodes {
             return columnsLayout;
     }
 
-    QList<Table::Column *> TableNode::groupColumns()
-    {
+    QList<Table::Column *> TableNode::groupColumns() {
         auto columns = findChildren<Table::Column *>();
 
         QList<Table::Column *> sortedColumns;
@@ -225,8 +215,7 @@ namespace DbNodes::Nodes {
         return sortedColumns;
     }
 
-    void TableNode::mousePressEvent(QMouseEvent *event)
-    {
+    void TableNode::mousePressEvent(QMouseEvent *event) {
         raise();
 
         foreach (const Relations::RelationPtr &relation, relations) {
@@ -245,8 +234,7 @@ namespace DbNodes::Nodes {
         parentWidget()->update();
     }
 
-    void TableNode::addRelation(const Relations::RelationPtr &relation)
-    {
+    void TableNode::addRelation(const Relations::RelationPtr &relation) {
         relations.push_back(relation);
     }
 }

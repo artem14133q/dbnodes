@@ -13,32 +13,31 @@
 
 namespace DbNodes::Widgets::StartupWidget {
 
-    class Menu: public Abstract::DrawableWidget
-    {
-        Q_OBJECT
+    class Menu: public Abstract::DrawableWidget {
+    Q_OBJECT
 
-        private:
-            Saving::ProjectListFileResolver *projectsManager;
-            QHash<QString, Project *> projects;
+    private:
+        Saving::ProjectListFileResolver *projectsManager;
+        QHash<QString, Project *> projects;
 
-            QVBoxLayout *projectsViewContainer{};
+        QVBoxLayout *projectsViewContainer{};
 
-            void initUI();
+        void initUI();
 
-            Project *createProjectWidget(const QString &path, const QString &title);
+        Project *createProjectWidget(const QString &path, const QString &title);
 
-            void deleteProjects();
+        void deleteProjects();
 
-        public:
-            explicit Menu(Saving::ProjectListFileResolver *projectsManager, QWidget *parent = nullptr);
+    public:
+        explicit Menu(Saving::ProjectListFileResolver *projectsManager, QWidget *parent = nullptr);
 
-        public slots:
-            void deleteProject(const QString &path);
-            void fillProjectsViewContainer();
+    public slots:
+        void deleteProject(const QString &path);
+        void fillProjectsViewContainer();
 
-        public: signals:
-            void openProjectSignal(const QString &path);
-            void updateMenuSignal();
+    public: signals:
+        void openProjectSignal(const QString &path);
+        void updateMenuSignal();
     };
 
 }

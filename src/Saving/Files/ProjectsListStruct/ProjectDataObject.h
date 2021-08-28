@@ -9,13 +9,12 @@
 
 namespace DbNodes::Saving::ProjectsListFileStruct {
 
-    class ProjectDataObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(ProjectDataObject)
+    class ProjectDataObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(ProjectDataObject)
 
-            STRING_PROPERTY("title", getTitle, setTitile)
-            STRING_PROPERTY("path", getPath, setPath)
+        STRING_PROPERTY("title", getTitle, setTitile)
+        STRING_PROPERTY("path", getPath, setPath)
     };
 
 }

@@ -9,8 +9,7 @@
 
 namespace DbNodes::Abstract {
 
-    AbstractSettingModal::AbstractSettingModal(QWidget *parent) : AbstractModal(parent)
-    {
+    AbstractSettingModal::AbstractSettingModal(QWidget *parent) : AbstractModal(parent) {
         // Disabled MainWindow then relation maker open
         mainWindow = Helper::findParentWidgetRecursive(this, "MainWindow");
         mainWindow->setDisabled(true);
@@ -23,8 +22,7 @@ namespace DbNodes::Abstract {
         pbStyle = Helper::getStyleFromFile("button");
     }
 
-    void AbstractSettingModal::createSettingGroup(const QString &name)
-    {
+    void AbstractSettingModal::createSettingGroup(const QString &name) {
         auto *hl = new QHBoxLayout();
 
         auto *title = getTitle(name);
@@ -73,8 +71,7 @@ namespace DbNodes::Abstract {
         return checkBox;
     }
 
-    QLabel *AbstractSettingModal::getLine()
-    {
+    QLabel *AbstractSettingModal::getLine() {
         auto *line = new QLabel("", scrollWidget);
         line->setFixedHeight(1);
         line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -83,8 +80,7 @@ namespace DbNodes::Abstract {
         return line;
     }
 
-    QLabel *AbstractSettingModal::getTitle(const QString &name)
-    {
+    QLabel *AbstractSettingModal::getTitle(const QString &name) {
         auto *label = new QLabel(name, scrollWidget);
         label->setFixedHeight(30);
         label->setStyleSheet(Helper::getStyleFromFile("title"));
@@ -263,14 +259,12 @@ namespace DbNodes::Abstract {
         return slider;
     }
 
-    void AbstractSettingModal::exit()
-    {
+    void AbstractSettingModal::exit() {
         Helper::findParentWidgetRecursive(this, "MainWindow")->setDisabled(false);
         AbstractModal::exit();
     }
 
-    void AbstractSettingModal::changeSettingMap(const QString &name, const QVariant &value)
-    {
+    void AbstractSettingModal::changeSettingMap(const QString &name, const QVariant &value) {
         newSettingsMap.insert(name, value);
 
         if (!applySettings) {
@@ -289,8 +283,7 @@ namespace DbNodes::Abstract {
         }
     }
 
-    void AbstractSettingModal::accept(const bool &close)
-    {
+    void AbstractSettingModal::accept(const bool &close) {
         AbstractModal::accept(close);
 
         enableConfirm(false);
@@ -298,20 +291,17 @@ namespace DbNodes::Abstract {
         settingsMap = newSettingsMap;
     }
 
-    void AbstractSettingModal::confirm()
-    {
+    void AbstractSettingModal::confirm() {
         if (!canSave) return;
 
         AbstractModal::confirm();
     }
 
-    void AbstractSettingModal::enableConfirm(const bool &enable)
-    {
+    void AbstractSettingModal::enableConfirm(const bool &enable) {
         canSave = enable;
     }
 
-    void AbstractSettingModal::initUI()
-    {
+    void AbstractSettingModal::initUI() {
         auto *widget = new QWidget(this);
         auto *layout = new QVBoxLayout(widget);
 
@@ -344,23 +334,19 @@ namespace DbNodes::Abstract {
         setCentralWidget(widget);
     }
 
-    void AbstractSettingModal::setSpacing(int size)
-    {
+    void AbstractSettingModal::setSpacing(int size) {
         scrollLayout->setSpacing(size);
     }
 
-    void AbstractSettingModal::addStretch()
-    {
+    void AbstractSettingModal::addStretch() {
         scrollLayout->addStretch();
     }
 
-    QVariant AbstractSettingModal::getDefaultSetting(const QString &name)
-    {
+    QVariant AbstractSettingModal::getDefaultSetting(const QString &name) {
         return Helper::getSettingValue(name);
     }
 
-    void AbstractSettingModal::prepareWidget()
-    {
+    void AbstractSettingModal::prepareWidget() {
         beforeInitUi();
 
         initUI();
@@ -373,13 +359,15 @@ namespace DbNodes::Abstract {
         Helper::moveToCenter(mainWindow, this);
     }
 
-    void AbstractSettingModal::setSettingIndent(const int &size)
-    {
+    void AbstractSettingModal::setSettingIndent(const int &size) {
         settingIndent = size;
     }
 
-    QPushButton *AbstractSettingModal::createButton(const QString &name, QObject *target, const std::function<void()> &f)
-    {
+    QPushButton *AbstractSettingModal::createButton(
+        const QString &name,
+        QObject *target,
+        const std::function<void()> &f
+    ) {
         auto *button = new QPushButton(name, this);
         button->setFixedSize(70, 30);
         button->setStyleSheet(pbStyle);
@@ -391,8 +379,7 @@ namespace DbNodes::Abstract {
         return button;
     }
 
-    void AbstractSettingModal::bindApplySettings(const bool &enable)
-    {
+    void AbstractSettingModal::bindApplySettings(const bool &enable) {
         applySettings = enable;
     }
 

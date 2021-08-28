@@ -12,8 +12,7 @@
 
 namespace DbNodes::Modals {
 
-    Settings::Settings(QWidget *parent) : Abstract::AbstractSettingModal(parent)
-    {
+    Settings::Settings(QWidget *parent) : Abstract::AbstractSettingModal(parent) {
         setFixedSize(600, 400);
         setWindowTitle("Settings");
 
@@ -25,8 +24,7 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void Settings::initSettingsUi()
-    {
+    void Settings::initSettingsUi() {
         setSettingIndent(10);
 
         createSettingGroup("Style:");
@@ -68,15 +66,13 @@ namespace DbNodes::Modals {
         pbApply->setDisabled(true);
     }
 
-    void Settings::enableConfirm(const bool &enable)
-    {
+    void Settings::enableConfirm(const bool &enable) {
         pbOk->setEnabled(enable);
         pbApply->setEnabled(enable);
         AbstractSettingModal::enableConfirm(enable);
     }
 
-    void Settings::accept(const bool &close)
-    {
+    void Settings::accept(const bool &close) {
         foreach (const QString &key, newSettingsMap.keys()) {
             Helper::setSettingValue(key, newSettingsMap.value(key));
         }

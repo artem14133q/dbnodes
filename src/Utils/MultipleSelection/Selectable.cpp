@@ -11,13 +11,11 @@ namespace DbNodes::Utils::MultipleSelection {
 
     Selectable::Selectable(QObject *object) : AbstractUtil(object) {}
 
-    void Selectable::setClicked(const bool &clicked)
-    {
+    void Selectable::setClicked(const bool &clicked) {
         isClicked = clicked;
     }
 
-    void Selectable::move(const QPoint &delta)
-    {
+    void Selectable::move(const QPoint &delta) {
         if (abs(delta.x()) > 3 || abs(delta.y()) > 3) {
             isClicked = false;
         }
@@ -27,8 +25,7 @@ namespace DbNodes::Utils::MultipleSelection {
         }
     }
 
-    void Selectable::flush()
-    {
+    void Selectable::flush() {
         if (isClicked) {
             if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
                 emit selectCurrentNodeSignal();
@@ -42,13 +39,11 @@ namespace DbNodes::Utils::MultipleSelection {
         }
     }
 
-    void Selectable::setEnable(bool enable)
-    {
+    void Selectable::setEnable(bool enable) {
         isEnabled = enable;
     }
 
-    bool Selectable::enabled()
-    {
+    bool Selectable::enabled() {
         return isEnabled;
     }
 

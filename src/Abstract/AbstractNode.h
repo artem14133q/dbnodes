@@ -19,44 +19,43 @@ namespace DbNodes::Abstract {
 
     typedef QPointer<Abstract::AbstractNode> NodePtr;
 
-    class AbstractNode : public DrawableWidget
-    {
-        Q_OBJECT
+    class AbstractNode : public DrawableWidget {
+    Q_OBJECT
 
-        private:
-            bool isHandled = false;
-            bool moveRestrictions = true;
-            bool abroadHandle = false;
+    private:
+        bool isHandled = false;
+        bool moveRestrictions = true;
+        bool abroadHandle = false;
 
-            QPoint oldPos{};
+        QPoint oldPos{};
 
-            Utils::MultipleSelection::Selectable *selectable;
+        Utils::MultipleSelection::Selectable *selectable;
 
-        public:
-            explicit AbstractNode(QWidget *parent = nullptr);
-            void restrictedMove(int x, int y);
-            void restrictedMove(const QPoint &pos);
+    public:
+        explicit AbstractNode(QWidget *parent = nullptr);
+        void restrictedMove(int x, int y);
+        void restrictedMove(const QPoint &pos);
 
-            NodePtr toNode();
+        NodePtr toNode();
 
-            Utils::MultipleSelection::Selectable *getSelectionUtil();
+        Utils::MultipleSelection::Selectable *getSelectionUtil();
 
-            void enableMoveRestrictions(const bool &enable);
-            void rememberPosWhenAbroad(const bool &enable);
+        void enableMoveRestrictions(const bool &enable);
+        void rememberPosWhenAbroad(const bool &enable);
 
-            void emitDelete();
+        void emitDelete();
 
-        protected:
-            QAction *deleteNodeAction{};
+    protected:
+        QAction *deleteNodeAction{};
 
-            void mousePressEvent(QMouseEvent *event) override;
-            void mouseMoveEvent(QMouseEvent *event) override;
-            void mouseReleaseEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
 
-            void createDefaultActions(QMenu *menu);
+        void createDefaultActions(QMenu *menu);
 
-        public: signals:
-            void deleteNodeSignal();
+    public: signals:
+        void deleteNodeSignal();
     };
 }
 

@@ -4,11 +4,18 @@ project(DbNodes VERSION 1.0.0 LANGUAGES CXX)
 # ====================================================================
 # DEFINES
 # ====================================================================
+set(INI_FILE dbnodes.ini)
 set(APP_ICON_MACOSX dbnodes.icns)
 set(RESOURCES_FILE_NAME res.qrc)
 
+set(DEV_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/dev-scripts)
+
 set(DEV_SCRIPTS
-        "install-resources.py\;${RESOURCES_FILE_NAME}\;content")
+        "${DEV_SCRIPTS}/install-resources.py\;${RESOURCES_FILE_NAME}\;content")
+
+set(MACOS_DEV_SCRIPTS
+#        "iconutil\;-c\;icns\;${CMAKE_CURRENT_SOURCE_DIR}/dbnodes.iconset"
+    )
 
 set(INCLUDE_DIRECTORIES
         src/Abstract
@@ -50,15 +57,21 @@ configure_file(config.h.in config.h @ONLY)
 # EXECUTE DEV SCRIPTS
 # ====================================================================
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    foreach(SCRIPT IN LISTS MACOS_DEV_SCRIPTS)
+        execute_process(COMMAND ${SCRIPT})
+    endforeach()
+endif()
+
 foreach(SCRIPT IN LISTS DEV_SCRIPTS)
-    execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/dev-scripts/${SCRIPT})
+    execute_process(COMMAND ${SCRIPT})
 endforeach()
 
 # ==================================================================
 # SET OUTPUT BINARY FILES DIRS
 # ==================================================================
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "linux")
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif()
 
@@ -112,21 +125,20 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRECTORIES})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(MACOSX_BUNDLE_ICON_FILE dbnodes.icns)
-
     set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
-    set(CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/)
-    set(RESOURCE_DIR ${CURRENT_BINARY_DIR}/Resources)
-
-    file(COPY styles DESTINATION ${RESOURCE_DIR})
-    file(COPY icons DESTINATION ${RESOURCE_DIR})
-    file(COPY dbnodes.ini DESTINATION ${CURRENT_BINARY_DIR}/MacOS)
+    set(CURRENT_PROJECT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents)
+    set(BINARY_DIR ${CURRENT_PROJECT_DIR}/MacOS)
+    set(RESOURCE_DIR ${CURRENT_PROJECT_DIR}/Resources)
 else()
-    file(COPY styles DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
-    file(COPY icons DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
-    file(COPY dbnodes.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
+    set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+    set(RESOURCE_DIR ${BINARY_DIR}/resources)
 endif()
+
+file(COPY styles DESTINATION ${RESOURCE_DIR})
+file(COPY icons DESTINATION ${RESOURCE_DIR})
+
+file(COPY ${INI_FILE} DESTINATION ${RESOURCE_DIR})
 
 # ====================================================================
 # DEFILE LIBS OF YOUR PROJECT

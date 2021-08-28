@@ -9,10 +9,9 @@
 
 namespace DbNodes::Relations {
 
-    class RelationLinkProvider: public RelationProvider
-    {
-        public:
-            Abstract::AbstractRelationView *create() override;
+    class RelationLinkProvider: public RelationProvider {
+    public:
+        Abstract::AbstractRelationView *create() override;
     };
 
 }

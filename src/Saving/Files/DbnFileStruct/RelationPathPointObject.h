@@ -9,13 +9,12 @@
 
 namespace DbNodes::Saving::DbnFileStruct {
 
-    class RelationPathPointObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(RelationPathPointObject)
+    class RelationPathPointObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(RelationPathPointObject)
 
-            INT_PROPERTY("x", getX, setX)
-            INT_PROPERTY("y", getY, setY)
+        INT_PROPERTY("x", getX, setX)
+        INT_PROPERTY("y", getY, setY)
     };
 
 }

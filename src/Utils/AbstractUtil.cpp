@@ -4,8 +4,7 @@
 
 #include "AbstractUtil.h"
 
-namespace DbNodes::Utils
-{
+namespace DbNodes::Utils {
     AbstractUtil::AbstractUtil(QObject *object): QObject(object) {}
 
     void AbstractUtil::initDefaultActionsForUtil(QMenu *menu) {}

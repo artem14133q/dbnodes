@@ -13,7 +13,8 @@ set(RESOURCES
         JsonObject.cpp
         JsonObject.h
         AbstractSettingModal.cpp
-        AbstractSettingModal.h IHasPathConnectors.h)
+        AbstractSettingModal.h
+        IHasPathConnectors.h)
 
 add_library(${LIBRARY_NAME} STATIC ${RESOURCES})
 

@@ -11,8 +11,7 @@ namespace DbNodes::Abstract {
 
     DrawableWidget::DrawableWidget(QWidget *parent) : QWidget(parent) {}
 
-    void DrawableWidget::paintEvent(QPaintEvent *)
-    {
+    void DrawableWidget::paintEvent(QPaintEvent *) {
         QPainter p(this);
         QStyleOption opt;
 

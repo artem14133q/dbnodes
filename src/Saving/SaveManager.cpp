@@ -24,8 +24,7 @@ namespace DbNodes::Saving {
 
     SaveManager::SaveManager(QWidget *parent): QObject(parent) {}
 
-    QPair<QString, QByteArray> SaveManager::openFile()
-    {
+    QPair<QString, QByteArray> SaveManager::openFile() {
         auto filePath = QFileDialog::getOpenFileName(
             nullptr,
             tr("Open File"),
@@ -40,8 +39,7 @@ namespace DbNodes::Saving {
         return QPair<QString, QByteArray>(filePath, readFile(filePath));
     }
 
-    QPair<QString, QByteArray> SaveManager::getFileContent(const QString &path)
-    {
+    QPair<QString, QByteArray> SaveManager::getFileContent(const QString &path) {
         if (path == nullptr) {
             auto pair = openFile();
             lastOpenedPath = pair.first;
@@ -52,8 +50,7 @@ namespace DbNodes::Saving {
         return QPair<QString, QByteArray>(path, readFile(path));
     }
 
-    QString SaveManager::createNewFile(const QString &path)
-    {
+    QString SaveManager::createNewFile(const QString &path) {
         if (path == nullptr) {
             return QFileDialog::getSaveFileName(
                 nullptr,
@@ -75,8 +72,7 @@ namespace DbNodes::Saving {
         return path;
     }
 
-    void SaveManager::setFileContent(const QString &path, const QByteArray &content)
-    {
+    void SaveManager::setFileContent(const QString &path, const QByteArray &content) {
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             generateException(Dictionaries::OpenFileExceptionsDictionary::Type::CanNotOpenFile, path);
@@ -85,20 +81,17 @@ namespace DbNodes::Saving {
         file.close();
     }
 
-    QString SaveManager::getLastOpenFilePath()
-    {
+    QString SaveManager::getLastOpenFilePath() {
         return lastOpenedPath;
     }
 
-    bool SaveManager::fileExists(const QString &path)
-    {
+    bool SaveManager::fileExists(const QString &path) {
         QFile file(path);
 
         return file.exists();
     }
 
-    void SaveManager::createDirsInPath(const QString &path)
-    {
+    void SaveManager::createDirsInPath(const QString &path) {
         auto folders = path.split("/");
 
         QRegExp exp("\\w+.\\w+");
@@ -124,8 +117,7 @@ namespace DbNodes::Saving {
         }
     }
 
-    QByteArray SaveManager::readFile(const QString &path)
-    {
+    QByteArray SaveManager::readFile(const QString &path) {
         QByteArray fileString("");
         QFile file(path);
 

@@ -9,33 +9,29 @@ namespace DbNodes::Saving {
 
     ProjectListFileResolver::ProjectListFileResolver(SaveManager *saveManager, QString filePath)
         : FileResolver(saveManager), filePath(std::move(filePath))
-    {
-        createFileIfNotExists(this->filePath);
-        load(this->filePath);
-    }
+        {
+            createFileIfNotExists(this->filePath);
+            load(this->filePath);
+        }
 
-    void ProjectListFileResolver::appendNewProject(const QString &name, const QString &path)
-    {
+    void ProjectListFileResolver::appendNewProject(const QString &name, const QString &path) {
         if (!projects.contains(path)) {
             projects.insert(path, name);
             save(filePath);
         }
     }
 
-    QHash<QString, QString> ProjectListFileResolver::getProjectsMap()
-    {
+    QHash<QString, QString> ProjectListFileResolver::getProjectsMap() {
         return projects;
     }
 
-    void ProjectListFileResolver::removeProject(const QString &path)
-    {
+    void ProjectListFileResolver::removeProject(const QString &path) {
         projects.remove(path);
 
         save(filePath);
     }
 
-    QByteArray ProjectListFileResolver::toJson()
-    {
+    QByteArray ProjectListFileResolver::toJson() {
         QList<ProjectsListFileStruct::ProjectDataObject> projectObjectsList;
 
         foreach (const QString &key, projects.keys()) {
@@ -52,27 +48,23 @@ namespace DbNodes::Saving {
         return object->toJson();
     }
 
-    void ProjectListFileResolver::fromJson()
-    {
+    void ProjectListFileResolver::fromJson() {
         foreach (const ProjectsListFileStruct::ProjectDataObject &projectObject, object->getProjects()) {
             projects.insert(projectObject.getPath(), projectObject.getTitle());
         }
     }
 
-    QString ProjectListFileResolver::getLastOpenedPath()
-    {
+    QString ProjectListFileResolver::getLastOpenedPath() {
         return object->getLastOpenedProject();
     }
 
-    void ProjectListFileResolver::setLastOpenedPath(const QString &path)
-    {
+    void ProjectListFileResolver::setLastOpenedPath(const QString &path) {
         object->setLastOpenedProject(path);
 
         save(filePath);
     }
 
-    bool ProjectListFileResolver::createFileIfNotExists(const QString &path)
-    {
+    bool ProjectListFileResolver::createFileIfNotExists(const QString &path) {
         auto result = FileResolver::createFileIfNotExists(path);
 
         if (result) {
@@ -85,8 +77,7 @@ namespace DbNodes::Saving {
         return result;
     }
 
-    void ProjectListFileResolver::updateProjectName(const QString &path, const QString &name)
-    {
+    void ProjectListFileResolver::updateProjectName(const QString &path, const QString &name) {
         if (projects.contains(path)) {
             projects.insert(path, name);
 

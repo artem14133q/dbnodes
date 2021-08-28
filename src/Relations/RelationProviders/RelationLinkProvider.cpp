@@ -9,8 +9,7 @@
 
 namespace DbNodes::Relations {
 
-    Abstract::AbstractRelationView *RelationLinkProvider::create()
-    {
+    Abstract::AbstractRelationView *RelationLinkProvider::create() {
         auto *relationView = new RelationLink(
             getRelation()->getPkColumn(),
             getRelation()->getFkColumn(),

@@ -12,13 +12,15 @@
 
 namespace DbNodes::Widgets {
 
-    MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
-    {
+    MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
         // Set minimum size
         setMinimumSize(800, 600);
         setObjectName("MainWindow");
         setStyleSheet(Helper::getStyleFromFile("main"));
-//        setWindowIcon(QIcon("dbnodes.icns"));
+
+        #if !TARGET_OS_MAC
+        setWindowIcon(QIcon(Helper::getIconPath("128", false)));
+        #endif
 
         saveManager = new Saving::SaveManager(this);
         projectListFileResolver = new Saving::ProjectListFileResolver(saveManager, PROJECTS_LIST_FILE_PATH);
@@ -30,13 +32,11 @@ namespace DbNodes::Widgets {
         showMaximized();
     }
 
-    void MainWindow::setTitle(const QString &name, const QString &path)
-    {
+    void MainWindow::setTitle(const QString &name, const QString &path) {
         setWindowTitle(QString("[%1] @ %2 - DbNodes").arg(path, name));
     }
 
-    void MainWindow::createWorkArea(const QString &projectName)
-    {
+    void MainWindow::createWorkArea(const QString &projectName) {
         scrollArea = new QScrollArea(this);
         scrollArea->setObjectName("ScrollArea");
         scrollArea->hide();
@@ -50,8 +50,7 @@ namespace DbNodes::Widgets {
         }
     }
 
-    void MainWindow::closeCurrentProject(const int &closeProjectStatus, const bool &closeApp)
-    {
+    void MainWindow::closeCurrentProject(const int &closeProjectStatus, const bool &closeApp) {
         if (closeProjectStatus == Modals::ConfirmCloseProject::Type::NotClosed) return;
 
         if (closeProjectStatus == Modals::ConfirmCloseProject::Type::CloseAndSave) {
@@ -74,8 +73,7 @@ namespace DbNodes::Widgets {
         recentProjectsMenu->updateMenu();
     }
 
-    QMenuBar* MainWindow::defineMenuBar()
-    {
+    QMenuBar* MainWindow::defineMenuBar() {
         // Create MenuBar for MainWindow
         auto *menuBar = new QMenuBar(this);
 
@@ -120,7 +118,7 @@ namespace DbNodes::Widgets {
         project->addSeparator();
 
         openSettingsAction = project->addAction("Settings");
-        openSettingsAction->setShortcut(QKeySequence("Ctrl+M"));
+        openSettingsAction->setShortcut(QKeySequence("Ctrl+,"));
 
         project->addSeparator();
 
@@ -170,8 +168,7 @@ namespace DbNodes::Widgets {
         return menuBar;
     }
 
-    void MainWindow::createNewProject()
-    {
+    void MainWindow::createNewProject() {
         auto window = new Modals::NewProject(this);
 
         connect(window, &Modals::NewProject::createProjectSignal, this,
@@ -196,8 +193,7 @@ namespace DbNodes::Widgets {
         Helper::moveToCenter(this, window);
     }
 
-    void MainWindow::closeEvent(QCloseEvent *event)
-    {
+    void MainWindow::closeEvent(QCloseEvent *event) {
         if (workArea != nullptr) {
             event->ignore();
 
@@ -208,8 +204,7 @@ namespace DbNodes::Widgets {
         }
     }
 
-    Modals::ConfirmCloseProject::Type MainWindow::openConfirmCloseProjectModal()
-    {
+    Modals::ConfirmCloseProject::Type MainWindow::openConfirmCloseProjectModal() {
         Modals::ConfirmCloseProject confirmWindow(workArea->getProjectName(), this);
 
         confirmWindow.exec();
@@ -217,8 +212,7 @@ namespace DbNodes::Widgets {
         return confirmWindow.getProjectCloseType();
     }
 
-    void MainWindow::generateSaveFile(const Dictionaries::SaveFileTypesDictionary::Type &saveType)
-    {
+    void MainWindow::generateSaveFile(const Dictionaries::SaveFileTypesDictionary::Type &saveType) {
         if (filePath.isEmpty() || saveType == Dictionaries::SaveFileTypesDictionary::Type::NewFile) {
             filePath = Saving::SaveManager::createNewFile();
 
@@ -233,8 +227,7 @@ namespace DbNodes::Widgets {
         Saving::DbnFileResolver(saveManager, workArea).save(filePath);
     }
 
-    void MainWindow::openSaveFile(const QString &path)
-    {
+    void MainWindow::openSaveFile(const QString &path) {
         if (!closeProjectIfExists()) return;
 
         createWorkArea();
@@ -267,8 +260,7 @@ namespace DbNodes::Widgets {
         recentProjectsMenu->updateMenu();
     }
 
-    void MainWindow::enableWorkArea(const bool &enable)
-    {
+    void MainWindow::enableWorkArea(const bool &enable) {
         if (enable) {
             setCentralWidget(scrollArea);
             scrollArea->show();
@@ -287,15 +279,13 @@ namespace DbNodes::Widgets {
         findTableAction->setEnabled(enable);
     }
 
-    void MainWindow::createProject(const QString &name)
-    {
+    void MainWindow::createProject(const QString &name) {
         createWorkArea(name);
         enableWorkArea(true);
         setTitle(name, "#");
     }
 
-    void MainWindow::openLastOpenedFileIfExists()
-    {
+    void MainWindow::openLastOpenedFileIfExists() {
         auto lastFilePath = projectListFileResolver->getLastOpenedPath();
 
         if (lastFilePath != "" && Saving::SaveManager::fileExists(lastFilePath)) {
@@ -308,8 +298,7 @@ namespace DbNodes::Widgets {
         recentProjectsMenu->updateMenu();
     }
 
-    StartupWidget::MainWidget *MainWindow::createStartupWidget()
-    {
+    StartupWidget::MainWidget *MainWindow::createStartupWidget() {
         auto *widget = new StartupWidget::MainWidget(
             projectListFileResolver,
             this
@@ -321,8 +310,7 @@ namespace DbNodes::Widgets {
         return widget;
     }
 
-    bool MainWindow::closeProjectIfExists()
-    {
+    bool MainWindow::closeProjectIfExists() {
         if (workArea != nullptr) {
             int closeType = openConfirmCloseProjectModal();
 

@@ -9,8 +9,7 @@ namespace DbNodes::Utils::ListMoving
 {
     Moving::Moving(QWidget *moveHandle, QObject *object): AbstractUtil(object), moveHandle(moveHandle) {}
 
-    void Moving::enable()
-    {
+    void Moving::enable() {
         if (moveHandle->geometry().contains(parentWidget()->mapFromGlobal(QCursor::pos()))) {
 
             parentWidget()->setStyleSheet(
@@ -22,13 +21,11 @@ namespace DbNodes::Utils::ListMoving
         }
     }
 
-    QWidget *Moving::parentWidget()
-    {
+    QWidget *Moving::parentWidget() {
         return dynamic_cast<QWidget *>(parent());
     }
 
-    bool Moving::move()
-    {
+    bool Moving::move() {
         if (isMovable) {
             Helper::updateParentRecursive(parentWidget(), "WorkArea");
             return true;
@@ -37,8 +34,7 @@ namespace DbNodes::Utils::ListMoving
         return false;
     }
 
-    void Moving::replace(const std::function<void ()> &callback)
-    {
+    void Moving::replace(const std::function<void ()> &callback) {
         if (isMovable) {
             callback();
 

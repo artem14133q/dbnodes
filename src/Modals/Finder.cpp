@@ -19,8 +19,7 @@
 namespace DbNodes::Modals {
 
     Finder::Finder(const QList<Nodes::TablePtr> &nodeVector, QWidget *parent)
-        : Abstract::AbstractModal(parent), nodeVector(nodeVector)
-    {
+        : Abstract::AbstractModal(parent), nodeVector(nodeVector) {
         setFixedSize(400, 600);
         setWindowFlag(Qt::FramelessWindowHint);
 
@@ -38,8 +37,7 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void Finder::initUI()
-    {
+    void Finder::initUI() {
         auto *pbClose = new QPushButton("X", this);
         pbClose->setStyleSheet(Helper::getStyleFromFile("crossButton"));
         pbClose->setFixedSize(18, 18);
@@ -66,8 +64,7 @@ namespace DbNodes::Modals {
         connect(listWidget, &QListWidget::clicked, this, &Finder::confirm);
     }
 
-    void Finder::exit()
-    {
+    void Finder::exit() {
         listWidget->clear();
         filteredNodeList.clear();
         nodeVector.clear();
@@ -76,8 +73,7 @@ namespace DbNodes::Modals {
         Abstract::AbstractModal::exit();
     }
 
-    void Finder::filterNodes(const QString &filter)
-    {
+    void Finder::filterNodes(const QString &filter) {
         filteredNodeList.clear();
         listWidget->clear();
 
@@ -110,8 +106,7 @@ namespace DbNodes::Modals {
         if (listWidget->count() > 0) selectItemByIndex(0);
     }
 
-    bool Finder::eventFilter(QObject *obj, QEvent *event)
-    {
+    bool Finder::eventFilter(QObject *obj, QEvent *event) {
         if (event->type() == QEvent::KeyPress) {
             auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
 
@@ -126,8 +121,7 @@ namespace DbNodes::Modals {
         return AbstractModal::eventFilter(obj, event);
     }
 
-    void Finder::selectItemNext()
-    {
+    void Finder::selectItemNext() {
         int index = getSelectionItemIndex();
 
         if (listWidget->count() == -1) return;
@@ -135,8 +129,7 @@ namespace DbNodes::Modals {
         selectItemByIndex((++index > listWidget->count() - 1) ? 0 : index);
     }
 
-    void Finder::selectItemPrevious()
-    {
+    void Finder::selectItemPrevious() {
         int index = getSelectionItemIndex();
 
         if (listWidget->count() == -1) return;
@@ -144,8 +137,7 @@ namespace DbNodes::Modals {
         selectItemByIndex((--index < 0) ? listWidget->count() - 1 : index);
     }
 
-    int Finder::getSelectionItemIndex()
-    {
+    int Finder::getSelectionItemIndex() {
         auto selectionItems = listWidget->selectedItems();
         int index = -1;
 
@@ -156,8 +148,7 @@ namespace DbNodes::Modals {
         return index;
     }
 
-    void Finder::selectItemByIndex(const int &index)
-    {
+    void Finder::selectItemByIndex(const int &index) {
         unselectItems();
 
         auto *item = listWidget->item(index);
@@ -171,8 +162,7 @@ namespace DbNodes::Modals {
         listWidget->scrollToItem(item);
     }
 
-    void Finder::unselectItems()
-    {
+    void Finder::unselectItems() {
         auto selectionItems = listWidget->selectedItems();
 
         foreach (auto *item, selectionItems) {
@@ -184,8 +174,7 @@ namespace DbNodes::Modals {
         }
     }
 
-    void Finder::confirm()
-    {
+    void Finder::confirm() {
         auto selectionItems = listWidget->selectedItems();
 
         if (selectionItems.count() > 0) {

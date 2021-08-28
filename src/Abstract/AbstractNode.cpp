@@ -7,16 +7,14 @@
 
 namespace DbNodes::Abstract {
 
-    AbstractNode::AbstractNode(QWidget *parent) : DrawableWidget(parent)
-    {
+    AbstractNode::AbstractNode(QWidget *parent) : DrawableWidget(parent) {
         setFocusPolicy(Qt::StrongFocus);
 
         selectable = new Utils::MultipleSelection::Selectable(this);
     }
 
     // Set old pos before moving
-    void AbstractNode::mousePressEvent(QMouseEvent* event)
-    {
+    void AbstractNode::mousePressEvent(QMouseEvent* event) {
         selectable->setClicked(true);
 
         oldPos = event->globalPos();
@@ -24,8 +22,7 @@ namespace DbNodes::Abstract {
         isHandled = true;
     }
 
-    void AbstractNode::mouseMoveEvent(QMouseEvent *event)
-    {
+    void AbstractNode::mouseMoveEvent(QMouseEvent *event) {
         if (isHandled) {
             QPoint cursorPos = event->globalPos();
 
@@ -52,25 +49,21 @@ namespace DbNodes::Abstract {
         }
     }
 
-    void AbstractNode::enableMoveRestrictions(const bool &enable)
-    {
+    void AbstractNode::enableMoveRestrictions(const bool &enable) {
         moveRestrictions = enable;
     }
 
-    Utils::MultipleSelection::Selectable *AbstractNode::getSelectionUtil()
-    {
+    Utils::MultipleSelection::Selectable *AbstractNode::getSelectionUtil() {
         return selectable;
     }
 
-    void AbstractNode::mouseReleaseEvent(QMouseEvent *event)
-    {
+    void AbstractNode::mouseReleaseEvent(QMouseEvent *event) {
         selectable->flush();
 
         isHandled = false;
     }
 
-    void AbstractNode::restrictedMove(int newX, int newY)
-    {
+    void AbstractNode::restrictedMove(int newX, int newY) {
         if (moveRestrictions) {
             if (newX < 0)
                 newX = 0;
@@ -88,18 +81,15 @@ namespace DbNodes::Abstract {
         move(newX, newY);
     }
 
-    void AbstractNode::restrictedMove(const QPoint &pos)
-    {
+    void AbstractNode::restrictedMove(const QPoint &pos) {
         restrictedMove(pos.x(), pos.y());
     }
 
-    NodePtr AbstractNode::toNode()
-    {
+    NodePtr AbstractNode::toNode() {
         return this;
     }
 
-    void AbstractNode::createDefaultActions(QMenu *menu)
-    {
+    void AbstractNode::createDefaultActions(QMenu *menu) {
         deleteNodeAction = menu->addAction("Delete");
 
         connect(deleteNodeAction, &QAction::triggered, this, [this] {
@@ -108,13 +98,11 @@ namespace DbNodes::Abstract {
         });
     }
 
-    void AbstractNode::rememberPosWhenAbroad(const bool &enable)
-    {
+    void AbstractNode::rememberPosWhenAbroad(const bool &enable) {
         abroadHandle = enable;
     }
 
-    void AbstractNode::emitDelete()
-    {
+    void AbstractNode::emitDelete() {
         emit deleteNodeSignal();
     }
 }

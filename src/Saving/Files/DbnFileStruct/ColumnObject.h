@@ -9,16 +9,15 @@
 
 namespace DbNodes::Saving::DbnFileStruct {
 
-    class ColumnObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(ColumnObject)
+    class ColumnObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(ColumnObject)
 
-            STRING_PROPERTY("id", getId, setId);
-            STRING_PROPERTY("name", getName, setName)
-            STRING_PROPERTY("dbType", getDbType, setDbType)
-            INT_PROPERTY("columnType", getColumnType, setColumnType)
-            BOOL_PROPERTY("nullable", getNullable, setNullable)
+        STRING_PROPERTY("id", getId, setId);
+        STRING_PROPERTY("name", getName, setName)
+        STRING_PROPERTY("dbType", getDbType, setDbType)
+        INT_PROPERTY("columnType", getColumnType, setColumnType)
+        BOOL_PROPERTY("nullable", getNullable, setNullable)
     };
 
 }

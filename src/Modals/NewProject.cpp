@@ -7,8 +7,7 @@
 
 namespace DbNodes::Modals {
 
-    NewProject::NewProject(QWidget *parent): Abstract::AbstractSettingModal(parent)
-    {
+    NewProject::NewProject(QWidget *parent): Abstract::AbstractSettingModal(parent) {
         setWindowTitle("Create new project");
         setFixedWidth(500);
 
@@ -17,15 +16,13 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void NewProject::exit()
-    {
+    void NewProject::exit() {
         Helper::findParentWidgetRecursive(this, "MainWindow")->setDisabled(false);
 
         Abstract::AbstractSettingModal::exit();
     }
 
-    void NewProject::validPropertyName(QLineEdit *widget)
-    {
+    void NewProject::validPropertyName(QLineEdit *widget) {
         auto state = widget->text() == "";
 
         widget->setProperty("warning", state);
@@ -37,15 +34,13 @@ namespace DbNodes::Modals {
         enableConfirm(!state);
     }
 
-    void NewProject::confirm()
-    {
+    void NewProject::confirm() {
         emit createProjectSignal(newSettingsMap);
 
         AbstractSettingModal::confirm();
     }
 
-    void NewProject::initSettingsUi()
-    {
+    void NewProject::initSettingsUi() {
         nameEdit = createTextSetting(
             "Project name:",
             "name",
@@ -85,8 +80,7 @@ namespace DbNodes::Modals {
         createProjectButton->setDisabled(true);
     }
 
-    QVariant NewProject::getDefaultSetting(const QString &name)
-    {
+    QVariant NewProject::getDefaultSetting(const QString &name) {
         QHash<QString, QVariant> dict({
             {"name"     , "Undefined"   },
             {"width"    , 4000          },
@@ -96,14 +90,12 @@ namespace DbNodes::Modals {
         return dict.value(name);
     }
 
-    void NewProject::enableConfirm(const bool &enable)
-    {
+    void NewProject::enableConfirm(const bool &enable) {
         createProjectButton->setEnabled(enable);
         AbstractSettingModal::enableConfirm(enable);
     }
 
-    void NewProject::afterInitUi()
-    {
+    void NewProject::afterInitUi() {
         nameEdit->setFocus();
         nameEdit->selectAll();
     }

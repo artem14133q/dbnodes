@@ -12,28 +12,27 @@
 namespace DbNodes::Widgets::Minimap
 {
 
-    class MovableRect: public Abstract::AbstractNode
-    {
-        Q_OBJECT
+    class MovableRect: public Abstract::AbstractNode {
+    Q_OBJECT
 
-        public:
-            explicit MovableRect(const float &scaleCoefficient, QWidget *parent = nullptr);
+    public:
+        explicit MovableRect(const float &scaleCoefficient, QWidget *parent = nullptr);
 
-            bool workingWithFocusAvailable();
+        bool workingWithFocusAvailable();
 
-            void calculateSize();
+        void calculateSize();
 
-        private:
-            bool enableWorkingWithFocus = true;
+    private:
+        bool enableWorkingWithFocus = true;
 
-            const float &scaleCoefficient;
+        const float &scaleCoefficient;
 
-            void mouseMoveEvent(QMouseEvent *event) override;
-            void mousePressEvent(QMouseEvent *event) override;
-            void mouseReleaseEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
 
-        public: signals:
-            void moveToPositionSignal(const QPoint &pos);
+    public: signals:
+        void moveToPositionSignal(const QPoint &pos);
     };
 
 }

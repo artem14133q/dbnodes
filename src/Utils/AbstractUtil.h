@@ -10,14 +10,13 @@
 
 namespace DbNodes::Utils {
 
-    class AbstractUtil: public QObject
-    {
-        Q_OBJECT
+    class AbstractUtil: public QObject {
+    Q_OBJECT
 
-        public:
-            explicit AbstractUtil(QObject *object = nullptr);
+    public:
+        explicit AbstractUtil(QObject *object = nullptr);
 
-            virtual void initDefaultActionsForUtil(QMenu *menu);
+        virtual void initDefaultActionsForUtil(QMenu *menu);
     };
 
 }

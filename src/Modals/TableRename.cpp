@@ -10,8 +10,7 @@
 namespace DbNodes::Modals {
 
     TableRename::TableRename(const Type& type, const QString &name, QWidget *parent)
-        : Abstract::AbstractSettingModal(parent), tableName(name), type(type)
-    {
+        : Abstract::AbstractSettingModal(parent), tableName(name), type(type) {
         setFixedWidth(500);
         setWindowTitle(QString(getTitle()).arg(name));
 
@@ -20,8 +19,7 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void TableRename::initSettingsUi()
-    {
+    void TableRename::initSettingsUi() {
         nameLineEdit = createTextSetting("Name:", "name");
 
         // Create buttons
@@ -36,21 +34,18 @@ namespace DbNodes::Modals {
         });
     }
 
-    QVariant TableRename::getDefaultSetting(const QString &name)
-    {
+    QVariant TableRename::getDefaultSetting(const QString &name) {
         return tableName;
     }
 
-    void TableRename::confirm()
-    {
+    void TableRename::confirm() {
         emit pushConfirm(newSettingsMap.value("name").toString());
 
         enableConfirm(true);
         Abstract::AbstractSettingModal::confirm();
     }
 
-    void TableRename::afterInitUi()
-    {
+    void TableRename::afterInitUi() {
         nameLineEdit->setFocus();
         nameLineEdit->selectAll();
     }

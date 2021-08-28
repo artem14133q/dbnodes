@@ -15,8 +15,8 @@ namespace DbNodes::Abstract {
     typedef QPair<QPoint, int> ParamsForDrawing;
 
     class IHasPathConnectors {
-        public:
-            virtual ParamsForDrawing getDrawParams() = 0;
+    public:
+        virtual ParamsForDrawing getDrawParams() = 0;
     };
 
 }

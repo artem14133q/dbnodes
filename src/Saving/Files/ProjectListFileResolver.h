@@ -11,31 +11,30 @@
 
 namespace DbNodes::Saving {
 
-    class ProjectListFileResolver: public FileResolver<ProjectsListFileStruct::RootObject>
-    {
-        private:
-            QHash<QString, QString> projects;
+    class ProjectListFileResolver: public FileResolver<ProjectsListFileStruct::RootObject> {
+    private:
+        QHash<QString, QString> projects;
 
-            QString filePath;
+        QString filePath;
 
-        public:
-            explicit ProjectListFileResolver(SaveManager *saveManager, QString filePath);
+    public:
+        explicit ProjectListFileResolver(SaveManager *saveManager, QString filePath);
 
-            bool createFileIfNotExists(const QString &path) override;
+        bool createFileIfNotExists(const QString &path) override;
 
-            void appendNewProject(const QString &name, const QString &path);
+        void appendNewProject(const QString &name, const QString &path);
 
-            void updateProjectName(const QString &path, const QString &name);
+        void updateProjectName(const QString &path, const QString &name);
 
-            QHash<QString, QString> getProjectsMap();
+        QHash<QString, QString> getProjectsMap();
 
-            void removeProject(const QString &path);
+        void removeProject(const QString &path);
 
-            QString getLastOpenedPath();
-            void setLastOpenedPath(const QString &path);
+        QString getLastOpenedPath();
+        void setLastOpenedPath(const QString &path);
 
-            QByteArray toJson() override;
-            void fromJson() override;
+        QByteArray toJson() override;
+        void fromJson() override;
     };
 
 }

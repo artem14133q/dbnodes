@@ -14,38 +14,37 @@
 namespace DbNodes::Widgets::Minimap
 {
 
-    class MinimapWorkingArea: public QWidget
-    {
-        Q_OBJECT
+    class MinimapWorkingArea: public QWidget {
+    Q_OBJECT
 
-        private:
-            QColor selectedTablesColor;
-            QColor focusedTablesColor;
-            QColor tablesColor;
+    private:
+        QColor selectedTablesColor;
+        QColor focusedTablesColor;
+        QColor tablesColor;
 
-            const QList<Abstract::NodePtr> &nodes;
-            const float &scaleCoefficient;
+        const QList<Abstract::NodePtr> &nodes;
+        const float &scaleCoefficient;
 
-            QLabel *nodeTitle;
+        QLabel *nodeTitle;
 
-            void paintEvent(QPaintEvent *event) override;
-            void mousePressEvent(QMouseEvent *event) override;
-            void mouseMoveEvent(QMouseEvent *event) override;
+        void paintEvent(QPaintEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
 
-        public:
-            MovableRect *movableRect{};
+    public:
+        MovableRect *movableRect{};
 
-            void moveToPosition(const QPoint &pos);
+        void moveToPosition(const QPoint &pos);
 
-            explicit MinimapWorkingArea(
-                const QList<Abstract::NodePtr> &nodes,
-                QLabel *nodeTitle,
-                const float &scaleCoefficient,
-                QWidget *parent = nullptr
-            );
+        explicit MinimapWorkingArea(
+            const QList<Abstract::NodePtr> &nodes,
+            QLabel *nodeTitle,
+            const float &scaleCoefficient,
+            QWidget *parent = nullptr
+        );
 
-        public: signals:
-            void moveToPositionSignal(const QPoint &pos);
+    public: signals:
+        void moveToPositionSignal(const QPoint &pos);
     };
 
 }
