@@ -20,8 +20,7 @@ namespace DbNodes::Modals {
     RelationMaker::RelationMaker(
             Nodes::Table::Column *fkColumn,
             const QList<Nodes::TablePtr> &tableVector
-    ) : Abstract::AbstractModal(fkColumn), fkColumnParent(fkColumn), tableVector(tableVector)
-    {
+    ) : Abstract::AbstractModal(fkColumn), fkColumnParent(fkColumn), tableVector(tableVector) {
         setFixedSize(300, 400);
         // Frameless window
         setWindowFlag(Qt::FramelessWindowHint);
@@ -42,8 +41,7 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void RelationMaker::initUI()
-    {
+    void RelationMaker::initUI() {
         // Styles for ComboBoxes
         QString comboBoxStyle = Helper::getStyleFromFile("relationMakerSelector");
 
@@ -121,8 +119,7 @@ namespace DbNodes::Modals {
         connect(pbDeleteFilter, &QPushButton::clicked, this, &RelationMaker::deleteFilter);
     }
 
-    void RelationMaker::exit()
-    {
+    void RelationMaker::exit() {
         tableList.clear();
         columnsOfSelectedTable.clear();
 
@@ -132,8 +129,7 @@ namespace DbNodes::Modals {
         Abstract::AbstractModal::exit();
     }
 
-    void RelationMaker::selectTable(const Nodes::TablePtr &table)
-    {
+    void RelationMaker::selectTable(const Nodes::TablePtr &table) {
         columnsOfSelectedTable.clear();
         columnsOfTable->clear();
 
@@ -155,18 +151,15 @@ namespace DbNodes::Modals {
         );
     }
 
-    void RelationMaker::selectTableByIndex(const int &index)
-    {
+    void RelationMaker::selectTableByIndex(const int &index) {
         selectTable(tableList.value(tablesSelect->itemData(index).toString()));
     }
 
-    void RelationMaker::selectColumn(const int &index)
-    {
+    void RelationMaker::selectColumn(const int &index) {
         currentPkColumnId = columnsOfSelectedTable.value(columnsOfTable->itemData(index).toString())->getColumnId();
     }
 
-    void RelationMaker::confirm()
-    {
+    void RelationMaker::confirm() {
         if (!pbCreate->isEnabled()) return;
 
         using namespace DbNodes::Widgets;
@@ -186,8 +179,7 @@ namespace DbNodes::Modals {
         AbstractModal::confirm();
     }
 
-    void RelationMaker::showWarningIfPkNotFound(const bool &enable, const int &errorType)
-    {
+    void RelationMaker::showWarningIfPkNotFound(const bool &enable, const int &errorType) {
         if (enable) {
             warningWidget->show();
             warningText->setText(Dictionaries::RelationMakerErrorsDictionary::getValue(errorType).toString());
@@ -198,8 +190,7 @@ namespace DbNodes::Modals {
         pbCreate->setDisabled(enable);
     }
 
-    void RelationMaker::filterTable(const QString &filter)
-    {
+    void RelationMaker::filterTable(const QString &filter) {
         QRegExp regFilter("\\w*" + filter + "\\w*");
 
         tableList.clear();
@@ -234,8 +225,7 @@ namespace DbNodes::Modals {
         }
     }
 
-    void RelationMaker::deleteFilter()
-    {
+    void RelationMaker::deleteFilter() {
         search->clear();
         filterTable();
     }

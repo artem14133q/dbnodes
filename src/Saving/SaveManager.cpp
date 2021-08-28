@@ -29,6 +29,7 @@ namespace DbNodes::Saving {
         auto filePath = QFileDialog::getOpenFileName(
             nullptr,
             tr("Open File"),
+            // TODO: create class to generate paths for different os (todo_path_generator)
             "/home/" + qgetenv("USER") + "/file.dbn",
             tr("DbNodes File (*.dbn)")
         );
@@ -58,6 +59,7 @@ namespace DbNodes::Saving {
             return QFileDialog::getSaveFileName(
                 nullptr,
                 tr("Save File"),
+                // TODO: (todo_path_generator)
                 "/home/" + qgetenv("USER") + "/new_file.dbn",
                 tr("DbNodes File (*.dbn)")
             );
@@ -99,6 +101,7 @@ namespace DbNodes::Saving {
 
     void SaveManager::createDirsInPath(const QString &path)
     {
+        // TODO: (todo_path_generator)
         auto folders = path.split("/");
 
         QRegExp exp("\\w+.\\w+");
