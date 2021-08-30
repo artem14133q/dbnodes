@@ -13,73 +13,65 @@
 namespace DbNodes::Saving {
 
     template<typename T>
-    class FileResolver: public QObject
-    {
-        protected:
-            T *object = nullptr;
+    class FileResolver: public QObject {
+    protected:
+        T *object = nullptr;
 
-            SaveManager *saveManager;
+        SaveManager *saveManager;
 
-            QString currentFilePath = "";
+        QString currentFilePath = "";
 
-        public:
-            Q_DISABLE_COPY(FileResolver)
+    public:
+        Q_DISABLE_COPY(FileResolver)
 
-            explicit FileResolver(SaveManager *saveManager): saveManager(saveManager)
-            {
-                object = new T();
-            };
+        explicit FileResolver(SaveManager *saveManager): saveManager(saveManager) {
+            object = new T();
+        };
 
-            virtual QByteArray toJson()
-            {
-                return QByteArray();
-            }
+        virtual QByteArray toJson() {
+            return QByteArray();
+        }
 
-            virtual void fromJson() {}
+        virtual void fromJson() {}
 
-            void save(const QString &path)
-            {
-                saveManager->setFileContent(path, toJson());
-            }
+        void save(const QString &path) {
+            saveManager->setFileContent(path, toJson());
+        }
 
-            virtual bool load(const QString &path = nullptr)
-            {
-                auto pair = saveManager->getFileContent(path);
+        virtual bool load(const QString &path = nullptr) {
+            auto pair = saveManager->getFileContent(path);
 
-                if (pair.second.isEmpty()) {
-                    return false;
-                }
-
-                object->setBaseObject(QJsonDocument().fromJson(pair.second).object());
-
-                fromJson();
-
-                currentFilePath = (path == nullptr) ? pair.first : path;
-
-                return true;
-            }
-
-            virtual bool createFileIfNotExists(const QString &path)
-            {
-                if (!SaveManager::fileExists(path)) {
-                    SaveManager::createNewFile(path);
-                    return true;
-                }
-
+            if (pair.second.isEmpty()) {
                 return false;
             }
 
-            [[nodiscard]] QString getCurrentFilePath() const
-            {
-                return currentFilePath;
+            object->setBaseObject(QJsonDocument().fromJson(pair.second).object());
+
+            fromJson();
+
+            currentFilePath = (path == nullptr) ? pair.first : path;
+
+            return true;
+        }
+
+        virtual bool createFileIfNotExists(const QString &path) {
+            if (!SaveManager::fileExists(path)) {
+                SaveManager::createNewFile(path);
+                return true;
             }
 
-            ~FileResolver() override
-            {
-                delete object;
+            return false;
+        }
 
-                deleteLater();
-            }
+        [[nodiscard]] QString getCurrentFilePath() const {
+            return currentFilePath;
+        }
+
+        ~FileResolver() override {
+            delete object;
+
+            deleteLater();
+        }
     };
 
 }

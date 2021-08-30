@@ -9,14 +9,13 @@ namespace DbNodes::Widgets::Menus {
 
     RecentMenu::RecentMenu(Saving::ProjectListFileResolver *resolver, QWidget *parent)
         : QMenu(parent), resolver(resolver)
-    {
-        setTitle("Open Recent");
+        {
+            setTitle("Open Recent");
 
-        generateMenu();
-    }
+            generateMenu();
+        }
 
-    void RecentMenu::updateMenu()
-    {
+    void RecentMenu::updateMenu() {
         foreach (auto action, actionList) {
             delete action;
         }
@@ -26,8 +25,7 @@ namespace DbNodes::Widgets::Menus {
         generateMenu();
     }
 
-    void RecentMenu::generateMenu()
-    {
+    void RecentMenu::generateMenu() {
         if (resolver->getProjectsMap().keys().isEmpty()) {
             auto action = addAction("empty");
             action->setDisabled(true);
@@ -37,8 +35,7 @@ namespace DbNodes::Widgets::Menus {
         }
     }
 
-    void RecentMenu::fillMenu()
-    {
+    void RecentMenu::fillMenu() {
         foreach (const QString &path, resolver->getProjectsMap().keys()) {
             auto action = addAction(Helper::replaceHomePathInFullPath(path));
 

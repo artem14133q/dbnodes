@@ -46,30 +46,27 @@ namespace DbNodes::Nodes::Table {
         columnDbType(const_cast<QString &>(columnDbType)),
         columnIsNull(columnIsNull),
         columnType(columnType)
-    {
-        initUi();
-        enableMoveRestrictions(false);
+        {
+            initUi();
+            enableMoveRestrictions(false);
 
-        movingUtil = new Utils::ListMoving::Moving(moveHandle, this);
+            movingUtil = new Utils::ListMoving::Moving(moveHandle, this);
 
-        show();
-    }
+            show();
+        }
 
     // Get column name. Call in work area
-    QString Column::getColumnName()
-    {
+    QString Column::getColumnName() {
         return columnName;
     }
 
     // Private Slot
-    void Column::setColumnName(const QString &newColumnName)
-    {
+    void Column::setColumnName(const QString &newColumnName) {
         columnName = newColumnName;
     }
 
     // Define database types
-    QStringList Column::initTypes() const
-    {
+    QStringList Column::initTypes() const {
         using namespace DbNodes::Dictionaries;
 
         QStringList typesList;
@@ -89,8 +86,7 @@ namespace DbNodes::Nodes::Table {
         return typesList;
     }
 
-    void Column::initUi()
-    {
+    void Column::initUi() {
         QString styleName;
 
         if (columnType == PrimaryKey)
@@ -196,8 +192,7 @@ namespace DbNodes::Nodes::Table {
     }
 
     bool Column::eventFilter(QObject *object, QEvent *event) {
-        if (event->type() == QEvent::Wheel && qobject_cast<QComboBox*>(object))
-        {
+        if (event->type() == QEvent::Wheel && qobject_cast<QComboBox*>(object)) {
             event->ignore();
             return true;
         }
@@ -206,71 +201,59 @@ namespace DbNodes::Nodes::Table {
     }
 
     // Get parent table name
-    QString Column::getTableName()
-    {
+    QString Column::getTableName() {
         auto table = dynamic_cast<TableNode *>(parentWidget());
 
         return table->getTableName();
     }
 
-    QString Column::getTableId()
-    {
+    QString Column::getTableId() {
         auto table = dynamic_cast<TableNode *>(parentWidget());
 
         return table->getTableId();
     }
 
-    Column::Type Column::getColumnType() const
-    {
+    Column::Type Column::getColumnType() const {
         return columnType;
     }
 
-    void Column::deleteColumn()
-    {
+    void Column::deleteColumn() {
         deleteLater();
     }
 
-    void Column::setColumnDbType(const QString &type)
-    {
+    void Column::setColumnDbType(const QString &type) {
         columnDbType = type;
     }
 
-    QString Column::getColumnDbType()
-    {
+    QString Column::getColumnDbType() {
         return columnDbType;
     }
 
-    bool Column::getColumnIsNull() const
-    {
+    bool Column::getColumnIsNull() const {
         return columnIsNull;
     }
 
-    QString Column::getColumnId()
-    {
+    QString Column::getColumnId() {
         return columnId;
     }
 
-    void Column::setColumnIsNull(const bool& checked)
-    {
+    void Column::setColumnIsNull(bool checked) {
         columnIsNull = checked;
     }
 
-    void Column::mouseMoveEvent(QMouseEvent *event)
-    {
+    void Column::mouseMoveEvent(QMouseEvent *event) {
         if (movingUtil->move()) {
             Abstract::AbstractNode::mouseMoveEvent(event);
         }
     }
 
-    void Column::mousePressEvent(QMouseEvent *event)
-    {
+    void Column::mousePressEvent(QMouseEvent *event) {
         movingUtil->enable();
 
         Abstract::AbstractNode::mousePressEvent(event);
     }
 
-    void Column::mouseReleaseEvent(QMouseEvent *event)
-    {
+    void Column::mouseReleaseEvent(QMouseEvent *event) {
         auto selectedColumn = movingUtil->getWidgetUnderMouse<Column>([this] (Column *column) -> bool {
             return column->geometry().contains(parentWidget()->mapFromGlobal(QCursor::pos()))
                 && column->getColumnType() == columnType
@@ -287,8 +270,7 @@ namespace DbNodes::Nodes::Table {
         DbNodes::Abstract::AbstractNode::mouseReleaseEvent(event);
     }
 
-    void Column::openRelationMaker()
-    {
+    void Column::openRelationMaker() {
         using namespace DbNodes::Modals;
 
         auto *workArea = dynamic_cast<Widgets::WorkArea*>(parentWidget()->parentWidget());
@@ -300,13 +282,11 @@ namespace DbNodes::Nodes::Table {
         relationMaker->move(globalPos.x() + fkButton->width() + 2,globalPos.y() + fkButton->height() + 2);
     }
 
-    void Column::disableFkRelationButton(const bool &disable)
-    {
+    void Column::disableFkRelationButton(const bool &disable) {
         fkButton->setDisabled(disable);
     }
 
-    Abstract::ParamsForDrawing Column::getDrawParams()
-    {
+    Abstract::ParamsForDrawing Column::getDrawParams() {
         return Abstract::ParamsForDrawing(
             {parentWidget()->x(), parentWidget()->y() + y() + height() / 2},
             parentWidget()->width()

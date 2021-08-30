@@ -9,10 +9,9 @@
 
 namespace DbNodes::Relations {
 
-    class DeleteRelationButtonProvider: public RelationProvider
-    {
-        public:
-            Abstract::AbstractRelationView *create() override;
+    class DeleteRelationButtonProvider: public RelationProvider {
+    public:
+        Abstract::AbstractRelationView *create() override;
     };
 
 }

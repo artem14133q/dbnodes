@@ -15,12 +15,12 @@ namespace DbNodes::Widgets::StartupWidget {
 
     Menu::Menu(Saving::ProjectListFileResolver *projectsManager, QWidget *parent)
         : DrawableWidget(parent), projectsManager(projectsManager)
-    {
-        setFixedWidth(700);
-        setObjectName("StartupMenu");
+        {
+            setFixedWidth(700);
+            setObjectName("StartupMenu");
 
-        initUI();
-    }
+            initUI();
+        }
 
     void Menu::initUI()
     {
@@ -71,8 +71,7 @@ namespace DbNodes::Widgets::StartupWidget {
         verticalWidget->setFixedWidth(width() - 50);
     }
 
-    Project *Menu::createProjectWidget(const QString &path, const QString &title)
-    {
+    Project *Menu::createProjectWidget(const QString &path, const QString &title) {
         auto *project = new Project(title, path, !Saving::SaveManager::fileExists(path),this);
 
         connect(project, &Project::deleteItSignal, this, &Menu::deleteProject);
@@ -84,8 +83,7 @@ namespace DbNodes::Widgets::StartupWidget {
         return project;
     }
 
-    void Menu::deleteProject(const QString &path)
-    {
+    void Menu::deleteProject(const QString &path) {
         projects.value(path)->deleteLater();
         projects.remove(path);
         projectsManager->removeProject(path);
@@ -94,8 +92,7 @@ namespace DbNodes::Widgets::StartupWidget {
         emit updateMenuSignal();
     }
 
-    void Menu::fillProjectsViewContainer()
-    {
+    void Menu::fillProjectsViewContainer() {
         deleteProjects();
 
         foreach (const QString &path, projectsManager->getProjectsMap().keys()) {
@@ -108,8 +105,7 @@ namespace DbNodes::Widgets::StartupWidget {
         emit updateMenuSignal();
     }
 
-    void Menu::deleteProjects()
-    {
+    void Menu::deleteProjects() {
         foreach (const QString &key, projects.keys()) {
             projects.value(key)->deleteLater();
         }

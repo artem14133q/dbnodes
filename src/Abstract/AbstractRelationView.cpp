@@ -15,8 +15,7 @@ namespace DbNodes::Abstract {
         Nodes::Table::ColumnPrt fkColumn
     ): QWidget(parent), fkColumn(std::move(fkColumn)), pkColumn(std::move(pkColumn)) {}
 
-    QMenu * AbstractRelationView::createContextMenu()
-    {
+    QMenu * AbstractRelationView::createContextMenu() {
         auto *contextMenu = new QMenu();
         contextMenu->setStyleSheet(Helper::getStyleFromFile("tableMenu"));
 
@@ -47,22 +46,17 @@ namespace DbNodes::Abstract {
 
     void AbstractRelationView::updateRelation(QPainter &painter, QPainterPath &path) {}
 
-    Dictionaries::RelationTypesDictionary::Type AbstractRelationView::getCurrentTypeId()
-    {
+    Dictionaries::RelationTypesDictionary::Type AbstractRelationView::getCurrentTypeId() {
         return Dictionaries::RelationTypesDictionary::Type::Undefined;
     }
 
-    bool AbstractRelationView::hasRelationPositionType()
-    {
+    bool AbstractRelationView::hasRelationPositionType() {
         return false;
     }
 
-    void AbstractRelationView::setRelationPositionType(
-        const Dictionaries::RelationPositionsDictionary::Type &type
-    ) {}
+    void AbstractRelationView::setRelationPositionType(const Dictionaries::RelationPositionsDictionary::Type &type) {}
 
-    Dictionaries::RelationPositionsDictionary::Type AbstractRelationView::relationPositionType()
-    {
+    Dictionaries::RelationPositionsDictionary::Type AbstractRelationView::relationPositionType() {
         return Dictionaries::RelationPositionsDictionary::Type::Undefined;
     }
 }

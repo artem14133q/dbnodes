@@ -10,8 +10,7 @@ namespace DbNodes::Utils::String {
 
     StrUtil::StrUtil(QObject *object) : Utils::AbstractUtil(object) {}
 
-    QString StrUtil::strLimit(const QString &string, int limit, const QString& replace)
-    {
+    QString StrUtil::strLimit(const QString &string, int limit, const QString& replace) {
         if (string.length() <= limit) {
             return string;
         }

@@ -19,17 +19,18 @@ namespace DbNodes::Relations {
         const Nodes::Table::ColumnPrt &fkColumn,
         const Dictionaries::RelationPositionsDictionary::Type &relationPosition,
         QWidget *parent
-    ): Abstract::AbstractRelationView(parent, pkColumn, fkColumn), relationPosition(relationPosition) {
-        setObjectName("RelationLink");
-        setFixedHeight(26);
-        setStyleSheet(Helper::getStyleFromFile("relationLink"));
-        initUI();
-        setSidePositionsName(getNextRelationPositionType(relationPosition));
-        adjustSize();
-    }
+    ): Abstract::AbstractRelationView(parent, pkColumn, fkColumn),
+        relationPosition(relationPosition)
+        {
+            setObjectName("RelationLink");
+            setFixedHeight(26);
+            setStyleSheet(Helper::getStyleFromFile("relationLink"));
+            initUI();
+            setSidePositionsName(getNextRelationPositionType(relationPosition));
+            adjustSize();
+        }
 
-    void RelationLink::initUI()
-    {
+    void RelationLink::initUI() {
         auto *layout = new QHBoxLayout();
 
         #if QT_VERSION_MAJOR == 5
@@ -58,8 +59,7 @@ namespace DbNodes::Relations {
         setLayout(layout);
     }
 
-    void RelationLink::contextMenuEvent(QContextMenuEvent *event)
-    {
+    void RelationLink::contextMenuEvent(QContextMenuEvent *event) {
         auto *contextMenu = createContextMenu();
 
         switchSideAction = contextMenu->addAction(sidePositionName);
@@ -79,8 +79,7 @@ namespace DbNodes::Relations {
                 .arg(Dictionaries::RelationPositionsDictionary::getValue(position).toString());
     }
 
-    void RelationLink::updateRelation(QPainter &, QPainterPath &)
-    {
+    void RelationLink::updateRelation(QPainter &, QPainterPath &) {
         auto fkParams = fkColumn->getDrawParams();
         auto fkPos = fkParams.first;
 
@@ -105,26 +104,22 @@ namespace DbNodes::Relations {
         }
     }
 
-    void RelationLink::switchPosition()
-    {
+    void RelationLink::switchPosition() {
         setSidePositionsName(relationPosition);
         relationPosition = getNextRelationPositionType(relationPosition);
 
         parentWidget()->update();
     }
 
-    Dictionaries::RelationTypesDictionary::Type RelationLink::getCurrentTypeId()
-    {
+    Dictionaries::RelationTypesDictionary::Type RelationLink::getCurrentTypeId() {
         return Dictionaries::RelationTypesDictionary::Type::Link;
     }
 
-    bool RelationLink::hasRelationPositionType()
-    {
+    bool RelationLink::hasRelationPositionType() {
         return true;
     }
 
-    Dictionaries::RelationPositionsDictionary::Type RelationLink::relationPositionType()
-    {
+    Dictionaries::RelationPositionsDictionary::Type RelationLink::relationPositionType() {
         return relationPosition;
     }
 

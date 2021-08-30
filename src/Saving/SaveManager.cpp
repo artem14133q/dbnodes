@@ -15,8 +15,12 @@
 #include "QString"
 #include "QFileDialog"
 #include "QFile"
-#include "QDebug"
 #include "QPair"
+#include "config.h"
+
+#if APP_DEBUG
+#include "QDebug"
+#endif
 
 #include "ExceptionModal.h"
 
@@ -24,25 +28,23 @@ namespace DbNodes::Saving {
 
     SaveManager::SaveManager(QWidget *parent): QObject(parent) {}
 
-    QPair<QString, QByteArray> SaveManager::openFile()
-    {
+    QPair<QString, QByteArray> SaveManager::openFile() {
         auto filePath = QFileDialog::getOpenFileName(
             nullptr,
             tr("Open File"),
             // TODO: create class to generate paths for different os (todo_path_generator)
-            "/home/" + qgetenv("USER") + "/file.dbn",
+            USER_FOLDER_PATH + QString("/") + qgetenv("USER") + "/file.dbn",
             tr("DbNodes File (*.dbn)")
         );
 
         if (filePath == "") {
-            return QPair<QString, QByteArray>();
+            return {};
         }
 
-        return QPair<QString, QByteArray>(filePath, readFile(filePath));
+        return {filePath, readFile(filePath)};
     }
 
-    QPair<QString, QByteArray> SaveManager::getFileContent(const QString &path)
-    {
+    QPair<QString, QByteArray> SaveManager::getFileContent(const QString &path) {
         if (path == nullptr) {
             auto pair = openFile();
             lastOpenedPath = pair.first;
@@ -50,17 +52,16 @@ namespace DbNodes::Saving {
         }
 
         lastOpenedPath = path;
-        return QPair<QString, QByteArray>(path, readFile(path));
+        return {path, readFile(path)};
     }
 
-    QString SaveManager::createNewFile(const QString &path)
-    {
+    QString SaveManager::createNewFile(const QString &path) {
         if (path == nullptr) {
             return QFileDialog::getSaveFileName(
                 nullptr,
                 tr("Save File"),
                 // TODO: (todo_path_generator)
-                "/home/" + qgetenv("USER") + "/new_file.dbn",
+                USER_FOLDER_PATH + QString("/") + qgetenv("USER") + "/new_file.dbn",
                 tr("DbNodes File (*.dbn)")
             );
         } else {
@@ -77,8 +78,7 @@ namespace DbNodes::Saving {
         return path;
     }
 
-    void SaveManager::setFileContent(const QString &path, const QByteArray &content)
-    {
+    void SaveManager::setFileContent(const QString &path, const QByteArray &content) {
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             generateException(Dictionaries::OpenFileExceptionsDictionary::Type::CanNotOpenFile, path);
@@ -87,21 +87,13 @@ namespace DbNodes::Saving {
         file.close();
     }
 
-    QString SaveManager::getLastOpenFilePath()
-    {
-        return lastOpenedPath;
-    }
-
-    bool SaveManager::fileExists(const QString &path)
-    {
+    bool SaveManager::fileExists(const QString &path) {
         QFile file(path);
 
         return file.exists();
     }
 
-    void SaveManager::createDirsInPath(const QString &path)
-    {
-        // TODO: (todo_path_generator)
+    void SaveManager::createDirsInPath(const QString &path) {
         auto folders = path.split("/");
 
         QRegExp exp("\\w+.\\w+");
@@ -127,8 +119,7 @@ namespace DbNodes::Saving {
         }
     }
 
-    QByteArray SaveManager::readFile(const QString &path)
-    {
+    QByteArray SaveManager::readFile(const QString &path) {
         QByteArray fileString("");
         QFile file(path);
 

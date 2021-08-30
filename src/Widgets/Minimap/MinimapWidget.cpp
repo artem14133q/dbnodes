@@ -53,8 +53,7 @@ namespace DbNodes::Widgets::Minimap{
         show();
     }
 
-    void MinimapWidget::initUI(const QList<Abstract::NodePtr> &nodes)
-    {
+    void MinimapWidget::initUI(const QList<Abstract::NodePtr> &nodes) {
         setStyleSheet(Helper::getStyleFromFile("minimapWidget"));
 
         auto vl = new QVBoxLayout();
@@ -98,40 +97,33 @@ namespace DbNodes::Widgets::Minimap{
         setLayout(vl);
     }
 
-    void MinimapWidget::moveIndicator(const QPoint &pos)
-    {
+    void MinimapWidget::moveIndicator(const QPoint &pos) {
         if (underMouse()) return;
 
         minimapWorkingArea->movableRect->restrictedMove(pos.x(), pos.y());
     }
 
-    QPoint MinimapWidget::getIndicatorPos()
-    {
+    QPoint MinimapWidget::getIndicatorPos() {
         return minimapWorkingArea->movableRect->pos();
     }
 
-    void MinimapWidget::mousePressEvent(QMouseEvent *event)
-    {
+    void MinimapWidget::mousePressEvent(QMouseEvent *event) {
         event->ignore();
     }
 
-    void MinimapWidget::moveToPositionProxySignal(const QPoint &pos)
-    {
+    void MinimapWidget::moveToPositionProxySignal(const QPoint &pos) {
         emit moveToPositionSignal(pos);
     }
 
-    int MinimapWidget::prepareSize(const int &size)
-    {
+    int MinimapWidget::prepareSize(const int &size) {
         return size / scaleCoefficient;
     }
 
-    void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
-    {
+    void MinimapWidget::mouseMoveEvent(QMouseEvent *event) {
         event->ignore();
     }
 
-    void MinimapWidget::updatePos(QWidget *mappedWidget)
-    {
+    void MinimapWidget::updatePos(QWidget *mappedWidget) {
         using Dictionaries::MinimapPositionsDictionary;
 
         int newX = 0;
@@ -156,9 +148,8 @@ namespace DbNodes::Widgets::Minimap{
         move(newX, newY);
     }
 
-    void MinimapWidget::calculateSize(int size)
-    {
-        scaleCoefficient = largeSize / (float)size;
+    void MinimapWidget::calculateSize(int size) {
+        scaleCoefficient = largeSize / size;
 
         setFixedSize(
             workAreaSize.width() / scaleCoefficient + ADD_WIDTH,
@@ -166,8 +157,7 @@ namespace DbNodes::Widgets::Minimap{
         );
     }
 
-    void MinimapWidget::calculateWorkingAreaSize()
-    {
+    void MinimapWidget::calculateWorkingAreaSize() {
         minimapWorkingArea->setFixedSize(
             workAreaSize.width() / scaleCoefficient,
             workAreaSize.height() / scaleCoefficient

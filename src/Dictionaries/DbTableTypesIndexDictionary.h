@@ -9,25 +9,21 @@
 
 namespace DbNodes::Dictionaries {
 
-    struct DbTableTypesIndexDictionary: public Abstract::Dictionary<int, DbTableTypesIndexDictionary>
-    {
-        public:
-            enum Type {
-                Integer,
-                Tinyint,
-                Bigint
-            };
+    struct DbTableTypesIndexDictionary: public Abstract::Dictionary<int, DbTableTypesIndexDictionary> {
+    public:
+        enum Type {
+            Integer,
+            Tinyint,
+            Bigint
+        };
 
-            /**
-             * @return autoincrement database types dictionary
-             */
-            static DictMap getDictionary() {
-                return {
-                    { Integer  ,   "integer"   },
-                    { Tinyint  ,   "tinyint"   },
-                    { Bigint   ,   "bigint"    },
-                };
+        static DictMap getDictionary() {
+            return {
+                { Integer  ,   "integer"   },
+                { Tinyint  ,   "tinyint"   },
+                { Bigint   ,   "bigint"    },
             };
+        };
     };
 
 }

@@ -10,8 +10,7 @@
 #include "DbTableTypesIndexDictionary.h"
 #include "TableNode.h"
 
-namespace DbNodes::Utils::TableGenerator
-{
+namespace DbNodes::Utils::TableGenerator {
     using ColumnType = Nodes::Table::Column::Type;
     using Column = Nodes::Table::Column;
     using Table = Nodes::TableNode;

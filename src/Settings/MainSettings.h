@@ -12,29 +12,28 @@
 
 namespace DbNodes::Settings {
 
-    class MainSettings: public QSettings
-    {
-        public:
-            typedef std::function<void (const QVariant &)> ConnectorCallback;
+    class MainSettings: public QSettings {
+    public:
+        typedef std::function<void (const QVariant &)> ConnectorCallback;
 
-        private:
-            QHash<QString, ConnectorCallback> callbacks;
+    private:
+        QHash<QString, ConnectorCallback> callbacks;
 
-            static MainSettings *instance;
-            MainSettings();
+        static MainSettings *instance;
+        MainSettings();
 
-            void resolveCallback(const QString &key, const QVariant &value);
-            bool has(const QString &key);
+        void resolveCallback(const QString &key, const QVariant &value);
+        bool has(const QString &key);
 
-        public:
-            static MainSettings *getInstance();
-            Q_DISABLE_COPY(MainSettings)
+    public:
+        static MainSettings *getInstance();
+        Q_DISABLE_COPY(MainSettings)
 
-            void subscribe(const QString &settingName, const ConnectorCallback &callback);
-            void unBind(const QString &settingName);
+        void subscribe(const QString &settingName, const ConnectorCallback &callback);
+        void unBind(const QString &settingName);
 
-            static QVariant get(const QString &key);
-            static void set(const QString &key, const QVariant &value);
+        static QVariant get(const QString &key);
+        static void set(const QString &key, const QVariant &value);
     };
 
 }

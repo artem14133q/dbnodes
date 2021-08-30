@@ -6,24 +6,11 @@
 
 namespace DbNodes::Utils::RelationPath {
 
-    /**
-     * RelationPath constructor
-     * @param parent
-     */
-    Render::Render(QWidget *parent): AbstractUtil(parent)
-    {
+    Render::Render(QWidget *parent): AbstractUtil(parent) {
         parentWidget = parent;
     }
 
-    /**
-     * Draw path for relation
-     * @param painter (Default painter)
-     * @param path (Type of drawing path)
-     * @param startPoint (Start of drawing path)
-     * @param endPoint (Target of drawing path)
-     */
-    void Render::drawPath(QPainter &painter, QPainterPath &path, const QPoint &startPoint, const QPoint &endPoint)
-    {
+    void Render::drawPath(QPainter &painter, QPainterPath &path, const QPoint &startPoint, const QPoint &endPoint) {
         int cP12_x = endPoint.x() + (startPoint.x() - endPoint.x()) / 2;
 
         path.moveTo(endPoint.x(), endPoint.y());
@@ -32,12 +19,6 @@ namespace DbNodes::Utils::RelationPath {
         painter.drawPath(path);
     }
 
-    /**
-     * Determinate position of relation widget
-     * @param startParams (position and width of drawing table)
-     * @param direction (direction of drawing start position)
-     * @return data for correct drawing relation path
-     */
     QPoint Render::calculateForWidget(
         Abstract::ParamsForDrawing &startParams,
         const Abstract::PathDirection &direction
@@ -72,12 +53,6 @@ namespace DbNodes::Utils::RelationPath {
         return movePoint;
     }
 
-    /**
-     * Transform start and end positions of path depending on drawing direction
-     * @param startParams (position and width of target index column)
-     * @param endParams (position and width of related foreign column)
-     * @param direction (drawing path direction)
-     */
     void Render::calculatePosition(
         Abstract::ParamsForDrawing &startParams,
         Abstract::ParamsForDrawing &endParams,
@@ -93,14 +68,7 @@ namespace DbNodes::Utils::RelationPath {
         }
     }
 
-    /**
-     * Determinate direction of drawing path
-     * @param startPoint (point of related column)
-     * @param endPoint (point of index column)
-     * @return direction
-     */
-    Abstract::PathDirection Render::determinateDirection(const QPoint &startPoint, const QPoint &endPoint)
-    {
+    Abstract::PathDirection Render::determinateDirection(const QPoint &startPoint, const QPoint &endPoint) {
         if (endPoint.x() < startPoint.x()) {
             return Abstract::PathDirection::rightToLeft;
         } else {

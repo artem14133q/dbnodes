@@ -14,33 +14,32 @@
 
 namespace DbNodes::Utils::RelationPath {
 
-    class Render : public AbstractUtil
-    {
-        private:
-            QWidget *parentWidget;
+    class Render : public AbstractUtil {
+    private:
+        QWidget *parentWidget;
 
-        public:
-            explicit Render(QWidget *parent);
+    public:
+        explicit Render(QWidget *parent);
 
-            void drawPath(
-                QPainter &painter,
-                QPainterPath &path,
-                const QPoint &startPoint,
-                const QPoint &endPoint
-            );
+        void drawPath(
+            QPainter &painter,
+            QPainterPath &path,
+            const QPoint &startPoint,
+            const QPoint &endPoint
+        );
 
-            void calculatePosition(
-                Abstract::ParamsForDrawing &startParams,
-                Abstract::ParamsForDrawing &endParams,
-                const Abstract::PathDirection &direction
-            );
+        void calculatePosition(
+            Abstract::ParamsForDrawing &startParams,
+            Abstract::ParamsForDrawing &endParams,
+            const Abstract::PathDirection &direction
+        );
 
-            QPoint calculateForWidget(
-                Abstract::ParamsForDrawing &startParams,
-                const Abstract::PathDirection &direction
-            );
+        QPoint calculateForWidget(
+            Abstract::ParamsForDrawing &startParams,
+            const Abstract::PathDirection &direction
+        );
 
-            Abstract::PathDirection determinateDirection(const QPoint &startPoint, const QPoint &endPoint);
+        Abstract::PathDirection determinateDirection(const QPoint &startPoint, const QPoint &endPoint);
     };
 
 }

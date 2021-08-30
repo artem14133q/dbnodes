@@ -9,16 +9,15 @@
 
 namespace DbNodes::Modals {
 
-    class ExceptionModal: public Abstract::AbstractModal
-    {
-        public:
-            explicit ExceptionModal(const QString &title, const QString &text, QWidget *parent = nullptr);
+    class ExceptionModal: public Abstract::AbstractModal {
+    public:
+        explicit ExceptionModal(const QString &title, const QString &text, QWidget *parent = nullptr);
 
-        private:
-            void initUI(const QString &text);
+    private:
+        void initUI(const QString &text);
 
-            void confirm() override;
-            void exit() override;
+        void confirm() override;
+        void exit() override;
     };
 
 }

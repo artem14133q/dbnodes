@@ -24,8 +24,7 @@ namespace DbNodes::Relations {
         initUI();
     }
 
-    void DeleteRelationButton::initUI()
-    {
+    void DeleteRelationButton::initUI() {
         auto delButton = new QPushButton("X", this);
         delButton->setFixedSize(16, 16);
         delButton->move(0, 0);

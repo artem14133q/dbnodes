@@ -12,23 +12,22 @@ typedef QPair<QPoint, QPoint> PointPair;
 
 namespace DbNodes::Relations::Path {
 
-    class PathPoint : public Abstract::AbstractNode, public Abstract::IHasPathConnectors
-    {
-        private:
-            void initUI();
+    class PathPoint : public Abstract::AbstractNode, public Abstract::IHasPathConnectors {
+    private:
+        void initUI();
 
-        public:
-            enum CreatePathPointDirection {
-                Left,
-                Right
-            };
+    public:
+        enum CreatePathPointDirection {
+            Left,
+            Right
+        };
 
-            explicit PathPoint(QWidget *parent = nullptr);
+        explicit PathPoint(QWidget *parent = nullptr);
 
-            Abstract::ParamsForDrawing getDrawParams() override;
+        Abstract::ParamsForDrawing getDrawParams() override;
 
-        protected:
-            void contextMenuEvent(QContextMenuEvent *event) override;
+    protected:
+        void contextMenuEvent(QContextMenuEvent *event) override;
     };
 
     typedef QPointer<Relations::Path::PathPoint> RelationPathPointPtr;

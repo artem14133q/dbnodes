@@ -14,21 +14,20 @@
 
 namespace DbNodes::Modals {
 
-    class Settings : public Abstract::AbstractSettingModal
-    {
-        public:
-            explicit Settings(QWidget *parent = nullptr);
+    class Settings : public Abstract::AbstractSettingModal {
+    public:
+        explicit Settings(QWidget *parent = nullptr);
 
-        private:
-            QPushButton *pbApply{};
-            QPushButton *pbOk{};
+    private:
+        QPushButton *pbApply{};
+        QPushButton *pbOk{};
 
-            void initSettingsUi() override;
+        void initSettingsUi() override;
 
-            void accept(const bool &close) override;
+        void accept(const bool &close) override;
 
-        protected:
-            void enableConfirm(const bool &enable) override;
+    protected:
+        void enableConfirm(const bool &enable) override;
     };
 
 }

@@ -10,19 +10,18 @@
 
 namespace DbNodes::Widgets::StartupWidget {
 
-    class MainWidget: public Abstract::DrawableWidget
-    {
-        Q_OBJECT
+    class MainWidget: public Abstract::DrawableWidget {
+    Q_OBJECT
 
-        private:
-            void initUI(Saving::ProjectListFileResolver *projectsManager);
+    private:
+        void initUI(Saving::ProjectListFileResolver *projectsManager);
 
-        public:
-            explicit MainWidget(Saving::ProjectListFileResolver *projectsManager, QWidget *parent = nullptr);
+    public:
+        explicit MainWidget(Saving::ProjectListFileResolver *projectsManager, QWidget *parent = nullptr);
 
-        public: signals:
-            void openProjectSignal(const QString &path);
-            void updateMenuSignal();
+    public: signals:
+        void openProjectSignal(const QString &path);
+        void updateMenuSignal();
     };
 
 }

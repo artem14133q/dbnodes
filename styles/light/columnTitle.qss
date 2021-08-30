@@ -7,4 +7,5 @@ QToolTip {
     background: #f2f2f2;
     padding: 1px;
     border: 1px solid #207dab;
+    color: #2B2B2B;
 }

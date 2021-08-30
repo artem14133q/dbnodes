@@ -12,23 +12,22 @@
 
 namespace DbNodes::Relations {
 
-    class RelationFactory
-    {
-        private:
-            QHash<Dictionaries::RelationTypesDictionary::Type, std::function< RelationProvider * ( void )> > callbacks;
+    class RelationFactory {
+    private:
+        QHash<Dictionaries::RelationTypesDictionary::Type, std::function< RelationProvider * ( void )> > callbacks;
 
-        public:
-            explicit RelationFactory();
+    public:
+        explicit RelationFactory();
 
-            void registerProvider(
-                const Dictionaries::RelationTypesDictionary::Type &id,
-                const std::function< RelationProvider * ( void )> &callback
-            );
+        void registerProvider(
+            const Dictionaries::RelationTypesDictionary::Type &id,
+            const std::function< RelationProvider * ( void )> &callback
+        );
 
-            Abstract::AbstractRelationView *resolveFactory(
-                const Dictionaries::RelationTypesDictionary::Type &id,
-                const std::function< void ( RelationProvider * )> &callback
-            );
+        Abstract::AbstractRelationView *resolveFactory(
+            const Dictionaries::RelationTypesDictionary::Type &id,
+            const std::function< void ( RelationProvider * )> &callback
+        );
     };
 
 }

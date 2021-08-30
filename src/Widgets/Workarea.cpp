@@ -19,8 +19,7 @@
 
 namespace DbNodes::Widgets {
 
-    WorkArea::WorkArea(QWidget *parent): QWidget(parent)
-    {
+    WorkArea::WorkArea(QWidget *parent): QWidget(parent) {
         setObjectName("WorkArea");
 
         selectionRepository = new Utils::MultipleSelection::Repository(this);
@@ -33,8 +32,7 @@ namespace DbNodes::Widgets {
         });
     }
 
-    void WorkArea::contextMenuEvent(QContextMenuEvent* event)
-    {
+    void WorkArea::contextMenuEvent(QContextMenuEvent* event) {
         // Define context menu
         auto *menu = new QMenu();
         menu->setStyleSheet(Helper::getStyleFromFile("workAreaMenu"));
@@ -53,8 +51,7 @@ namespace DbNodes::Widgets {
         menu->exec(mapToGlobal(event->pos()));
     }
 
-    void WorkArea::paintEvent(QPaintEvent *)
-    {
+    void WorkArea::paintEvent(QPaintEvent *) {
         // Init painter
         QPainter painter(this);
         // Set antialiasing for arrows
@@ -136,8 +133,7 @@ namespace DbNodes::Widgets {
         return relation;
     }
 
-    Nodes::Table::ColumnPrt WorkArea::findColumn(int type, const QString &columnId)
-    {
+    Nodes::Table::ColumnPrt WorkArea::findColumn(int type, const QString &columnId) {
         Nodes::Table::ColumnPrtVector columns;
 
         if (type == WorkArea::GET_PK_COLUMNS)
@@ -153,8 +149,7 @@ namespace DbNodes::Widgets {
     }
 
     // Clean Columns list for delete pointer if pointer is empty
-    void WorkArea::cleanColumnList(Nodes::Table::ColumnPrtVector &list)
-    {
+    void WorkArea::cleanColumnList(Nodes::Table::ColumnPrtVector &list) {
         QVectorIterator<Nodes::Table::ColumnPrt> listIterator(list);
         while (listIterator.hasNext()) {
             auto column = listIterator.next();
@@ -162,16 +157,14 @@ namespace DbNodes::Widgets {
         }
     }
 
-    void WorkArea::setColumn(Nodes::Table::ColumnPrt &column)
-    {
+    void WorkArea::setColumn(Nodes::Table::ColumnPrt &column) {
         if (column->getColumnType() == Nodes::Table::Column::Type::PrimaryKey)
             pkList.push_back(column);
         else if (column->getColumnType() == Nodes::Table::Column::Type::ForeignKey)
             fkList.push_back(column);
     }
 
-    Nodes::TablePtr WorkArea::createTable(const QPoint &pos, const QString &id, const QString &name)
-    {
+    Nodes::TablePtr WorkArea::createTable(const QPoint &pos, const QString &id, const QString &name) {
         Nodes::TablePtr table;
 
         if (id == nullptr || name == nullptr) {
@@ -192,8 +185,7 @@ namespace DbNodes::Widgets {
         return table;
     }
 
-    QList<Nodes::TablePtr> WorkArea::getAllTables()
-    {
+    QList<Nodes::TablePtr> WorkArea::getAllTables() {
         QList<Nodes::TablePtr> tables;
 
         foreach (const Abstract::NodePtr &node, getAllNodes()) {
@@ -208,20 +200,17 @@ namespace DbNodes::Widgets {
         return tables;
     }
 
-    QList<Abstract::NodePtr> WorkArea::getAllNodes()
-    {
+    QList<Abstract::NodePtr> WorkArea::getAllNodes() {
         Helper::removeDeletedItems<Abstract::AbstractNode>(nodeList);
 
         return nodeList;
     }
 
-    QString WorkArea::getProjectName()
-    {
+    QString WorkArea::getProjectName() {
         return projectName;
     }
 
-    void WorkArea::scrollToTable(const QString &tableId)
-    {
+    void WorkArea::scrollToTable(const QString &tableId) {
         Nodes::TablePtr table = findTable(tableId);
 
         auto *mainWindow = Helper::findParentWidgetRecursive(this, "MainWindow");
@@ -238,8 +227,7 @@ namespace DbNodes::Widgets {
         QTimer::singleShot(0, table, SLOT (setFocus()));
     }
 
-    Nodes::TablePtr WorkArea::findTable(const QString &tableId)
-    {
+    Nodes::TablePtr WorkArea::findTable(const QString &tableId) {
         foreach (Nodes::TablePtr table, getAllTables()) {
             if (table->getTableId() == tableId) {
                 return table;
@@ -249,52 +237,44 @@ namespace DbNodes::Widgets {
         return nullptr;
     }
 
-    WorkArea::~WorkArea()
-    {
+    WorkArea::~WorkArea() {
         Helper::unBindSetting("rendering.antialiasing");
 
         deleteLater();
     }
 
-    const QList<Relations::RelationPtr> &WorkArea::getAllRelations()
-    {
+    const QList<Relations::RelationPtr> &WorkArea::getAllRelations() {
         return relations;
     }
 
-    void WorkArea::setProjectName(const QString &name)
-    {
+    void WorkArea::setProjectName(const QString &name) {
         projectName = name;
     }
 
-    void WorkArea::mousePressEvent(QMouseEvent *event)
-    {
+    void WorkArea::mousePressEvent(QMouseEvent *event) {
         if (event->button() == Qt::LeftButton) {
             selectionRepository->start(event->pos());
         }
     }
 
-    void WorkArea::mouseMoveEvent(QMouseEvent *event)
-    {
+    void WorkArea::mouseMoveEvent(QMouseEvent *event) {
         selectionRepository->move(event->pos(), getAllNodes());
     }
 
-    void WorkArea::mouseReleaseEvent(QMouseEvent *event)
-    {
+    void WorkArea::mouseReleaseEvent(QMouseEvent *event) {
         if (event->button() == Qt::LeftButton) {
             selectionRepository->stop();
         }
     }
 
-    void WorkArea::scrollToPosition(const QPoint &pos)
-    {
+    void WorkArea::scrollToPosition(const QPoint &pos) {
         auto *scrollWidget = dynamic_cast<QScrollArea *>(parentWidget()->parentWidget());
 
         scrollWidget->verticalScrollBar()->setValue(pos.y());
         scrollWidget->horizontalScrollBar()->setValue(pos.x());
     }
 
-    void WorkArea::createMinimap()
-    {
+    void WorkArea::createMinimap() {
         auto *scrollWidget = dynamic_cast<QScrollArea *>(parentWidget()->parentWidget());
 
         auto minimapPosition = Helper::getSettingValue("minimap.position").toInt();

@@ -14,8 +14,7 @@ namespace DbNodes::Utils::MultipleSelection {
 
     Repository::Repository(QWidget *parent): AbstractUtil(parent) {}
 
-    void Repository::unselectNodes()
-    {
+    void Repository::unselectNodes() {
         foreach (const Abstract::NodePtr &table, selectedNodes) {
             setSelectToNode(table, false);
         }
@@ -23,28 +22,24 @@ namespace DbNodes::Utils::MultipleSelection {
         selectedNodes.clear();
     }
 
-    void Repository::setSelectToNode(const Abstract::NodePtr &node, const bool &select)
-    {
+    void Repository::setSelectToNode(const Abstract::NodePtr &node, const bool &select) {
         auto unConstNode = const_cast<Abstract::NodePtr &>(node);
 
         unConstNode->setProperty("selected", select);
         unConstNode->style()->polish(unConstNode);
     }
 
-    void Repository::insertNodeToSelectionList(const Abstract::NodePtr &node)
-    {
+    void Repository::insertNodeToSelectionList(const Abstract::NodePtr &node) {
         if (!selectedNodes.contains(node)) {
             selectedNodes.push_back(node);
         }
     }
 
-    void Repository::removeNodeFromSelectionList(const Abstract::NodePtr &node)
-    {
+    void Repository::removeNodeFromSelectionList(const Abstract::NodePtr &node) {
         selectedNodes.removeAll(node);
     }
 
-    void Repository::moveSelectedNode(QObject *node, const QPoint &delta)
-    {
+    void Repository::moveSelectedNode(QObject *node, const QPoint &delta) {
         Helper::removeDeletedItems<Abstract::AbstractNode>(selectedNodes);
 
         foreach (const Abstract::NodePtr &currentNode, selectedNodes) {
@@ -58,8 +53,7 @@ namespace DbNodes::Utils::MultipleSelection {
         }
     }
 
-    void Repository::start(const QPoint &mousePos)
-    {
+    void Repository::start(const QPoint &mousePos) {
         mousePressed = true;
 
         mouseStartPos = mousePos;
@@ -73,8 +67,7 @@ namespace DbNodes::Utils::MultipleSelection {
         }
     }
 
-    void Repository::move(const QPoint &mousePos, const QList<Abstract::NodePtr> &nodes)
-    {
+    void Repository::move(const QPoint &mousePos, const QList<Abstract::NodePtr> &nodes) {
         if (mousePressed) {
             mouseCurrentPos = mousePos;
 
@@ -105,27 +98,23 @@ namespace DbNodes::Utils::MultipleSelection {
         }
     }
 
-    QWidget *Repository::parentWidget()
-    {
+    QWidget *Repository::parentWidget() {
         return dynamic_cast<QWidget *>(parent());
     }
 
-    void Repository::stop()
-    {
+    void Repository::stop() {
         mousePressed = false;
         parentWidget()->update();
     }
 
-    void Repository::drawSelectionRect(QPainter &painter)
-    {
+    void Repository::drawSelectionRect(QPainter &painter) {
         if (mousePressed) {
             painter.setPen(QPen(QColor(100, 100, 100), 2, Qt::DashLine, Qt::FlatCap));
             painter.drawRect(QRect(mouseStartPos, mouseCurrentPos));
         }
     }
 
-    void Repository::initDefaultsConnections(const Abstract::NodePtr &node)
-    {
+    void Repository::initDefaultsConnections(const Abstract::NodePtr &node) {
         Selectable *selectableNode = node->getSelectionUtil();
 
         connect(selectableNode, &Selectable::unSelectNodesSignal, this, &Repository::unselectNodes);
@@ -142,15 +131,13 @@ namespace DbNodes::Utils::MultipleSelection {
         });
     }
 
-    Repository::~Repository()
-    {
+    Repository::~Repository() {
         selectedNodes.clear();
 
         deleteLater();
     }
 
-    void Repository::deleteSelected()
-    {
+    void Repository::deleteSelected() {
         if(selectedNodes.isEmpty()) return;
 
         foreach (const Abstract::NodePtr &node, selectedNodes) {
@@ -162,8 +149,7 @@ namespace DbNodes::Utils::MultipleSelection {
         parentWidget()->update();
     }
 
-    void Repository::initDefaultActionsForUtil(QMenu *menu)
-    {
+    void Repository::initDefaultActionsForUtil(QMenu *menu) {
         auto deleteSelectedAction = menu->addAction("Delete selected");
         if (selectedNodes.isEmpty()) deleteSelectedAction->setDisabled(true);
 

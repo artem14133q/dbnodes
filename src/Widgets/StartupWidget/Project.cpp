@@ -14,15 +14,14 @@ namespace DbNodes::Widgets::StartupWidget {
 
     Project::Project(QString projectName, QString path, const bool &deleted, QWidget *parent)
         : DrawableWidget(parent), projectName(std::move(projectName)), path(std::move(path)), deleted(deleted)
-    {
-        setFixedHeight(80);
-        setObjectName("Project");
+        {
+            setFixedHeight(80);
+            setObjectName("Project");
 
-        initUi();
-    }
+            initUi();
+        }
 
-    void Project::initUi()
-    {
+    void Project::initUi() {
         setStyleSheet(Helper::getStyleFromFile("startupMenuItem"));
 
         setProperty("disabled", deleted);
@@ -69,15 +68,13 @@ namespace DbNodes::Widgets::StartupWidget {
         setLayout(layout);
     }
 
-    void Project::mousePressEvent(QMouseEvent *event)
-    {
+    void Project::mousePressEvent(QMouseEvent *event) {
         if (!deleted) {
             emit clicked();
         }
     }
 
-    QMenu *Project::createToolMenu(QToolButton *button)
-    {
+    QMenu *Project::createToolMenu(QToolButton *button) {
         auto menu = new QMenu(button);
         menu->setStyleSheet(Helper::getStyleFromFile("outline"));
 

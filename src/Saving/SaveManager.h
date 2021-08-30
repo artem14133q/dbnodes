@@ -12,34 +12,31 @@
 
 namespace DbNodes::Saving {
 
-    class SaveManager: public QObject
-    {
-        private:
-            QByteArray readFile(const QString &path);
+    class SaveManager: public QObject {
+    private:
+        QByteArray readFile(const QString &path);
 
-            QByteArray generateException(
-                const Dictionaries::OpenFileExceptionsDictionary::Type &exceptionType,
-                const QString &path = nullptr
-            );
+        QByteArray generateException(
+            const Dictionaries::OpenFileExceptionsDictionary::Type &exceptionType,
+            const QString &path = nullptr
+        );
 
-            QString lastOpenedPath = "";
+        QString lastOpenedPath = "";
 
-        public:
-            explicit SaveManager(QWidget *parent = nullptr);
-            Q_DISABLE_COPY(SaveManager)
+    public:
+        explicit SaveManager(QWidget *parent = nullptr);
+        Q_DISABLE_COPY(SaveManager)
 
-            QPair<QString, QByteArray> openFile();
+        QPair<QString, QByteArray> openFile();
 
-            static QString createNewFile(const QString &path = nullptr);
+        static QString createNewFile(const QString &path = nullptr);
 
-            QPair<QString, QByteArray> getFileContent(const QString &path = nullptr);
-            void setFileContent(const QString &path, const QByteArray &content);
+        QPair<QString, QByteArray> getFileContent(const QString &path = nullptr);
+        void setFileContent(const QString &path, const QByteArray &content);
 
-            static void createDirsInPath(const QString &path);
+        static void createDirsInPath(const QString &path);
 
-            static bool fileExists(const QString &path);
-
-            QString getLastOpenFilePath();
+        static bool fileExists(const QString &path);
     };
 
 }

@@ -7,70 +7,73 @@
 
 namespace DbNodes::Abstract {
 
-    AbstractNode::AbstractNode(QWidget *parent) : DrawableWidget(parent)
-    {
+    AbstractNode::AbstractNode(QWidget *parent) : DrawableWidget(parent) {
         setFocusPolicy(Qt::StrongFocus);
 
         selectable = new Utils::MultipleSelection::Selectable(this);
     }
 
     // Set old pos before moving
-    void AbstractNode::mousePressEvent(QMouseEvent* event)
-    {
+    void AbstractNode::mousePressEvent(QMouseEvent* event) {
         selectable->setClicked(true);
 
+        #if QT_VERSION_MAJOR == 6
+        oldPos = event->globalPosition();
+        #else
         oldPos = event->globalPos();
+        #endif
 
         isHandled = true;
     }
 
-    void AbstractNode::mouseMoveEvent(QMouseEvent *event)
-    {
-        if (isHandled) {
-            QPoint cursorPos = event->globalPos();
+    void AbstractNode::mouseMoveEvent(QMouseEvent *event) {
+        if (!isHandled) {
+            return;
+        }
 
-            QPoint delta(cursorPos - oldPos);
+        #if QT_VERSION_MAJOR == 6
+        QPointF cursorPos = event->globalPosition();
+        QPoint delta((cursorPos - oldPos).toPoint());
+        #else
+        QPoint cursorPos = event->globalPos();
+        QPoint delta(cursorPos - oldPos);
+        #endif
 
-            selectable->move(delta);
+        selectable->move(delta);
 
-            if (abroadHandle) {
-                auto localCursorPos = parentWidget()->mapFromGlobal(cursorPos);
+        if (abroadHandle) {
+            auto localCursorPos = parentWidget()->mapFromGlobal(cursorPos);
 
-                if (!geometry().contains(geometry().x(), localCursorPos.y())) {
-                    delta.ry() = 0;
-                }
-
-                if (!geometry().contains(localCursorPos.x(), geometry().y())) {
-                    delta.rx() = 0;
-                }
+            if (!geometry().contains(geometry().x(), (int) localCursorPos.y())) {
+                delta.ry() = 0;
             }
 
-            restrictedMove(delta.x() + x(), delta.y() + y());
-
-            oldPos = cursorPos;
-            parentWidget()->update();
+            if (!geometry().contains((int) localCursorPos.x(), geometry().y())) {
+                delta.rx() = 0;
+            }
         }
+
+        restrictedMove(delta.x() + x(), delta.y() + y());
+
+        oldPos = cursorPos;
+        parentWidget()->update();
     }
 
-    void AbstractNode::enableMoveRestrictions(const bool &enable)
-    {
+    void AbstractNode::enableMoveRestrictions(const bool &enable) {
         moveRestrictions = enable;
     }
 
-    Utils::MultipleSelection::Selectable *AbstractNode::getSelectionUtil()
-    {
+    Utils::MultipleSelection::Selectable *AbstractNode::getSelectionUtil() {
         return selectable;
     }
 
-    void AbstractNode::mouseReleaseEvent(QMouseEvent *event)
-    {
+    void AbstractNode::mouseReleaseEvent(QMouseEvent *event) {
         selectable->flush();
 
         isHandled = false;
     }
 
-    void AbstractNode::restrictedMove(int newX, int newY)
-    {
+    void AbstractNode::restrictedMove(int newX, int newY) {
         if (moveRestrictions) {
             if (newX < 0)
                 newX = 0;
@@ -88,18 +91,15 @@ namespace DbNodes::Abstract {
         move(newX, newY);
     }
 
-    void AbstractNode::restrictedMove(const QPoint &pos)
-    {
+    void AbstractNode::restrictedMove(const QPoint &pos) {
         restrictedMove(pos.x(), pos.y());
     }
 
-    NodePtr AbstractNode::toNode()
-    {
+    NodePtr AbstractNode::toNode() {
         return this;
     }
 
-    void AbstractNode::createDefaultActions(QMenu *menu)
-    {
+    void AbstractNode::createDefaultActions(QMenu *menu) {
         deleteNodeAction = menu->addAction("Delete");
 
         connect(deleteNodeAction, &QAction::triggered, this, [this] {
@@ -108,13 +108,11 @@ namespace DbNodes::Abstract {
         });
     }
 
-    void AbstractNode::rememberPosWhenAbroad(const bool &enable)
-    {
+    void AbstractNode::rememberPosWhenAbroad(const bool &enable) {
         abroadHandle = enable;
     }
 
-    void AbstractNode::emitDelete()
-    {
+    void AbstractNode::emitDelete() {
         emit deleteNodeSignal();
     }
 }

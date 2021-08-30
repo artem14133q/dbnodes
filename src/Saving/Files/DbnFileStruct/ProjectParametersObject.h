@@ -9,14 +9,13 @@
 
 namespace DbNodes::Saving::DbnFileStruct {
 
-    class ProjectParametersObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(ProjectParametersObject)
+    class ProjectParametersObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(ProjectParametersObject)
 
-            STRING_PROPERTY("name", getName, setName)
-            INT_PROPERTY("workAreaWidth", getWorkAreaWidth, setWorkAreaWidth)
-            INT_PROPERTY("workAreaHeight", getWorkAreaHeight, setWorkAreaHeight)
+        STRING_PROPERTY("name", getName, setName)
+        INT_PROPERTY("workAreaWidth", getWorkAreaWidth, setWorkAreaWidth)
+        INT_PROPERTY("workAreaHeight", getWorkAreaHeight, setWorkAreaHeight)
     };
 
 }

@@ -10,33 +10,32 @@
 
 namespace DbNodes::Utils::ListMoving {
 
-    class Moving: public AbstractUtil
-    {
-        private:
-            bool isMovable = false;
-            QWidget *moveHandle;
+    class Moving: public AbstractUtil {
+    private:
+        bool isMovable = false;
+        QWidget *moveHandle;
 
-        public:
-            explicit Moving(QWidget *moveHandle, QWidget *parentWidget = nullptr);
+    public:
+        explicit Moving(QWidget *moveHandle, QObject *object = nullptr);
 
-            QWidget *parentWidget;
+        QWidget *parentWidget();
 
-            void enable();
-            bool move();
-            void replace(const std::function<void ()> &callback);
+        void enable();
+        bool move();
+        void replace(const std::function<void ()> &callback);
 
-            template<class T>
-            T *getWidgetUnderMouse(const std::function<bool (T *)> &filter)
+        template<class T>
+        T *getWidgetUnderMouse(const std::function<bool (T *)> &filter)
+        {
+            foreach(T *w, parentWidget()->parentWidget()->findChildren<T *>())
             {
-                foreach(T *w, parentWidget->parentWidget()->findChildren<T *>())
-                {
-                    if (filter(w)) {
-                        return w;
-                    }
+                if (filter(w)) {
+                    return w;
                 }
+            }
 
-                return nullptr;
-            };
+            return nullptr;
+        };
     };
 
 }

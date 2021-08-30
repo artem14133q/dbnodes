@@ -10,16 +10,15 @@
 
 namespace DbNodes::Saving::DbnFileStruct {
 
-    class TableObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(TableObject)
+    class TableObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(TableObject)
 
-            STRING_PROPERTY("id", getId, setId)
-            STRING_PROPERTY("name", getName, setName)
-            INT_PROPERTY("x", getX, setX)
-            INT_PROPERTY("y", getY, setY)
-            LIST_PROPERTY(ColumnObject, "columns", getColumns, setColumns)
+        STRING_PROPERTY("id", getId, setId)
+        STRING_PROPERTY("name", getName, setName)
+        INT_PROPERTY("x", getX, setX)
+        INT_PROPERTY("y", getY, setY)
+        LIST_PROPERTY(ColumnObject, "columns", getColumns, setColumns)
     };
 
 

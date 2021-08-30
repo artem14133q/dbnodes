@@ -15,62 +15,60 @@
 
 namespace DbNodes::Relations {
 
-    class Relation: public QObject
-    {
-        Q_OBJECT
+    class Relation: public QObject {
+    Q_OBJECT
 
-        public:
-            explicit Relation(
-                QWidget *parent,
-                QString  relationId,
-                Dictionaries::RelationTypesDictionary::Type relationTypeId,
-                Nodes::Table::ColumnPrt &pkColumn,
-                Nodes::Table::ColumnPrt &fkColumn
-            );
+    public:
+        explicit Relation(
+            QWidget *parent,
+            QString  relationId,
+            Dictionaries::RelationTypesDictionary::Type relationTypeId,
+            Nodes::Table::ColumnPrt &pkColumn,
+            Nodes::Table::ColumnPrt &fkColumn
+        );
 
-            Nodes::Table::ColumnPrt getPkColumn();
-            Nodes::Table::ColumnPrt getFkColumn();
+        Nodes::Table::ColumnPrt getPkColumn();
+        Nodes::Table::ColumnPrt getFkColumn();
 
-            [[nodiscard]]
-            int getRelationTypeId() const;
+        [[nodiscard]]
+        int getRelationTypeId() const;
 
-            bool checkIsRelationValid();
-            const QString &getRelationId();
+        bool checkIsRelationValid();
+        const QString &getRelationId();
 
-            void updateRelation(QPainter &painter, QPainterPath &path);
-            void raise();
+        void updateRelation(QPainter &painter, QPainterPath &path);
+        void raise();
 
-            int getRelationPositionType();
-            void setRelationPositionType(const Dictionaries::RelationPositionsDictionary::Type &type);
+        int getRelationPositionType();
+        void setRelationPositionType(const Dictionaries::RelationPositionsDictionary::Type &type);
 
-            Abstract::AbstractRelationView *getAbstractRelationView();
+        Abstract::AbstractRelationView *getAbstractRelationView();
 
-            ~Relation() override;
+        ~Relation() override;
 
-        public slots:
-            void deleteRelation();
-            void goToRelationTableSignal();
-            void enableRelationType(const Dictionaries::RelationTypesDictionary::Type &relationTypeId);
-            void createNodeInWorkAreaProxy(Abstract::AbstractNode *node);
-            void deleteNodeInWorkAreaProxy(Abstract::AbstractNode *node);
+    public slots:
+        void deleteRelation();
+        void goToRelationTableSignal();
+        void enableRelationType(const Dictionaries::RelationTypesDictionary::Type &relationTypeId);
+        void createNodeInWorkAreaProxy(Abstract::AbstractNode *node);
+        void deleteNodeInWorkAreaProxy(Abstract::AbstractNode *node);
 
-        private:
-            Abstract::AbstractRelationView *relationView{};
+    private:
+        Abstract::AbstractRelationView *relationView{};
 
-            int relationType{};
+        int relationType{};
 
-            QWidget *parent;
+        QWidget *parent;
 
-            QString relationId;
+        QString relationId;
 
-            Nodes::Table::ColumnPrt pkColumn;
-            Nodes::Table::ColumnPrt fkColumn;
+        Nodes::Table::ColumnPrt pkColumn;
+        Nodes::Table::ColumnPrt fkColumn;
 
-        public: signals:
-            void goToRelatedTable(const QString &id);
-            void createNodeInWorkAreaSignal(Abstract::AbstractNode *node);
-            void deleteNodeInWorkAreaSignal(Abstract::AbstractNode *node);
-
+    public: signals:
+        void goToRelatedTable(const QString &id);
+        void createNodeInWorkAreaSignal(Abstract::AbstractNode *node);
+        void deleteNodeInWorkAreaSignal(Abstract::AbstractNode *node);
     };
 
     typedef QPointer<Relations::Relation> RelationPtr;

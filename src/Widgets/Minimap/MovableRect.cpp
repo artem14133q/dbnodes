@@ -14,20 +14,19 @@ namespace DbNodes::Widgets::Minimap
 
     MovableRect::MovableRect(const float &scaleCoefficient, QWidget *parent)
         : AbstractNode(parent), scaleCoefficient(scaleCoefficient)
-    {
-        setObjectName("MovableRect");
-        enableMoveRestrictions(true);
-//        rememberPosWhenAbroad(true);
+        {
+            setObjectName("MovableRect");
+            enableMoveRestrictions(true);
+    //        rememberPosWhenAbroad(true);
 
-        setProperty("moving", false);
+            setProperty("moving", false);
 
-        setStyleSheet(Helper::getStyleFromFile("movableRect"));
+            setStyleSheet(Helper::getStyleFromFile("movableRect"));
 
-        setMouseTracking(true);
-    }
+            setMouseTracking(true);
+        }
 
-    void MovableRect::mouseMoveEvent(QMouseEvent *event)
-    {
+    void MovableRect::mouseMoveEvent(QMouseEvent *event) {
         emit moveToPositionSignal(pos());
 
         AbstractNode::mouseMoveEvent(event);
@@ -35,8 +34,7 @@ namespace DbNodes::Widgets::Minimap
         parentWidget()->update();
     }
 
-    void MovableRect::mousePressEvent(QMouseEvent *event)
-    {
+    void MovableRect::mousePressEvent(QMouseEvent *event) {
         if (event->button() == Qt::LeftButton) {
             enableWorkingWithFocus = false;
 
@@ -48,8 +46,7 @@ namespace DbNodes::Widgets::Minimap
         }
     }
 
-    void MovableRect::mouseReleaseEvent(QMouseEvent *event)
-    {
+    void MovableRect::mouseReleaseEvent(QMouseEvent *event) {
         enableWorkingWithFocus = true;
 
         setProperty("moving", false);
@@ -59,13 +56,11 @@ namespace DbNodes::Widgets::Minimap
         AbstractNode::mouseReleaseEvent(event);
     }
 
-    bool MovableRect::workingWithFocusAvailable()
-    {
+    bool MovableRect::workingWithFocusAvailable() {
         return enableWorkingWithFocus;
     }
 
-    void MovableRect::calculateSize()
-    {
+    void MovableRect::calculateSize() {
         auto scrollArea = dynamic_cast<QScrollArea *>(Helper::findParentWidgetRecursive(this, "ScrollArea"));
 
         setFixedSize(scrollArea->viewport()->size() / scaleCoefficient);

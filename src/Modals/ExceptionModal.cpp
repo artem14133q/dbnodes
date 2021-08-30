@@ -12,8 +12,7 @@
 namespace DbNodes::Modals {
 
     ExceptionModal::ExceptionModal(const QString &title, const QString &text, QWidget *parent)
-        : AbstractModal(parent)
-    {
+        : AbstractModal(parent) {
         setWindowTitle(title);
 
         parentWidget()->setDisabled(true);
@@ -28,8 +27,7 @@ namespace DbNodes::Modals {
         show();
     }
 
-    void ExceptionModal::initUI(const QString &text)
-    {
+    void ExceptionModal::initUI(const QString &text) {
         auto *generalWidget = new QWidget(this);
 
         auto *vl = new QVBoxLayout();
@@ -73,13 +71,11 @@ namespace DbNodes::Modals {
         }
     }
 
-    void ExceptionModal::confirm()
-    {
+    void ExceptionModal::confirm() {
         exit();
     }
 
-    void ExceptionModal::exit()
-    {
+    void ExceptionModal::exit() {
         parentWidget()->setDisabled(false);
 
         AbstractModal::exit();

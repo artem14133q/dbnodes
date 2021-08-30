@@ -12,31 +12,30 @@
 
 namespace DbNodes::Utils::MultipleSelection {
 
-    class Selectable: public AbstractUtil
-    {
-        Q_OBJECT
+    class Selectable: public AbstractUtil {
+    Q_OBJECT
 
-        private:
-            bool isClicked = false;
-            bool isEnabled = true;
+    private:
+        bool isClicked = false;
+        bool isEnabled = true;
 
-        public:
-            explicit Selectable(QObject *object = nullptr);
+    public:
+        explicit Selectable(QObject *object = nullptr);
 
-            void setClicked(const bool &clicked);
+        void setClicked(const bool &clicked);
 
-            void move(const QPoint &delta);
+        void move(const QPoint &delta);
 
-            void flush();
+        void flush();
 
-            void setEnable(bool enable);
-            bool enabled();
+        void setEnable(bool enable);
+        bool enabled();
 
-        public: signals:
-            void moveSignal(QObject *node, const QPoint &delta);
-            void unSelectNodesSignal();
-            void selectCurrentNodeSignal();
-            void unSelectCurrentNodeSignal();
+    public: signals:
+        void moveSignal(QObject *node, const QPoint &delta);
+        void unSelectNodesSignal();
+        void selectCurrentNodeSignal();
+        void unSelectCurrentNodeSignal();
     };
 
 }

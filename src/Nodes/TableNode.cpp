@@ -14,6 +14,7 @@
 #include "Workarea.h"
 #include "RelationTypesDictionary.h"
 #include "TableGenerator/TableGeneratorUtil.h"
+#include "TableRename.h"
 
 #include <utility>
 #include "../helper.h"
@@ -29,7 +30,7 @@ namespace DbNodes::Nodes {
         }
 
     TableNode::TableNode(QWidget *parent, const QString& name)
-        : TableNode(parent,TableNode::generateId(),name)
+        : TableNode(parent, TableNode::generateId(), name)
         {
             openTableConstructor();
         }
@@ -87,7 +88,8 @@ namespace DbNodes::Nodes {
         Abstract::AbstractNode::createDefaultActions(contextMenu);
 
         //Define Slots
-        connect(rename, &QAction::triggered, this, &TableNode::openTableConstructor);
+        connect(rename, &QAction::triggered, this, &TableNode::openRenameModal);
+
         connect(addColumn, &QAction::triggered, this, [this] {
             this->addColumn(ColumnType::Default);
         });
@@ -107,7 +109,7 @@ namespace DbNodes::Nodes {
     }
 
     // Create column of types
-    void TableNode::addColumn(ColumnType columnType, Table::ColumnPrt column) {
+    void TableNode::addColumn(Nodes::Table::Column::Type columnType, Table::ColumnPrt column) {
         if (!column) column = new Table::Column(getLayoutType(columnType), this, columnType);
 
         auto *parentWorkArea = dynamic_cast<Widgets::WorkArea*>(parentWidget());
@@ -148,6 +150,7 @@ namespace DbNodes::Nodes {
     // Named node slot
     void TableNode::setTableName(const QString &newTableName) {
         tableName = newTableName;
+        titleLabel->setText(newTableName);
     }
 
     // Get table name
@@ -164,34 +167,32 @@ namespace DbNodes::Nodes {
         using namespace DbNodes::Modals;
         using TableGeneratorUtil = Utils::TableGenerator::TableGeneratorUtil;
 
-        auto* tableRenameModal = new TableConstructor(tableName, this);
+        auto* tableConstructorModal = new TableConstructor(tableName, this);
 
-        connect(tableRenameModal, &TableConstructor::pushConfirm, this,
-                [this] (const QHash<QString, QVariant> &settingsMap) {
+        connect(tableConstructorModal, &TableConstructor::pushConfirm, this,
+        [this] (const QHash<QString, QVariant> &settingsMap) {
+                auto name = settingsMap.value("name").toString();
+                setTableName(name);
 
-            auto name = settingsMap.value("name").toString();
-            setTableName(name);
-            titleLabel->setText(name);
+                auto tableGenerator = TableGeneratorUtil::fillTable(this);
 
-            auto tableGenerator = TableGeneratorUtil::fillTable(this);
+                if (settingsMap.value("addId").toBool()) {
+                    tableGenerator->createIndexColumn("id");
+                }
 
-            if (settingsMap.value("addId").toBool()) {
-                tableGenerator->createIndexColumn("id");
+                for (int i = 0; i < settingsMap.value("foreignCount").toInt(); ++i) {
+                    tableGenerator->createForeignColumn(QString("foreign_column_%1").arg(i));
+                }
+
+                for (int i = 0; i < settingsMap.value("defaultCount").toInt(); ++i) {
+                    tableGenerator->createDefaultColumn(QString("column_%1").arg(i));
+                }
+
+                tableGenerator->deleteLater();
             }
-
-            for (int i = 0; i < settingsMap.value("foreignCount").toInt(); ++i) {
-                tableGenerator->createForeignColumn(QString("foreign_column_%1").arg(i));
-            }
-
-            for (int i = 0; i < settingsMap.value("defaultCount").toInt(); ++i) {
-                tableGenerator->createDefaultColumn(QString("column_%1").arg(i));
-            }
-
-            tableGenerator->deleteLater();
-        }
         );
 
-        connect(tableRenameModal, &TableConstructor::pushExit, this, [this] () {
+        connect(tableConstructorModal, &TableConstructor::pushExit, this, [this] () {
             emit deleteNodeSignal();
             deleteLater();
         });
@@ -240,7 +241,7 @@ namespace DbNodes::Nodes {
             if (relation == nullptr) {
                 relations.removeAll(relation);
                 continue;
-            };
+            }
 
             if (relation->getRelationTypeId() == Dictionaries::RelationTypesDictionary::Type::Link) {
                 relation->raise();
@@ -256,7 +257,16 @@ namespace DbNodes::Nodes {
         relations.push_back(relation);
     }
 
-    QString TableNode::generateId() {
+    void TableNode::openRenameModal() {
+        using namespace DbNodes::Modals;
+
+        auto* tableRenameModal = new TableRename(tableName, this);
+
+        connect(tableRenameModal, &TableRename::pushConfirm, this, &TableNode::setTableName);
+    }
+
+    QString TableNode::generateId()
+    {
         return "table:" + Helper::getCurrentTimeMS();
     }
 }

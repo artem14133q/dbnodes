@@ -18,7 +18,9 @@ set(RESOURCES
         Minimap/MinimapWidget.cpp
         Minimap/MinimapWidget.h
         Minimap/MovableRect.cpp
-        Minimap/MovableRect.h Minimap/MinimapWorkingArea.cpp Minimap/MinimapWorkingArea.h)
+        Minimap/MovableRect.h
+        Minimap/MinimapWorkingArea.cpp
+        Minimap/MinimapWorkingArea.h)
 
 add_library(${LIBRARY_NAME} STATIC ${RESOURCES})
 

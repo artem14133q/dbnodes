@@ -9,8 +9,7 @@
 
 using namespace DbNodes::Settings;
 
-class Helper
-{
+class Helper {
     public:
         static QString  getStyleFromFile(const QString &name);
         static QString  getfileContent(const QString &path);
@@ -34,8 +33,7 @@ class Helper
         );
 
         template<class T>
-        static QList<T> filter(const QList<T> &list, const std::function<bool (const T &)> &callback)
-        {
+        static QList<T> filter(const QList<T> &list, const std::function<bool (const T &)> &callback) {
             QList<T> filtered;
 
             foreach (const T &item, list) {
@@ -48,8 +46,7 @@ class Helper
         }
 
         template<class T>
-        static void removeDeletedItems(QList<QPointer<T>> &list)
-        {
+        static void removeDeletedItems(QList<QPointer<T>> &list) {
             foreach (const QPointer<T> &item, list) {
                 if (!item) list.removeOne(item);
             }

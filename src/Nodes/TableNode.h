@@ -15,14 +15,14 @@
 
 namespace DbNodes::Nodes {
 
+
     using ColumnType = Nodes::Table::Column::Type;
 
-    class TableNode : public Abstract::AbstractNode
-            {
+    class TableNode : public Abstract::AbstractNode {
         Q_OBJECT
 
-            public:
-                TableNode(QWidget *parent, QString id, QString name);
+    public:
+        TableNode(QWidget *parent, QString id, QString name);
         explicit TableNode(QWidget *parent = nullptr, const QString& name = "table");
 
         QString getTableName();
@@ -31,46 +31,46 @@ namespace DbNodes::Nodes {
         Table::ColumnPrtVector getAllColumns();
 
         void createColumn(
-                const QString &id,
-                const QString &name,
-                const ColumnType &type,
-                const QString &dbType,
-                const bool &isNull = false
-                        );
+            const QString &id,
+            const QString &name,
+            const Nodes::Table::Column::Type &type,
+            const QString &dbType,
+            const bool &isNull = false
+        );
 
-        QVBoxLayout *getLayoutType(const ColumnType &columnType);
+        QVBoxLayout *getLayoutType(const Nodes::Table::Column::Type &columnType);
 
         void addRelation(const Relations::RelationPtr &relation);
         static QString generateId();
 
-            private:
-                QList<Relations::RelationPtr> relations;
+    private:
+        QList<Relations::RelationPtr> relations;
 
-                QVBoxLayout* columnsLayout{};
-                QVBoxLayout* pkLayout{};
-                QVBoxLayout* fkLayout{};
+        QVBoxLayout* columnsLayout{};
+        QVBoxLayout* pkLayout{};
+        QVBoxLayout* fkLayout{};
 
-                QString tableName;
-                QString tableId;
+        QString tableName;
+        QString tableId;
 
-                QLabel* titleLabel{};
+        QLabel* titleLabel{};
 
-                void initUI();
+        void initUI();
 
-            protected:
-                void contextMenuEvent(QContextMenuEvent *event) override;
-                void mousePressEvent(QMouseEvent *event) override;
+    protected:
+        void contextMenuEvent(QContextMenuEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
 
-                QList<Table::Column *> groupColumns();
+        QList<Table::Column *> groupColumns();
 
-                void setTableName(const QString &name);
-                void openTableConstructor();
+        void setTableName(const QString &name);
+        void openTableConstructor();
+        void openRenameModal();
 
-                public slots:
-                // Slots need fully-qualified types
-                void addColumn(Nodes::Table::Column::Type columnType, Table::ColumnPrt column = nullptr);
+    protected slots:
+        void addColumn(Nodes::Table::Column::Type columnType, Table::ColumnPrt column = nullptr);
 
-            };
+    };
 
     typedef QPointer<Nodes::TableNode> TablePtr;
 

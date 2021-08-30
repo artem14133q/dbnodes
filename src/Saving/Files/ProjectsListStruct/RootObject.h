@@ -10,13 +10,12 @@
 
 namespace DbNodes::Saving::ProjectsListFileStruct {
 
-    class RootObject: public Abstract::JsonObject
-    {
-        public:
-            JSON_OBJECT(RootObject)
+    class RootObject: public Abstract::JsonObject {
+    public:
+        JSON_OBJECT(RootObject)
 
-            STRING_PROPERTY("lastOpenedProject", getLastOpenedProject, setLastOpenedProject)
-            LIST_PROPERTY(ProjectDataObject, "projects", getProjects, setProjects)
+        STRING_PROPERTY("lastOpenedProject", getLastOpenedProject, setLastOpenedProject)
+        LIST_PROPERTY(ProjectDataObject, "projects", getProjects, setProjects)
     };
 
 }

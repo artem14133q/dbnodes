@@ -10,26 +10,25 @@
 
 namespace DbNodes::Widgets::Menus {
 
-    class RecentMenu: public QMenu
-    {
-        Q_OBJECT
+    class RecentMenu: public QMenu {
+    Q_OBJECT
 
-        private:
-            Saving::ProjectListFileResolver *resolver;
+    private:
+        Saving::ProjectListFileResolver *resolver;
 
-            QList<QAction *> actionList;
+        QList<QAction *> actionList;
 
-            void generateMenu();
+        void generateMenu();
 
-            void fillMenu();
+        void fillMenu();
 
-        public:
-            explicit RecentMenu(Saving::ProjectListFileResolver *resolver, QWidget *parent = nullptr);
+    public:
+        explicit RecentMenu(Saving::ProjectListFileResolver *resolver, QWidget *parent = nullptr);
 
-            void updateMenu();
+        void updateMenu();
 
-        public: signals:
-            void openRecentProject(const QString &path);
+    public: signals:
+        void openRecentProject(const QString &path);
     };
 
 }

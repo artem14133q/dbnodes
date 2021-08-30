@@ -7,23 +7,19 @@
 
 namespace DbNodes::Abstract {
 
-    AbstractModal::AbstractModal(QWidget *parent) : QMainWindow(parent)
-    {
+    AbstractModal::AbstractModal(QWidget *parent) : QMainWindow(parent) {
         installEventFilter(this);
     }
 
-    void AbstractModal::exit()
-    {
+    void AbstractModal::exit() {
         deleteLater();
     }
 
-    void AbstractModal::confirm()
-    {
+    void AbstractModal::confirm() {
         exit();
     }
 
-    bool AbstractModal::eventFilter(QObject *obj, QEvent *event)
-    {
+    bool AbstractModal::eventFilter(QObject *obj, QEvent *event) {
         if (event->type() == QEvent::KeyPress) {
             auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
 
@@ -46,19 +42,16 @@ namespace DbNodes::Abstract {
         return QObject::eventFilter(obj, event);
     }
 
-    void AbstractModal::closeEvent(QCloseEvent *event)
-    {
+    void AbstractModal::closeEvent(QCloseEvent *event) {
         event->ignore();
         exit();
     }
 
-    void AbstractModal::setAcceptOnEnter(const bool &enable)
-    {
+    void AbstractModal::setAcceptOnEnter(const bool &enable) {
         acceptOnEnter = enable;
     }
 
-    void AbstractModal::accept(const bool &close)
-    {
+    void AbstractModal::accept(const bool &close) {
         if (close) confirm();
     }
 }

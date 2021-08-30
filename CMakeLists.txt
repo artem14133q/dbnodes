@@ -4,10 +4,18 @@ project(DbNodes VERSION 1.0.0 LANGUAGES CXX)
 # ====================================================================
 # DEFINES
 # ====================================================================
+set(INI_FILE dbnodes.ini)
+set(APP_ICON_MACOSX dbnodes.icns)
 set(RESOURCES_FILE_NAME res.qrc)
 
+set(DEV_SCRIPTS ${CMAKE_CURRENT_SOURCE_DIR}/dev-scripts)
+
 set(DEV_SCRIPTS
-        "install-resources.py\;${RESOURCES_FILE_NAME}\;content")
+        "${DEV_SCRIPTS}/install-resources.py\;${RESOURCES_FILE_NAME}\;content")
+
+set(MACOS_DEV_SCRIPTS
+#        "iconutil\;-c\;icns\;${CMAKE_CURRENT_SOURCE_DIR}/dbnodes.iconset"
+    )
 
 set(INCLUDE_DIRECTORIES
         src/Abstract
@@ -51,14 +59,24 @@ configure_file(config.h.in config.h @ONLY)
 # EXECUTE DEV SCRIPTS
 # ====================================================================
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    foreach(SCRIPT IN LISTS MACOS_DEV_SCRIPTS)
+        execute_process(COMMAND ${SCRIPT})
+    endforeach()
+endif()
+
 foreach(SCRIPT IN LISTS DEV_SCRIPTS)
-    execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/dev-scripts/${SCRIPT})
+    execute_process(COMMAND ${SCRIPT})
 endforeach()
 
 # ==================================================================
 # SET OUTPUT BINARY FILES DIRS
 # ==================================================================
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
+
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/lib)
 include_directories(${CMAKE_BINARY_DIR})
 # ===================================================================
@@ -91,7 +109,11 @@ else()
     qt5_add_resources(RESOURCES ${RESOURCES_FILE_NAME})
 endif()
 
-add_executable(${PROJECT_NAME} ${RESOURCES})
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RESOURCES} ${APP_ICON_MACOSX})
+else()
+    add_executable(${PROJECT_NAME} ${RESOURCES})
+endif()
 
 # ====================================================================
 # INSTALL TARGETS FOR COMPILED RESOURCES
@@ -104,9 +126,21 @@ add_executable(${PROJECT_NAME} ${RESOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRECTORIES})
 
-file(COPY styles DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
-file(COPY icons DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
-file(COPY ${INI_CONFIG} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
+    set(CURRENT_PROJECT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents)
+    set(BINARY_DIR ${CURRENT_PROJECT_DIR}/MacOS)
+    set(RESOURCE_DIR ${CURRENT_PROJECT_DIR}/Resources)
+else()
+    set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+    set(RESOURCE_DIR ${BINARY_DIR}/resources)
+endif()
+
+file(COPY styles DESTINATION ${RESOURCE_DIR})
+file(COPY icons DESTINATION ${RESOURCE_DIR})
+
+file(COPY ${INI_FILE} DESTINATION ${RESOURCE_DIR})
 
 # ====================================================================
 # DEFILE LIBS OF YOUR PROJECT

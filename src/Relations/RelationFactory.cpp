@@ -11,8 +11,7 @@
 
 namespace DbNodes::Relations {
 
-    RelationFactory::RelationFactory()
-    {
+    RelationFactory::RelationFactory() {
         registerProvider(Dictionaries::RelationTypesDictionary::Type::Link, [] () -> RelationProvider * {
             auto *provider = new RelationLinkProvider();
 

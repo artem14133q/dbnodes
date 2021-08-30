@@ -9,9 +9,7 @@
 
 namespace DbNodes::Utils::String {
 
-    class StrUtil : public Utils::AbstractUtil
-    {
-
+    class StrUtil : public Utils::AbstractUtil {
     public:
         explicit StrUtil(QObject* object);
 

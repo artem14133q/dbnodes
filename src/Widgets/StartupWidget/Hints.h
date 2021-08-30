@@ -9,13 +9,12 @@
 
 namespace DbNodes::Widgets::StartupWidget {
 
-    class Hints: public DbNodes::Abstract::DrawableWidget
-    {
-        public:
-            explicit Hints(QWidget *parent = nullptr);
+    class Hints: public DbNodes::Abstract::DrawableWidget {
+    public:
+        explicit Hints(QWidget *parent = nullptr);
 
-        private:
-            void initUi();
+    private:
+        void initUi();
     };
 
 }

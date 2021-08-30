@@ -22,13 +22,11 @@ QString Helper::getStyleFromFile(const QString &name) {
     return content;
 }
 
-QString Helper::getCurrentTimeMS()
-{
+QString Helper::getCurrentTimeMS() {
     return QString::number(QDateTime::currentMSecsSinceEpoch());
 }
 
-QObject *Helper::findParentObjectRecursive(QObject *object, const QString &name)
-{
+QObject *Helper::findParentObjectRecursive(QObject *object, const QString &name) {
     QObject *parent = object;
 
     do {
@@ -42,8 +40,7 @@ QObject *Helper::findParentObjectRecursive(QObject *object, const QString &name)
     return parent;
 }
 
-QWidget *Helper::findParentWidgetRecursive(QWidget *widget, const QString &name)
-{
+QWidget *Helper::findParentWidgetRecursive(QWidget *widget, const QString &name) {
     QWidget *parent = widget;
 
     do {
@@ -57,8 +54,7 @@ QWidget *Helper::findParentWidgetRecursive(QWidget *widget, const QString &name)
     return parent;
 }
 
-QString Helper::getfileContent(const QString &path)
-{
+QString Helper::getfileContent(const QString &path) {
     QString content;
 
     QFile file(path);
@@ -75,8 +71,7 @@ QString Helper::getfileContent(const QString &path)
     return content;
 }
 
-QString Helper::getIconPath(const QString &iconName, const bool &styled)
-{
+QString Helper::getIconPath(const QString &iconName, const bool &styled) {
     if (styled) {
         auto style = getSettingValue("style.icons_folder").toString();
         return QStringList({ICONS_FILES_PATH, style, iconName}).join("/") + ".png";
@@ -85,41 +80,34 @@ QString Helper::getIconPath(const QString &iconName, const bool &styled)
     return QStringList({ICONS_FILES_PATH, iconName}).join("/") + ".png";
 }
 
-QVariant Helper::getSettingValue(const QString &name)
-{
+QVariant Helper::getSettingValue(const QString &name) {
     return MainSettings::get(name.split(".").join("/")).toString();
 }
 
-void Helper::setSettingValue(const QString &name, const QVariant &value)
-{
+void Helper::setSettingValue(const QString &name, const QVariant &value) {
     MainSettings::set(name.split(".").join("/"), value);
 }
 
-void Helper::subscribeSettingUpdate(const QString &key, const MainSettings::ConnectorCallback &callback)
-{
+void Helper::subscribeSettingUpdate(const QString &key, const MainSettings::ConnectorCallback &callback) {
     MainSettings::getInstance()->subscribe(key.split(".").join("/"), callback);
 }
 
-void Helper::unBindSetting(const QString &key)
-{
+void Helper::unBindSetting(const QString &key) {
     MainSettings::getInstance()->unBind(key.split(".").join("/"));
 }
 
-void Helper::moveToCenter(QWidget *mapToWidget, QWidget *currentWidget)
-{
+void Helper::moveToCenter(QWidget *mapToWidget, QWidget *currentWidget) {
     currentWidget->move(
         mapToWidget->x() + mapToWidget->width() / 2 - currentWidget->width() / 2,
         mapToWidget->y() + mapToWidget->height() / 2 - currentWidget->height() / 2
     );
 }
 
-QString Helper::replaceHomePathInFullPath(const QString &path, const QString &replace)
-{
+QString Helper::replaceHomePathInFullPath(const QString &path, const QString &replace) {
     return QString(path).replace(QDir::home().path(), replace);
 }
 
-void Helper::standardWidgetsHeight(const int &height, QWidget *parent, const QStringList &names, const bool &exclude)
-{
+void Helper::standardWidgetsHeight(const int &height, QWidget *parent, const QStringList &names, const bool &exclude) {
     foreach (QWidget *widget, parent->findChildren<QWidget *>()) {
         if (!names.isEmpty()) {
             if (names.contains(widget->objectName())) {
@@ -135,8 +123,7 @@ void Helper::standardWidgetsHeight(const int &height, QWidget *parent, const QSt
     parent->adjustSize();
 }
 
-void Helper::updateParentRecursive(QWidget *currentWidget, const QString &name)
-{
+void Helper::updateParentRecursive(QWidget *currentWidget, const QString &name) {
     auto workArea = Helper::findParentWidgetRecursive(currentWidget, name);
     workArea->update();
 }

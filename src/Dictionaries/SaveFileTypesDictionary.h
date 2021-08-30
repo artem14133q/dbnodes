@@ -9,20 +9,19 @@
 
 namespace DbNodes::Dictionaries {
 
-    struct SaveFileTypesDictionary: public Abstract::Dictionary<int, SaveFileTypesDictionary>
-    {
-        public:
-            enum Type {
-                NewFile,
-                RewriteFile
-            };
+    struct SaveFileTypesDictionary: public Abstract::Dictionary<int, SaveFileTypesDictionary> {
+    public:
+        enum Type {
+            NewFile,
+            RewriteFile
+        };
 
-            static DictMap getDictionary() {
-                return {
-                    { NewFile       , "Create new save file"    },
-                    { RewriteFile   , "Overwrite existing file" },
-                };
+        static DictMap getDictionary() {
+            return {
+                { NewFile       , "Create new save file"    },
+                { RewriteFile   , "Overwrite existing file" },
             };
+        };
     };
 
 }

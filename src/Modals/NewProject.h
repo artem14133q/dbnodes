@@ -5,32 +5,31 @@
 
 namespace DbNodes::Modals {
 
-    class NewProject : public Abstract::AbstractSettingModal
-    {
-        Q_OBJECT
+    class NewProject : public Abstract::AbstractSettingModal {
+    Q_OBJECT
 
-        public:
-            explicit NewProject(QWidget *parent = nullptr);
+    public:
+        explicit NewProject(QWidget *parent = nullptr);
 
-        private:
-            QPushButton *createProjectButton{};
-            QLineEdit *nameEdit{};
+    private:
+        QPushButton *createProjectButton{};
+        QLineEdit *nameEdit{};
 
-            void initSettingsUi() override;
+        void initSettingsUi() override;
 
-            QVariant getDefaultSetting(const QString &name) override;
+        QVariant getDefaultSetting(const QString &name) override;
 
-            void validPropertyName(QLineEdit *widget);
-            void enableConfirm(const bool &enable) override;
+        void validPropertyName(QLineEdit *widget);
+        void enableConfirm(const bool &enable) override;
 
-            void afterInitUi() override;
+        void afterInitUi() override;
 
-        private slots:
-            void confirm() override;
-            void exit() override;
+    private slots:
+        void confirm() override;
+        void exit() override;
 
-        public: signals:
-            void createProjectSignal(const Abstract::AbstractSettingModal::VariantsMap &properties);
+    public: signals:
+        void createProjectSignal(const Abstract::AbstractSettingModal::VariantsMap &properties);
     };
 
 }

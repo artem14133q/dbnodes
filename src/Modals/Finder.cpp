@@ -89,19 +89,21 @@ namespace DbNodes::Modals {
             auto result = regFilter.indexIn(node->getTableName()) != -1;
             #endif
 
-            if (result) {
-                filteredNodeList.insert(node->getTableId(), node);
-
-                auto *listItem = new QListWidgetItem(listWidget);
-                listItem->setText(node->getTableName());
-                listItem->setData(Qt::UserRole, node->getTableId());
-
-                #if QT_VERSION_MAJOR == 5
-                listItem->setTextColor(QColor("white"));
-                #endif
-
-                listWidget->setCurrentItem(listItem);
+            if (!result) {
+                continue;
             }
+
+            filteredNodeList.insert(node->getTableId(), node);
+
+            auto *listItem = new QListWidgetItem(listWidget);
+            listItem->setText(node->getTableName());
+            listItem->setData(Qt::UserRole, node->getTableId());
+
+            #if QT_VERSION_MAJOR == 5
+            listItem->setTextColor(QColor("white"));
+            #endif
+
+            listWidget->setCurrentItem(listItem);
         }
 
         if (listWidget->count() > 0) selectItemByIndex(0);
@@ -130,8 +132,7 @@ namespace DbNodes::Modals {
         selectItemByIndex((++index > listWidget->count() - 1) ? 0 : index);
     }
 
-    void Finder::selectItemPrevious()
-    {
+    void Finder::selectItemPrevious() {
         int index = getSelectionItemIndex();
 
         if (listWidget->count() == -1) return;

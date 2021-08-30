@@ -12,8 +12,7 @@ namespace DbNodes::Saving {
     DbnFileResolver::DbnFileResolver(SaveManager *saveManager, Widgets::WorkArea *workArea)
         : FileResolver(saveManager), workArea(workArea) {}
 
-    QByteArray DbnFileResolver::toJson()
-    {
+    QByteArray DbnFileResolver::toJson() {
         fillProjectParameters();
         fillTables();
         fillRelations();
@@ -21,8 +20,7 @@ namespace DbNodes::Saving {
         return object->toJson();
     }
 
-    void DbnFileResolver::fillProjectParameters()
-    {
+    void DbnFileResolver::fillProjectParameters() {
         DbnFileStruct::ProjectParametersObject parameters;
 
         parameters.setName(workArea->getProjectName());
@@ -32,8 +30,7 @@ namespace DbNodes::Saving {
         object->setProjectParameters(parameters);
     }
 
-    void DbnFileResolver::fillTables()
-    {
+    void DbnFileResolver::fillTables() {
         auto tables = workArea->getAllTables();
 
         QList<DbnFileStruct::TableObject> tableObjectsList;
@@ -54,8 +51,7 @@ namespace DbNodes::Saving {
         object->setTables(tableObjectsList);
     }
 
-    void DbnFileResolver::fillColumns(DbnFileStruct::TableObject &tableObject, const Nodes::TablePtr &table)
-    {
+    void DbnFileResolver::fillColumns(DbnFileStruct::TableObject &tableObject, const Nodes::TablePtr &table) {
         auto columns = table->getAllColumns();
 
         QList<DbnFileStruct::ColumnObject> columnObjectList;
@@ -75,8 +71,7 @@ namespace DbNodes::Saving {
         tableObject.setColumns(columnObjectList);
     }
 
-    void DbnFileResolver::fillRelations()
-    {
+    void DbnFileResolver::fillRelations() {
         auto relations = workArea->getAllRelations();
 
         QList<DbnFileStruct::RelationObject> relationObjectsList;
@@ -98,15 +93,13 @@ namespace DbNodes::Saving {
         object->setRelations(relationObjectsList);
     }
 
-    void DbnFileResolver::fromJson()
-    {
+    void DbnFileResolver::fromJson() {
         loadProjectParameters();
         loadTables();
         loadRelations();
     }
 
-    void DbnFileResolver::loadProjectParameters()
-    {
+    void DbnFileResolver::loadProjectParameters() {
         auto projectParametersObject = object->getProjectParameters();
 
         workArea->setProjectName(projectParametersObject.getName());
@@ -117,8 +110,7 @@ namespace DbNodes::Saving {
         );
     }
 
-    void DbnFileResolver::loadTables()
-    {
+    void DbnFileResolver::loadTables() {
         foreach (const DbnFileStruct::TableObject &tableObject, object->getTables()) {
             Nodes::TablePtr table = workArea->createTable(
                 QPoint(tableObject.getX(), tableObject.getY()),
@@ -130,8 +122,7 @@ namespace DbNodes::Saving {
         }
     }
 
-    void DbnFileResolver::loadColumns(const DbnFileStruct::TableObject &tableObject, Nodes::TablePtr &table)
-    {
+    void DbnFileResolver::loadColumns(const DbnFileStruct::TableObject &tableObject, Nodes::TablePtr &table) {
         foreach (const DbnFileStruct::ColumnObject &columnObject, tableObject.getColumns()) {
             table->createColumn(
                 columnObject.getId(),
@@ -143,8 +134,7 @@ namespace DbNodes::Saving {
         }
     }
 
-    void DbnFileResolver::loadRelations()
-    {
+    void DbnFileResolver::loadRelations() {
         foreach (const DbnFileStruct::RelationObject &relationObject, object->getRelations()) {
             Nodes::Table::ColumnPrt pkColumn = workArea->findColumn(
                     Widgets::WorkArea::GET_PK_COLUMNS, relationObject.getPkColumnId()
@@ -169,8 +159,7 @@ namespace DbNodes::Saving {
         }
     }
 
-    QString DbnFileResolver::getProjectName()
-    {
+    QString DbnFileResolver::getProjectName() {
         return object->getProjectParameters().getName();
     }
 

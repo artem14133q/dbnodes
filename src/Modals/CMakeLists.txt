@@ -9,6 +9,8 @@ set(RESOURCES
         ConfirmCloseProject.h
         TableConstructor.cpp
         TableConstructor.h
+        TableRename.cpp
+        TableRename.h
         Finder.cpp
         Finder.h
         Settings.cpp

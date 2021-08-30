@@ -22,31 +22,27 @@ namespace DbNodes::Relations {
         Nodes::Table::ColumnPrt &pkColumn,
         Nodes::Table::ColumnPrt &fkColumn
     ): QObject(parent),
-       parent(parent),
-       relationId(std::move(relationId)),
-       pkColumn(pkColumn),
-       fkColumn(fkColumn)
-    {
-        enableRelationType(relationTypeId);
-    }
+        parent(parent),
+        relationId(std::move(relationId)),
+        pkColumn(pkColumn),
+        fkColumn(fkColumn)
+        {
+            enableRelationType(relationTypeId);
+        }
 
-    Nodes::Table::ColumnPrt Relation::getPkColumn()
-    {
+    Nodes::Table::ColumnPrt Relation::getPkColumn() {
         return pkColumn;
     }
 
-    Nodes::Table::ColumnPrt Relation::getFkColumn()
-    {
+    Nodes::Table::ColumnPrt Relation::getFkColumn() {
         return fkColumn;
     }
 
-    bool Relation::checkIsRelationValid()
-    {
+    bool Relation::checkIsRelationValid() {
         return pkColumn && fkColumn;
     }
 
-    Relation::~Relation()
-    {
+    Relation::~Relation() {
         delete relationView;
 
         parent->update();
@@ -58,28 +54,23 @@ namespace DbNodes::Relations {
         deleteLater();
     }
 
-    const QString &Relation::getRelationId()
-    {
+    const QString &Relation::getRelationId() {
         return relationId;
     }
 
-    int Relation::getRelationTypeId() const
-    {
+    int Relation::getRelationTypeId() const {
         return relationType;
     }
 
-    void Relation::updateRelation(QPainter &painter, QPainterPath &path)
-    {
+    void Relation::updateRelation(QPainter &painter, QPainterPath &path) {
         relationView->updateRelation(painter, path);
     }
 
-    void Relation::deleteRelation()
-    {
+    void Relation::deleteRelation() {
         delete this;
     }
 
-    void Relation::enableRelationType(const Dictionaries::RelationTypesDictionary::Type &relationTypeId)
-    {
+    void Relation::enableRelationType(const Dictionaries::RelationTypesDictionary::Type &relationTypeId) {
         relationType = relationTypeId;
 
         delete relationView;
@@ -94,18 +85,15 @@ namespace DbNodes::Relations {
         });
     }
 
-    void Relation::goToRelationTableSignal()
-    {
+    void Relation::goToRelationTableSignal() {
         emit goToRelatedTable(pkColumn->getTableId());
     }
 
-    void Relation::raise()
-    {
+    void Relation::raise() {
         relationView->raise();
     }
 
-    int Relation::getRelationPositionType()
-    {
+    int Relation::getRelationPositionType() {
         if (relationView->hasRelationPositionType()) {
             return relationView->relationPositionType();
         }
@@ -113,25 +101,21 @@ namespace DbNodes::Relations {
         return 0;
     }
 
-    void Relation::setRelationPositionType(const Dictionaries::RelationPositionsDictionary::Type &type)
-    {
+    void Relation::setRelationPositionType(const Dictionaries::RelationPositionsDictionary::Type &type) {
         if (relationView->hasRelationPositionType()) {
             relationView->setRelationPositionType(type);
         }
     }
 
-    void Relation::createNodeInWorkAreaProxy(Abstract::AbstractNode *node)
-    {
+    void Relation::createNodeInWorkAreaProxy(Abstract::AbstractNode *node) {
         emit createNodeInWorkAreaSignal(node);
     }
 
-    void Relation::deleteNodeInWorkAreaProxy(Abstract::AbstractNode *node)
-    {
+    void Relation::deleteNodeInWorkAreaProxy(Abstract::AbstractNode *node) {
         emit deleteNodeInWorkAreaSignal(node);
     }
 
-    Abstract::AbstractRelationView *Relation::getAbstractRelationView()
-    {
+    Abstract::AbstractRelationView *Relation::getAbstractRelationView() {
         return relationView;
     }
 }

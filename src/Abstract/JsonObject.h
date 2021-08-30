@@ -36,18 +36,17 @@
     #define JSON_OBJECT(type)                                                                                   \
         explicit type(const QByteArray &data = nullptr): Abstract::JsonObject(data) {}                          \
         template<typename type>                                                                                 \
-        static QVector<type> convertToVector(const QJsonArray &data)                                            \
-        {QVector<type> vector;                                                                                  \
+        static QVector<type> convertToVector(const QJsonArray &data) {                                          \
+        QVector<type> vector;                                                                                   \
             foreach (const QJsonValueRef &value, data) {                                                        \
                 type object;                                                                                    \
-                object.setBaseObject(value.toObject());                                                     \
+                object.setBaseObject(value.toObject());                                                         \
                 vector.push_back(object);                                                                       \
             }                                                                                                   \
             return vector;                                                                                      \
         }                                                                                                       \
         template<typename type>                                                                                 \
-        static QJsonArray convertToQJsonArray(const QList<type> &data)                                          \
-        {                                                                                                       \
+        static QJsonArray convertToQJsonArray(const QList<type> &data) {                                        \
             QJsonArray array;                                                                                   \
             foreach (const type &item, data) {                                                                  \
                 array.push_back(item.getBaseObject());                                                          \
@@ -58,8 +57,7 @@
     #define JSON_OBJECT(type)                                                                                   \
         explicit type(const QByteArray &data = nullptr): Abstract::JsonObject(data) {}                          \
         template<typename type>                                                                                 \
-        static QVector<type> convertToVector(const QJsonArray &data)                                            \
-        {                                                                                                       \
+        static QVector<type> convertToVector(const QJsonArray &data) {                                          \
             QVector<type> vector;                                                                               \
             foreach (const QVariant &value, data) {                                                             \
                 type object;                                                                                    \
@@ -69,8 +67,8 @@
             return vector;                                                                                      \
         }                                                                                                       \
         template<typename type>                                                                                 \
-        static QJsonArray convertToQJsonArray(const QList<type> &data)                                          \
-        {QJsonArray array;                                                                                      \
+        static QJsonArray convertToQJsonArray(const QList<type> &data) {                                        \
+        QJsonArray array;                                                                                       \
             foreach (const type &item, data) {                                                                  \
                 array.push_back(item.getBaseObject());                                                          \
             }                                                                                                   \
@@ -88,19 +86,18 @@
 
 namespace DbNodes::Abstract {
 
-    class JsonObject
-    {
-        protected:
-            QJsonObject json;
+    class JsonObject {
+    protected:
+        QJsonObject json;
 
-        public:
-            explicit JsonObject(const QByteArray &data = nullptr);
+    public:
+        explicit JsonObject(const QByteArray &data = nullptr);
 
-            [[nodiscard]] QByteArray toJson() const;
+        [[nodiscard]] QByteArray toJson() const;
 
-            [[nodiscard]] QJsonObject getBaseObject() const;
+        [[nodiscard]] QJsonObject getBaseObject() const;
 
-            void setBaseObject(const QJsonObject &object);
+        void setBaseObject(const QJsonObject &object);
     };
 
 }

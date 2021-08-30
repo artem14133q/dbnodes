@@ -15,77 +15,76 @@
 
 namespace DbNodes::Nodes::Table {
 
-    class Column : public Abstract::AbstractNode, public Abstract::IHasPathConnectors
-    {
-        Q_OBJECT
+    class Column : public Abstract::AbstractNode, public Abstract::IHasPathConnectors {
+    Q_OBJECT
 
-        public:
-            enum Type {
-                Default,
-                PrimaryKey,
-                ForeignKey
-            };
+    public:
+        enum Type {
+            Default,
+            PrimaryKey,
+            ForeignKey
+        };
 
-            explicit Column(
-                QVBoxLayout *vb,
-                QWidget *parent = nullptr,
-                const Column::Type &columnType = Column::Type::Default
-            );
+        explicit Column(
+            QVBoxLayout *vb,
+            QWidget *parent = nullptr,
+            const Column::Type &columnType = Column::Type::Default
+        );
 
-            explicit Column(
-                QVBoxLayout *vb,
-                QWidget *parent,
-                const QString &columnId,
-                const QString &columnName,
-                const Column::Type &columnType,
-                const QString &columnDbType,
-                const bool &columnIsNull = false
-            );
+        explicit Column(
+            QVBoxLayout *vb,
+            QWidget *parent,
+            const QString &columnId,
+            const QString &columnName,
+            const Column::Type &columnType,
+            const QString &columnDbType,
+            const bool &columnIsNull = false
+        );
 
-            QString getTableName();
-            QString getTableId();
-            QString getColumnId();
+        QString getTableName();
+        QString getTableId();
+        QString getColumnId();
 
-            Abstract::ParamsForDrawing getDrawParams() override;
+        Abstract::ParamsForDrawing getDrawParams() override;
 
-            [[nodiscard]] Type getColumnType() const;
-            [[nodiscard]] bool getColumnIsNull() const;
+        [[nodiscard]] Type getColumnType() const;
+        [[nodiscard]] bool getColumnIsNull() const;
 
-            QString getColumnName();
-            QString getColumnDbType();
+        QString getColumnName();
+        QString getColumnDbType();
 
-            bool eventFilter(QObject *object, QEvent *event) override;
+        bool eventFilter(QObject *object, QEvent *event) override;
 
-            void disableFkRelationButton(const bool &disable);
+        void disableFkRelationButton(const bool &disable);
 
-        private:
-            Utils::ListMoving::Moving *movingUtil;
+    private:
+        Utils::ListMoving::Moving *movingUtil;
 
-            QVBoxLayout *vb;
+        QVBoxLayout *vb;
 
-            QString columnName;
-            QString columnId;
-            QString columnDbType;
-            bool columnIsNull;
-            Type columnType;
+        QString columnName;
+        QString columnId;
+        QString columnDbType;
+        bool columnIsNull;
+        Type columnType;
 
-            QLabel *moveHandle{};
-            QPushButton *fkButton{};
+        QLabel *moveHandle{};
+        QPushButton *fkButton{};
 
-            void initUi();
+        void initUi();
 
-        protected:
-            void mouseMoveEvent(QMouseEvent *event) override;
-            void mousePressEvent(QMouseEvent *event) override;
-            void mouseReleaseEvent(QMouseEvent *event) override;
+    protected:
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
 
-            [[nodiscard]] QStringList initTypes() const;
+        [[nodiscard]] QStringList initTypes() const;
 
-            void deleteColumn();
-            void setColumnName(const QString &newColumnName);
-            void setColumnDbType(const QString &type);
-            void setColumnIsNull(const bool& isNull);
-            void openRelationMaker();
+        void deleteColumn();
+        void setColumnName(const QString &);
+        void setColumnDbType(const QString &);
+        void setColumnIsNull(bool isNull);
+        void openRelationMaker();
     };
 
     typedef QPointer<Nodes::Table::Column> ColumnPrt;
