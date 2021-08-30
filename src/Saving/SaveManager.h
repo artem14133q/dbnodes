@@ -37,8 +37,6 @@ namespace DbNodes::Saving {
         static void createDirsInPath(const QString &path);
 
         static bool fileExists(const QString &path);
-
-        QString getLastOpenFilePath();
     };
 
 }

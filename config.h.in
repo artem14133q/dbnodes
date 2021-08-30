@@ -11,8 +11,10 @@
 
 #if TARGET_OS_MAC
 #define RESOURCES_PATH APP_PATH + "/../Resources"
+#define USER_FOLDER_PATH "/Users"
 #else
 #define RESOURCES_PATH APP_PATH + "/resources"
+#define USER_FOLDER_PATH "/home"
 #endif
 
 #define CONFIG_FILE_PATH RESOURCES_PATH + "/dbnodes.ini"

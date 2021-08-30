@@ -31,6 +31,7 @@ namespace DbNodes::Modals {
         void initUi();
 
         void closeEvent(QCloseEvent *closeEvent) override;
+        bool eventFilter(QObject *obj, QEvent *event) override;
     };
 
 }

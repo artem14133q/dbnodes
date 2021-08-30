@@ -9,10 +9,10 @@
 
 namespace DbNodes::Modals {
 
-    TableRename::TableRename(const Type& type, const QString &name, QWidget *parent)
-        : Abstract::AbstractSettingModal(parent), tableName(name), type(type) {
+    TableRename::TableRename(const QString &name, QWidget *parent)
+        : Abstract::AbstractSettingModal(parent), tableName(name) {
         setFixedWidth(500);
-        setWindowTitle(QString(getTitle()).arg(name));
+        setWindowTitle(QString("Rename table '%1'").arg(name));
 
         prepareWidget();
 
@@ -48,14 +48,5 @@ namespace DbNodes::Modals {
     void TableRename::afterInitUi() {
         nameLineEdit->setFocus();
         nameLineEdit->selectAll();
-    }
-
-    QString TableRename::getTitle() {
-        switch (type) {
-            case rename:
-                return "Rename table: %1";
-            case create:
-                return "Create table: %1";
-        }
     }
 }

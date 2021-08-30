@@ -19,23 +19,24 @@
 namespace DbNodes::Modals {
 
     Finder::Finder(const QList<Nodes::TablePtr> &nodeVector, QWidget *parent)
-        : Abstract::AbstractModal(parent), nodeVector(nodeVector) {
-        setFixedSize(400, 600);
-        setWindowFlag(Qt::FramelessWindowHint);
+        : Abstract::AbstractModal(parent), nodeVector(nodeVector)
+        {
+            setFixedSize(400, 600);
+            setWindowFlag(Qt::FramelessWindowHint);
 
-        parentWidget()->setDisabled(true);
-        setEnabled(true);
+            parentWidget()->setDisabled(true);
+            setEnabled(true);
 
-        setStyleSheet(Helper::getStyleFromFile("subWindow outline"));
+            setStyleSheet(Helper::getStyleFromFile("subWindow outline"));
 
-        move(
-            parentWidget()->x() + parentWidget()->width() / 2 - width() / 2,
-            parentWidget()->y() + parentWidget()->height() / 2 - height() / 2
-        );
+            move(
+                parentWidget()->x() + parentWidget()->width() / 2 - width() / 2,
+                parentWidget()->y() + parentWidget()->height() / 2 - height() / 2
+            );
 
-        initUI();
-        show();
-    }
+            initUI();
+            show();
+        }
 
     void Finder::initUI() {
         auto *pbClose = new QPushButton("X", this);
@@ -88,19 +89,21 @@ namespace DbNodes::Modals {
             auto result = regFilter.indexIn(node->getTableName()) != -1;
             #endif
 
-            if (result) {
-                filteredNodeList.insert(node->getTableId(), node);
-
-                auto *listItem = new QListWidgetItem(listWidget);
-                listItem->setText(node->getTableName());
-                listItem->setData(Qt::UserRole, node->getTableId());
-
-                #if QT_VERSION_MAJOR == 5
-                listItem->setTextColor(QColor("white"));
-                #endif
-
-                listWidget->setCurrentItem(listItem);
+            if (!result) {
+                continue;
             }
+
+            filteredNodeList.insert(node->getTableId(), node);
+
+            auto *listItem = new QListWidgetItem(listWidget);
+            listItem->setText(node->getTableName());
+            listItem->setData(Qt::UserRole, node->getTableId());
+
+            #if QT_VERSION_MAJOR == 5
+            listItem->setTextColor(QColor("white"));
+            #endif
+
+            listWidget->setCurrentItem(listItem);
         }
 
         if (listWidget->count() > 0) selectItemByIndex(0);

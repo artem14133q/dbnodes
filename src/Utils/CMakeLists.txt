@@ -10,7 +10,9 @@ set(RESOURCES
         AbstractUtil.cpp
         AbstractUtil.h
         ListMoving/Moving.cpp
-        ListMoving/Moving.h)
+        ListMoving/Moving.h
+        TableGenerator/TableGeneratorUtil.cpp
+        TableGenerator/TableGeneratorUtil.h)
 
 add_library(${LIBRARY_NAME} STATIC ${RESOURCES})
 

@@ -15,7 +15,7 @@
 #include "../../helper.h"
 #include "RelationMaker.h"
 
-#include "DbTableTypesFkDictionary.h"
+#include "DbTableTypesIndexDictionary.h"
 #include "DbTableTypesDictionary.h"
 
 namespace DbNodes::Nodes::Table {
@@ -55,28 +55,27 @@ namespace DbNodes::Nodes::Table {
             show();
         }
 
-// Get column name. Call in work area
+    // Get column name. Call in work area
     QString Column::getColumnName() {
         return columnName;
     }
 
-// Private Slot
+    // Private Slot
     void Column::setColumnName(const QString &newColumnName) {
         columnName = newColumnName;
     }
 
-// Define database types
+    // Define database types
     QStringList Column::initTypes() const {
         using namespace DbNodes::Dictionaries;
 
         QStringList typesList;
 
-        foreach (const QVariant &t, DbTableTypesFkDictionary::getAllValues()) {
+        foreach (const QVariant &t, DbTableTypesIndexDictionary::getAllValues()) {
             typesList.push_back(t.toString());
         }
 
-        /* If Column type is PK return
-        only numeric types */
+        // If Column type is PK return only numeric types
         if (columnType == PrimaryKey)
             return typesList;
 
@@ -193,8 +192,7 @@ namespace DbNodes::Nodes::Table {
     }
 
     bool Column::eventFilter(QObject *object, QEvent *event) {
-        if (event->type() == QEvent::Wheel && qobject_cast<QComboBox*>(object))
-        {
+        if (event->type() == QEvent::Wheel && qobject_cast<QComboBox*>(object)) {
             event->ignore();
             return true;
         }
@@ -246,7 +244,7 @@ namespace DbNodes::Nodes::Table {
     void Column::mouseMoveEvent(QMouseEvent *event) {
         if (movingUtil->move()) {
             Abstract::AbstractNode::mouseMoveEvent(event);
-        };
+        }
     }
 
     void Column::mousePressEvent(QMouseEvent *event) {

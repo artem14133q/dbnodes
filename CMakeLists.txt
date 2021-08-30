@@ -36,6 +36,8 @@ set(RESOURCES
 set(INCLUDE_PROJECT_LIBS
         Widgets)
 
+set(INI_CONFIG dbnodes.ini)
+
 # ==================================================================
 # CONFIGURE CMAKE
 # ==================================================================

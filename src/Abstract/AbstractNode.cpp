@@ -17,36 +17,46 @@ namespace DbNodes::Abstract {
     void AbstractNode::mousePressEvent(QMouseEvent* event) {
         selectable->setClicked(true);
 
+        #if QT_VERSION_MAJOR == 6
+        oldPos = event->globalPosition();
+        #else
         oldPos = event->globalPos();
+        #endif
 
         isHandled = true;
     }
 
     void AbstractNode::mouseMoveEvent(QMouseEvent *event) {
-        if (isHandled) {
-            QPoint cursorPos = event->globalPos();
+        if (!isHandled) {
+            return;
+        }
 
-            QPoint delta(cursorPos - oldPos);
+        #if QT_VERSION_MAJOR == 6
+        QPointF cursorPos = event->globalPosition();
+        QPoint delta((cursorPos - oldPos).toPoint());
+        #else
+        QPoint cursorPos = event->globalPos();
+        QPoint delta(cursorPos - oldPos);
+        #endif
 
-            selectable->move(delta);
+        selectable->move(delta);
 
-            if (abroadHandle) {
-                auto localCursorPos = parentWidget()->mapFromGlobal(cursorPos);
+        if (abroadHandle) {
+            auto localCursorPos = parentWidget()->mapFromGlobal(cursorPos);
 
-                if (!geometry().contains(geometry().x(), localCursorPos.y())) {
-                    delta.ry() = 0;
-                }
-
-                if (!geometry().contains(localCursorPos.x(), geometry().y())) {
-                    delta.rx() = 0;
-                }
+            if (!geometry().contains(geometry().x(), (int) localCursorPos.y())) {
+                delta.ry() = 0;
             }
 
-            restrictedMove(delta.x() + x(), delta.y() + y());
-
-            oldPos = cursorPos;
-            parentWidget()->update();
+            if (!geometry().contains((int) localCursorPos.x(), geometry().y())) {
+                delta.rx() = 0;
+            }
         }
+
+        restrictedMove(delta.x() + x(), delta.y() + y());
+
+        oldPos = cursorPos;
+        parentWidget()->update();
     }
 
     void AbstractNode::enableMoveRestrictions(const bool &enable) {

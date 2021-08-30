@@ -27,7 +27,11 @@ namespace DbNodes::Abstract {
         bool moveRestrictions = true;
         bool abroadHandle = false;
 
+        #if QT_VERSION_MAJOR == 6
+        QPointF oldPos{};
+        #else
         QPoint oldPos{};
+        #endif
 
         Utils::MultipleSelection::Selectable *selectable;
 

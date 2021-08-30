@@ -24,7 +24,7 @@ namespace DbNodes::Settings {
     }
 
     bool MainSettings::has(const QString &key) {
-        return callbacks.keys().contains(key);
+        return callbacks.contains(key);
     }
 
     void MainSettings::resolveCallback(const QString &key, const QVariant &value) {

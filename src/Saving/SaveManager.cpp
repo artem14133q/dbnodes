@@ -15,8 +15,12 @@
 #include "QString"
 #include "QFileDialog"
 #include "QFile"
-#include "QDebug"
 #include "QPair"
+#include "config.h"
+
+#if APP_DEBUG
+#include "QDebug"
+#endif
 
 #include "ExceptionModal.h"
 
@@ -28,15 +32,16 @@ namespace DbNodes::Saving {
         auto filePath = QFileDialog::getOpenFileName(
             nullptr,
             tr("Open File"),
-            "/home/" + qgetenv("USER") + "/file.dbn",
+            // TODO: create class to generate paths for different os (todo_path_generator)
+            USER_FOLDER_PATH + QString("/") + qgetenv("USER") + "/file.dbn",
             tr("DbNodes File (*.dbn)")
         );
 
         if (filePath == "") {
-            return QPair<QString, QByteArray>();
+            return {};
         }
 
-        return QPair<QString, QByteArray>(filePath, readFile(filePath));
+        return {filePath, readFile(filePath)};
     }
 
     QPair<QString, QByteArray> SaveManager::getFileContent(const QString &path) {
@@ -47,7 +52,7 @@ namespace DbNodes::Saving {
         }
 
         lastOpenedPath = path;
-        return QPair<QString, QByteArray>(path, readFile(path));
+        return {path, readFile(path)};
     }
 
     QString SaveManager::createNewFile(const QString &path) {
@@ -55,7 +60,8 @@ namespace DbNodes::Saving {
             return QFileDialog::getSaveFileName(
                 nullptr,
                 tr("Save File"),
-                "/home/" + qgetenv("USER") + "/new_file.dbn",
+                // TODO: (todo_path_generator)
+                USER_FOLDER_PATH + QString("/") + qgetenv("USER") + "/new_file.dbn",
                 tr("DbNodes File (*.dbn)")
             );
         } else {
@@ -79,10 +85,6 @@ namespace DbNodes::Saving {
 
         file.write(content);
         file.close();
-    }
-
-    QString SaveManager::getLastOpenFilePath() {
-        return lastOpenedPath;
     }
 
     bool SaveManager::fileExists(const QString &path) {

@@ -7,6 +7,8 @@ set(RESOURCES
         RelationMaker.h
         ConfirmCloseProject.cpp
         ConfirmCloseProject.h
+        TableConstructor.cpp
+        TableConstructor.h
         TableRename.cpp
         TableRename.h
         Finder.cpp
